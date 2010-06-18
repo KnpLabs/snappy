@@ -60,17 +60,24 @@ class SnappyImage
     
     /**
      * Save a url or file location to an image.
+     * Will create directories if needed.
      *
      * @param string Url of the page
      * @param string Path of the future image
-     * @return string Path to the image
+     * @return boolean True if success
      */
     public function saveImage($url, $path)
     {
-        $this->mergeOptions($options);
         $command = $this->buildImageCommand($url, $path);
-        $this->exec($command);
-        return true;
+        $basePath = dirname($path);
+        if(!is_dir($basePath)) {
+          mkdir($basePath, 0777, true);
+        }
+        if(file_exists($path)) {
+          unlink($path);
+        }
+        $ok = $this->exec($command);
+        return file_exists($path);
     }
     
     public function setExecutable($executable)
@@ -132,7 +139,7 @@ class SnappyImage
             }
         }
         
-        $command .= " $url $path";
+        $command .= " \"$url\" \"$path\"";
         
         return $command;
     }
