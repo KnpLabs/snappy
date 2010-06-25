@@ -8,7 +8,7 @@
  */
 class SnappyPdf extends SnappyMedia
 {
-    
+    protected $defaultExtension = 'pdf';
     protected $options = array(
         'ignore-load-errors' => null,                          // old v0.9
         'lowquality' => true,

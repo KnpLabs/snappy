@@ -8,6 +8,7 @@
  */
 class SnappyImage extends SnappyMedia
 {
+    protected $defaultExtension = 'jpg';
     protected $options = array(
         'allow' => null,                          // Allow the file or files from the specified folder to be loaded (repeatable)
         'background' => null,                     // Do print background (default)

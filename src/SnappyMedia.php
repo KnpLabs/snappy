@@ -7,6 +7,22 @@ abstract class SnappyMedia
 {
     protected $executable;
     protected $options = array();
+    protected $defaultExtension;
+    
+    /**
+     * Write the media to the standard output.
+     *
+     * @param string Url of the page
+     * @return void
+     */
+    public function output($url)
+    {
+      $file = tempnam(sys_get_temp_dir(), 'snappy') . '.' . $this->defaultExtension;
+
+      $ok = $this->save($url, $file);
+      readfile($file);
+      unlink($file);
+    }
     
     /**
      * Save a url or file location to an image.
