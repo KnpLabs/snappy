@@ -80,8 +80,6 @@ abstract class SnappyMedia
         }
     }
     
-    
-    
     /**
      * Return the command to wkhtmltoimage using the options attributes
      *

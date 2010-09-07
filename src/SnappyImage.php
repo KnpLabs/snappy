@@ -55,6 +55,7 @@ class SnappyImage extends SnappyMedia
         'user-style-sheet' => null,               // Specify a user style sheet, to load with every page
         'username' => null,                       // HTTP Authentication username
         'zoom' => null,                           // Use this zoom factor (default 1)
+        'disable-smart-width' => null,            // Use the specified width even if it is not large enough for the content
     );
     
 }
