@@ -43,7 +43,7 @@ abstract class SnappyMedia
           unlink($path);
         }
         $ok = $this->exec($command);
-        return file_exists($path);
+        return file_exists($path) && filesize($path);
     }
     
     public function setExecutable($executable)
