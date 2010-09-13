@@ -12,6 +12,8 @@ class SnappyPdf extends SnappyMedia
     protected $options = array(
         'ignore-load-errors' => null,                          // old v0.9
         'lowquality' => true,
+        'username' => null,
+        'password' => null,
     );
     
 }
