@@ -1,15 +1,26 @@
 <?php
 
-namespace Snappy;
+namespace Knplabs\Snappy;
 
 /**
-* 
+* Base class for Snappy Media
 */
 abstract class Media
 {
     protected $executable;
     protected $options = array();
     protected $defaultExtension;
+    
+    const URL_PATTERN = '~^
+            (http|https|ftp)://                                 # protocol
+            (
+                ([a-z0-9-]+\.)+[a-z]{2,6}             # a domain name
+                    |                                   #  or
+                \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}    # a IP address
+            )
+            (:[0-9]+)?                              # a port (optional)
+            (/?|/\S+)                               # a /, nothing or a / with something
+        $~ix';
     
     /**
      * Constructor. Set executable path and merge options (passed as an array) with default options.
@@ -27,22 +38,32 @@ abstract class Media
      * Write the media to the standard output.
      *
      * @param string Url of the page
-     * @param boolean Return the output instead of writing it
-     * @return void|string
+     * @return void
      */
-    public function output($url, $return = false)
+    public function output($url)
     {
-      $file = tempnam(sys_get_temp_dir(), 'snappy') . '.' . $this->defaultExtension;
+        $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.' . $this->defaultExtension;
 
-      $ok = $this->save($url, $file);
-      $content = null;
-      if($return) {
-          $content = file_get_contents($file);
-      } else {
-          readfile($file);
-      }
-      unlink($file);
-      return $content;
+        $ok = $this->save($url, $file);
+        $content = null;
+        readfile($file);
+        unlink($file);
+    }
+
+    /**
+     * Return the content of a media
+     *
+     * @param string Url of the page
+     * @return string
+     */
+    public function get($url)
+    {
+        $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.' . $this->defaultExtension;
+
+        $ok = $this->save($url, $file);
+        $content = null;
+        $content = file_get_contents($file);
+        return $content;
     }
     
     /**
@@ -55,13 +76,18 @@ abstract class Media
      */
     public function save($url, $path)
     {
+        if(!preg_match(self::URL_PATTERN, $url)) {
+            $data = $url;
+            $url = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.html';
+            file_put_contents($url, $data);
+        }
         $command = $this->buildCommand($url, $path);
         $basePath = dirname($path);
         if(!is_dir($basePath)) {
-          mkdir($basePath, 0777, true);
+            mkdir($basePath, 0777, true);
         }
         if(file_exists($path)) {
-          unlink($path);
+            unlink($path);
         }
         $ok = $this->exec($command);
         return file_exists($path) && filesize($path);

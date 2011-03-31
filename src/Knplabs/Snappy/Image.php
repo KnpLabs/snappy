@@ -1,6 +1,6 @@
 <?php
 
-namespace Snappy;
+namespace Knplabs\Snappy;
 
 /**
  * Use this class to create a snapshot / a thumbnail from a url
