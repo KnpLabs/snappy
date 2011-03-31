@@ -1,27 +1,48 @@
 <?php
 
+namespace Snappy;
+
 /**
 * 
 */
-abstract class SnappyMedia
+abstract class Media
 {
     protected $executable;
     protected $options = array();
     protected $defaultExtension;
     
     /**
+     * Constructor. Set executable path and merge options (passed as an array) with default options.
+     *
+     * @param string $executable 
+     * @param array $options 
+     */
+    function __construct($executable, array $options = array())
+    {
+        $this->setExecutable($executable);
+        $this->mergeOptions($options);
+    }
+    
+    /**
      * Write the media to the standard output.
      *
      * @param string Url of the page
-     * @return void
+     * @param boolean Return the output instead of writing it
+     * @return void|string
      */
-    public function output($url)
+    public function output($url, $return = false)
     {
       $file = tempnam(sys_get_temp_dir(), 'snappy') . '.' . $this->defaultExtension;
 
       $ok = $this->save($url, $file);
-      readfile($file);
+      $content = null;
+      if($return) {
+          $content = file_get_contents($file);
+      } else {
+          readfile($file);
+      }
       unlink($file);
+      return $content;
     }
     
     /**
@@ -62,7 +83,7 @@ abstract class SnappyMedia
     public function setOption($option, $value = null)
     {
         if(!array_key_exists($option, $this->options)) {
-            throw new Exception("Invalid option '$option'");
+            throw new \Exception("Invalid option '$option'");
         }
         $this->options[$option] = $value;
     }
@@ -106,7 +127,6 @@ abstract class SnappyMedia
         }
         
         $command .= " \"$url\" \"$path\"";
-        
         return $command;
     }
         

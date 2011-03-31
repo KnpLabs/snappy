@@ -1,12 +1,14 @@
 <?php
 
+namespace Snappy;
+
 /**
  * Use this class to create a snapshot / a thumbnail from a url
  *
  * @package Snappy
  * @author Matthieu Bontemps<matthieu.bontemps@knplabs.com>
  */
-class SnappyImage extends SnappyMedia
+class Image extends Media
 {
     protected $defaultExtension = 'jpg';
     protected $options = array(
