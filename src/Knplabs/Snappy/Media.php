@@ -10,7 +10,8 @@ abstract class Media
     protected $executable;
     protected $options = array();
     protected $defaultExtension;
-    
+    protected $extension;
+
     const URL_PATTERN = '~^
             (http|https|ftp)://                                 # protocol
             (
@@ -28,8 +29,15 @@ abstract class Media
      * @param string $executable 
      * @param array $options 
      */
-    function __construct($executable, array $options = array())
+    function __construct($executable, array $options = array(), $ext = null)
     {
+	if ($ext != null) {
+		$this->extension = $ext;
+	}
+	else {
+		$this->extension = $defaultExtension;
+	}
+
         $this->setExecutable($executable);
         $this->mergeOptions($options);
     }
@@ -42,7 +50,7 @@ abstract class Media
      */
     public function output($url)
     {
-        $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.' . $this->defaultExtension;
+        $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.' . $this->extension;
 
         $ok = $this->save($url, $file);
         $content = null;
@@ -58,7 +66,7 @@ abstract class Media
      */
     public function get($url)
     {
-        $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.' . $this->defaultExtension;
+        $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.' . $this->extension;
 
         $ok = $this->save($url, $file);
         $content = null;
