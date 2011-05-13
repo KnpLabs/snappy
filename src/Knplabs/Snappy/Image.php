@@ -27,7 +27,7 @@ class Image extends Media
         'debug-javascript' => null,               // Show javascript debugging output
         'no-debug-javascript' => null,            // Do not show javascript debugging output (default)
         'encoding' => null,                       // Set the default text encoding, for input
-        'f' => null,                              // Output format
+        'format' => null,                         // Output format
         'images' => null,                         // Do load or print images (default)
         'no-images' => null,                      // Do not load or print images 
         'disable-javascript' => null,             // Do not allow web pages to run javascript
