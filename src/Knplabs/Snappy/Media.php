@@ -31,12 +31,12 @@ abstract class Media
      */
     function __construct($executable, array $options = array(), $ext = null)
     {
-	if ($ext != null) {
-		$this->extension = $ext;
-	}
-	else {
-		$this->extension = $defaultExtension;
-	}
+        if ($ext != null) {
+            $this->extension = $ext;
+        }
+        else {
+            $this->extension = $defaultExtension;
+        }
 
         $this->setExecutable($executable);
         $this->mergeOptions($options);
