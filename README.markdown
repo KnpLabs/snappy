@@ -5,11 +5,11 @@ Snappy is a PHP5 library allowing thumbnail, snapshot or PDF generation from a u
 # Example use
 ```php
 <?php
-use Knplabs\Snappy\Image;
 
 require_once 'Knplabs/Snappy/autoload.php';
 
- 
+use Knplabs\Snappy\Image;
+
 // location of the wkhtmltoimage binary, freebsd used in this example
 $snappy = new Image('/usr/local/bin/wkhtmltoimage');
  
@@ -23,9 +23,9 @@ $snappy->output('http://www.github.com');
 ```php
 <?php
 
-use Knplabs\Snappy\Image;
-
 require_once 'Knplabs/Snappy/autoload.php';
+
+use Knplabs\Snappy\Image;
 
 $snappy = new Image();
 $snappy->setExecutable('/usr/local/bin/wkhtmltoimage');
@@ -38,12 +38,12 @@ $snappy->output('http://www.github.com');
 ```php
 <?php
 
+require_once 'Knplabs/Snappy/autoload.php';
+
 use Knplabs\Snappy\Image;
 
 // can be defined in a configuration file or anywhere else 
 define("SNAPPY_IMAGE_BINARY", "/usr/local/bin/wkhtmltoimage");
-
-require_once 'Knplabs/Snappy/autoload.php';
 
 $snappy = new Image();
 header("Content-Type: image/jpeg");
