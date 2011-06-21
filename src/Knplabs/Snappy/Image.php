@@ -62,10 +62,10 @@ class Image extends Media
     
     public function __construct($executable = null, array $options = array())
     {
-    	if (defined('SNAPPY_IMAGE_BINARY') && is_null($executable)) {
-    		$executable = SNAPPY_IMAGE_BINARY;
-    	}
+        if (defined('SNAPPY_IMAGE_BINARY') && is_null($executable)) {
+            $executable = SNAPPY_IMAGE_BINARY;
+        }
     
-    	parent::__construct($executable, $options);
+        parent::__construct($executable, $options);
     }
 }
