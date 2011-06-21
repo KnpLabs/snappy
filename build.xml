@@ -1,7 +1,0 @@
-<project name="Snappy" default="phpab" basedir=".">
- <target name="phpab">
-  <exec executable="phpab">
-   <arg line="-o src/Knplabs/Snappy/autoload.php src/Knplabs/Snappy/" />
-  </exec>
- </target>
-</project>
