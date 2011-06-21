@@ -30,7 +30,7 @@ abstract class Media
     function __construct($executable, array $options)
     {    
     	if (!$this->_checkExecAllowed()) {
-    		throw new \exception("shell_exec() is not allowed on this php install");
+			throw new \exception("shell_exec() is not allowed on this php install");
     	}
     
     	if (!is_null($executable)) {
@@ -97,7 +97,7 @@ abstract class Media
     public function save($url, $path)
     {
     	if ($this->executable === null) {
-    		throw new \exception("Executable not set");
+			throw new \exception("Executable not set");
     	}
     
         if(!preg_match(self::URL_PATTERN, $url)) {
