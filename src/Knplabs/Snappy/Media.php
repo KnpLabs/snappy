@@ -7,19 +7,18 @@ namespace Knplabs\Snappy;
 */
 abstract class Media
 {
-    protected $executable;
-    protected $options = array();
+    public $executable;
     protected $defaultExtension;
     
     const URL_PATTERN = '~^
-            (http|https|ftp)://                                 # protocol
+            (http|https|ftp)://						# protocol
             (
-                ([a-z0-9-]+\.)+[a-z]{2,6}             # a domain name
-                    |                                   #  or
-                \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}    # a IP address
+                ([a-z0-9-]+\.)+[a-z]{2,6}			# a domain name
+                    |								#  or
+                \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}	# a IP address
             )
-            (:[0-9]+)?                              # a port (optional)
-            (/?|/\S+)                               # a /, nothing or a / with something
+            (:[0-9]+)?								# a port (optional)
+            (/?|/\S+)								# a /, nothing or a / with something
         $~ix';
     
     /**
@@ -28,11 +27,32 @@ abstract class Media
      * @param string $executable 
      * @param array $options 
      */
-    function __construct($executable, array $options = array())
-    {
-        $this->setExecutable($executable);
-        $this->mergeOptions($options);
+    function __construct($executable, array $options)
+    {    
+    	if (!$this->_checkExecAllowed()) {
+    		throw new \exception("shell_exec() is not allowed on this php install");
+    	}
+    
+    	if (!is_null($executable)) {
+        	$this->setExecutable($executable);
+        }
+        
+        if (count($options) != 0) {
+        	$this->_mergeOptions($options);
+        }
     }
+    
+    /**
+    * Check if shell_exec isn't disabled
+    *
+    * @return boolean
+    */
+    private function _checkExecAllowed()
+    {
+  		$disabled = explode(', ', ini_get('disable_functions'));
+  		return !in_array('shell_exec', $disabled);
+    }
+    
     
     /**
      * Write the media to the standard output.
@@ -45,7 +65,7 @@ abstract class Media
         $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.' . $this->defaultExtension;
 
         $ok = $this->save($url, $file);
-        $content = null;
+
         readfile($file);
         unlink($file);
     }
@@ -76,6 +96,10 @@ abstract class Media
      */
     public function save($url, $path)
     {
+    	if ($this->executable === null) {
+    		throw new \exception("Executable not set");
+    	}
+    
         if(!preg_match(self::URL_PATTERN, $url)) {
             $data = $url;
             $url = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.html';
@@ -93,9 +117,42 @@ abstract class Media
         return file_exists($path) && filesize($path);
     }
     
+    
+    /** 
+    * Set the location of the binary after validating the binary by calling _validateExecutable
+    * if the validation method returns false an InvalidArgumentExceptin is thrown.
+    * if the validation method returns true, the class paramater $this->executable is set and 
+    * true is returned.
+    *
+    * @param string $executable Path/name of the binary
+    * @return boolean 
+    */
     public function setExecutable($executable)
     {
+    	if (!$this->_validateExecutable($executable)) {
+    		throw new \InvalidArgumentException("Binary (".$executable.") doesn't exist or isn't executable");
+    	}
         $this->executable = $executable;
+        return true;
+    }
+    
+    /**
+    * Tests the requested executable against an array with known/allowed binaries
+    * for this class and if the binary exists and is executable
+    * 
+    * @param string Path/name of the binary
+    * @return boolean
+    */
+    
+    private function _validateExecutable($executable)
+    {
+    	$knownBinaries = array(
+    						'wkhtmltoimage',
+    						'wkhtmltopdf',
+    					);
+    	$fileObject = new \SplFileInfo($executable);
+    	
+    	return ($fileObject->isExecutable() && in_array($fileObject->getBasename(), $knownBinaries));
     }
     
     /**
@@ -109,7 +166,7 @@ abstract class Media
     public function setOption($option, $value = null)
     {
         if(!array_key_exists($option, $this->options)) {
-            throw new \Exception("Invalid option '$option'");
+            throw new \Exception("Invalid option ".$option);
         }
         $this->options[$option] = $value;
     }
@@ -120,7 +177,7 @@ abstract class Media
      * @param array Array of options
      * @return void
      */
-    public function mergeOptions(array $options)
+    private function _mergeOptions(array $options)
     {
         foreach($options as $key => $value) {
             $this->setOption($key, $value);
@@ -141,13 +198,13 @@ abstract class Media
         foreach($this->options as $key => $value) {
             if(null !== $value && false !== $value) {
                 if(true === $value) {
-                    $command .= " --$key";
+                    $command .= " --".$key;
                 } elseif(is_array($value)) {
                     foreach($value as $v) {
-                        $command .= " --$key $v";
+                        $command .= " --".$key." ".$v;
                     }
                 } else {
-                    $command .= " --$key $value";
+                    $command .= " --".$key." ".$value;
                 }
             }
         }

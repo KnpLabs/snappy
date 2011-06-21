@@ -125,4 +125,13 @@ class Pdf extends Media
         'toc-text-size-shrink' => null,
         'xsl-style-sheet' => null,
     );
+    
+    public function __construct($executable = null, array $options = array())
+    {
+    	if (defined('SNAPPY_PDF_BINARY') && is_null($executable)) {
+    		$executable = SNAPPY_PDF_BINARY;
+    	}
+    
+    	parent::__construct($executable, $options);
+    }
 }
