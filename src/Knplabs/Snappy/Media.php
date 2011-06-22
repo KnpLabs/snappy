@@ -29,15 +29,15 @@ abstract class Media
      */
     public function __construct($executable, array $options)
     {
-        if (!$this->checkExecAllowed()) {
-            throw new \Exception("shell_exec() is not allowed on this php install");
+        if (!$this->isExecAllowed()) {
+			throw new \RuntimeException('The \'shell_exec\' function is not allowed on this php install.');
         }
 
-        if (!is_null($executable)) {
+        if (null !== $executable) {
             $this->setExecutable($executable);
         }
 
-        if (count($options) != 0) {
+        if (count($options) !== 0) {
             $this->mergeOptions($options);
         }
     }
@@ -47,7 +47,7 @@ abstract class Media
      *
      * @return boolean
      */
-    private function checkExecAllowed()
+    private function isExecAllowed()
     {
         $disabled = explode(', ', ini_get('disable_functions'));
 
