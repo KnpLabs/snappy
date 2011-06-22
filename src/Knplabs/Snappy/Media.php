@@ -43,15 +43,21 @@ abstract class Media
     }
 
     /**
-     * Indicates whether the "check_exec" function is allowed
+	 * Sets an option. Be aware that option values are NOT validated and that
+	 * it is your responsibility to validate user inputs
      *
-     * @return boolean
+     * @param  string 		$option The option to set
+     * @param  string|array $value  The value for the option (NULL to unset)
+	 *
+     * @return void
      */
-    private function isExecAllowed()
+    public function setOption($option, $value = null)
     {
-        $disabled = explode(', ', ini_get('disable_functions'));
+        if (!array_key_exists($option, $this->options)) {
+            throw new \Exception("Invalid option ".$option);
+        }
 
-        return (bool) !in_array('shell_exec', $disabled);
+        $this->options[$option] = $value;
     }
 
     /**
@@ -126,7 +132,6 @@ abstract class Media
         return file_exists($path) && filesize($path);
     }
 
-
     /**
 	 * Defines the location of the binary and validates it
      *
@@ -145,6 +150,17 @@ abstract class Media
         return true;
     }
 
+    /**
+     * Indicates whether the "check_exec" function is allowed
+     *
+     * @return boolean
+     */
+    private function isExecAllowed()
+    {
+        $disabled = explode(', ', ini_get('disable_functions'));
+
+        return (bool) !in_array('shell_exec', $disabled);
+    }
 
     /**
 	 * Tests the requested executable against an array with known/allowed
@@ -163,24 +179,6 @@ abstract class Media
         $fileObject = new \SplFileInfo($executable);
 
         return $fileObject->isExecutable() && in_array($fileObject->getBasename(), $knownBinaries);
-    }
-
-    /**
-	 * Sets an option. Be aware that option values are NOT validated and that
-	 * it is your responsibility to validate user inputs
-     *
-     * @param  string 		$option The option to set
-     * @param  string|array $value  The value for the option (NULL to unset)
-	 *
-     * @return void
-     */
-    public function setOption($option, $value = null)
-    {
-        if (!array_key_exists($option, $this->options)) {
-            throw new \Exception("Invalid option ".$option);
-        }
-
-        $this->options[$option] = $value;
     }
 
     /**
