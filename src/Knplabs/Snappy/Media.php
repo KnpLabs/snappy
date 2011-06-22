@@ -136,8 +136,6 @@ abstract class Media
 	 * Defines the location of the binary and validates it
      *
      * @param  string $executable The path/name of the binary
-	 *
-     * @return boolean
      */
     public function setExecutable($executable)
     {
@@ -146,8 +144,6 @@ abstract class Media
         }
 
         $this->executable = $executable;
-
-        return true;
     }
 
     /**
