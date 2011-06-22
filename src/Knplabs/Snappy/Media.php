@@ -116,7 +116,7 @@ abstract class Media
             file_put_contents($url, $data);
         }
 
-        $command = $this->buildCommand($url, $path);
+        $command = $this->buildCommand($url, $path, $this->options);
         $basePath = dirname($path);
 
         if (!is_dir($basePath)) {
@@ -194,16 +194,18 @@ abstract class Media
     /**
      * Returns the command to wkhtmltoimage using the options attributes
      *
-     * @param  string $url  Url or file location of the page to process
-     * @param  string $path File location to the image-to-be
+	 * @param  string $executable The executable path/name
+     * @param  string $url     	  Url or file location of the page to process
+     * @param  string $path    	  File location to the image-to-be
+	 * @param  array  $options 	  An array of options
 	 *
      * @return string The command
      */
-    protected function buildCommand($url, $path)
+    protected function buildCommand($executable, $url, $path, array $options)
     {
-        $command = $this->executable;
+        $command = $executable;
 
-        foreach ($this->options as $key => $value) {
+        foreach ($options as $key => $value) {
             if (null !== $value && false !== $value) {
                 if (true === $value) {
                     $command .= " --".$key;
