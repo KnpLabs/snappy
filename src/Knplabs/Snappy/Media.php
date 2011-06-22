@@ -51,6 +51,7 @@ abstract class Media
     private function checkExecAllowed()
     {
         $disabled = explode(', ', ini_get('disable_functions'));
+
         return (bool) !in_array('shell_exec', $disabled);
     }
 
@@ -85,6 +86,7 @@ abstract class Media
         $ok = $this->save($url, $file);
         $content = null;
         $content = file_get_contents($file);
+
         return $content;
     }
 
@@ -108,15 +110,20 @@ abstract class Media
             $url = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.html';
             file_put_contents($url, $data);
         }
+
         $command = $this->buildCommand($url, $path);
         $basePath = dirname($path);
+
         if (!is_dir($basePath)) {
             mkdir($basePath, 0777, true);
         }
+
         if (file_exists($path)) {
             unlink($path);
         }
+
         $ok = $this->exec($command);
+
         return file_exists($path) && filesize($path);
     }
 
@@ -135,7 +142,9 @@ abstract class Media
         if (!$this->validateExecutable($executable)) {
             throw new \InvalidArgumentException("Binary (".$executable.") doesn't exist or isn't executable");
         }
+
         $this->executable = $executable;
+
         return true;
     }
 
@@ -173,6 +182,7 @@ abstract class Media
         if (!array_key_exists($option, $this->options)) {
             throw new \Exception("Invalid option ".$option);
         }
+
         $this->options[$option] = $value;
     }
 
@@ -217,6 +227,7 @@ abstract class Media
         }
 
         $command .= " \"$url\" \"$path\"";
+
         return $command;
     }
 
