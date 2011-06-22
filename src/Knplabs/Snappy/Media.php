@@ -7,7 +7,7 @@ namespace Knplabs\Snappy;
  */
 abstract class Media
 {
-    public $executable;
+    protected $binary;
     protected $defaultExtension;
 
     const URL_PATTERN = '~^
@@ -24,17 +24,17 @@ abstract class Media
     /**
 	 * Constructor
      *
-     * @param  string $executable
+     * @param  string $binary
      * @param  array  $options
      */
-    public function __construct($executable, array $options)
+    public function __construct($binary, array $options)
     {
         if (!$this->isExecAllowed()) {
 			throw new \RuntimeException('The \'shell_exec\' function is not allowed on this php install.');
         }
 
-        if (null !== $executable) {
-            $this->setExecutable($executable);
+        if (null !== $binary) {
+            $this->setBinary($binary);
         }
 
         if (count($options) !== 0) {
@@ -106,8 +106,8 @@ abstract class Media
      */
     public function save($url, $path)
     {
-        if ($this->executable === null) {
-            throw new \exception("Executable not set");
+        if ($this->binary === null) {
+            throw new \exception("Binary not set");
         }
 
         if (!preg_match(self::URL_PATTERN, $url)) {
@@ -135,15 +135,15 @@ abstract class Media
     /**
 	 * Defines the location of the binary and validates it
      *
-     * @param  string $executable The path/name of the binary
+     * @param  string $binary The path/name of the binary
      */
-    public function setExecutable($executable)
+    public function setBinary($binary)
     {
-        if (!$this->validateExecutable($executable)) {
-            throw new \InvalidArgumentException(sprintf('The binary \'%s\' does not exist or is not executable.', $executable));
+        if (!$this->validateBinary($binary)) {
+            throw new \InvalidArgumentException(sprintf('The binary \'%s\' does not exist or is not binary.', $binary));
         }
 
-        $this->executable = $executable;
+        $this->binary = $binary;
     }
 
     /**
@@ -159,22 +159,22 @@ abstract class Media
     }
 
     /**
-	 * Tests the requested executable against an array with known/allowed
-	 * binaries for this class and if the binary exists and is executable
+	 * Tests the requested binary against an array with known/allowed
+	 * binaries for this class and if the binary exists and is binary
      *
-     * @param  string $executable The path/name of the binary
+     * @param  string $binary The path/name of the binary
 	 *
      * @return boolean
      */
-    private function validateExecutable($executable)
+    private function validateBinary($binary)
     {
         $knownBinaries = array(
             'wkhtmltoimage',
             'wkhtmltopdf',
         );
-        $fileObject = new \SplFileInfo($executable);
+        $fileObject = new \SplFileInfo($binary);
 
-        return $fileObject->isExecutable() && in_array($fileObject->getBasename(), $knownBinaries);
+        return $fileObject->isBinary() && in_array($fileObject->getBasename(), $knownBinaries);
     }
 
     /**
@@ -194,16 +194,16 @@ abstract class Media
     /**
      * Returns the command to wkhtmltoimage using the options attributes
      *
-	 * @param  string $executable The executable path/name
-     * @param  string $url     	  Url or file location of the page to process
-     * @param  string $path    	  File location to the image-to-be
-	 * @param  array  $options 	  An array of options
+	 * @param  string $binary	The binary path/name
+     * @param  string $url     	Url or file location of the page to process
+     * @param  string $path    	File location to the image-to-be
+	 * @param  array  $options 	An array of options
 	 *
      * @return string The command
      */
-    protected function buildCommand($executable, $url, $path, array $options)
+    protected function buildCommand($binary, $url, $path, array $options)
     {
-        $command = $executable;
+        $command = $binary;
 
         foreach ($options as $key => $value) {
             if (null !== $value && false !== $value) {

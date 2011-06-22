@@ -63,12 +63,12 @@ class Image extends Media
 	/**
 	 * {@inheritDoc}
 	 */
-    public function __construct($executable = null, array $options = array())
+    public function __construct($binary = null, array $options = array())
     {
-        if (null === $executable && defined('SNAPPY_IMAGE_BINARY')) {
-            $executable = SNAPPY_IMAGE_BINARY;
+        if (null === $binary && defined('SNAPPY_IMAGE_BINARY')) {
+            $binary = SNAPPY_IMAGE_BINARY;
         }
 
-        parent::__construct($executable, $options);
+        parent::__construct($binary, $options);
     }
 }
