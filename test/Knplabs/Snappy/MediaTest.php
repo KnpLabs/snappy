@@ -7,14 +7,9 @@ class MediaTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @dataProvider dataForBuildCommand
 	 */
-	public function testBuildCommand($binary, $url, $path, $options)
+	public function testBuildCommand($binary, $url, $path, $options, $expected)
 	{
-		$media = $this->getMockForAbstractClass('Knplabs\Snappy\Media');
-		$media
-			->expects($this->any())
-			->method('isExecAllowed')
-			->will($this->returnValue(true))
-		;
+		$media = $this->getMockForAbstractClass('Knplabs\Snappy\Media', array(), '', false);
 
 		$r = new \ReflectionMethod($media, 'buildCommand');
 		$r->setAccessible(true);
@@ -30,7 +25,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
 				'http://the.url/',
 				'/the/path',
 				array(),
-				'thebinary http://the.url/ /the/path'
+				'thebinary "http://the.url/" "/the/path"'
 			),
 			array(
 				'thebinary',
@@ -41,7 +36,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
 					'bar'	=> false,
 					'baz'	=> array()
 				),
-				'thebinary http://the.url/ /the/path'
+				'thebinary "http://the.url/" "/the/path"'
 			),
 			array(
 				'thebinary',
@@ -52,7 +47,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
 					'bar'	=> array('barvalue1', 'barvalue2'),
 					'baz'	=> true
 				),
-				'thebinary http://the.url/ /the/path --foo=foovalue --bar=barvalue1 --bar=barvalue2 --baz'
+				'thebinary --foo foovalue --bar barvalue1 --bar barvalue2 --baz "http://the.url/" "/the/path"'
 			),
 		);
 	}
