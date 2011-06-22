@@ -60,6 +60,9 @@ class Image extends Media
         'disable-smart-width'          => null,    // Use the specified width even if it is not large enough for the content
 	);
 
+	/**
+	 * {@inheritDoc}
+	 */
     public function __construct($executable = null, array $options = array())
     {
         if (null === $executable && defined('SNAPPY_IMAGE_BINARY')) {

@@ -126,6 +126,9 @@ class Pdf extends Media
         'xsl-style-sheet'              => null,
     );
 
+    /**
+     * {@inheritDoc}
+     */
     public function __construct($executable = null, array $options = array())
     {
         if (null === $executable && defined('SNAPPY_PDF_BINARY')) {

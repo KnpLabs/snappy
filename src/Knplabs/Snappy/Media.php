@@ -22,10 +22,10 @@ abstract class Media
         $~ix';
 
     /**
-     * Constructor. Set executable path and merge options (passed as an array) with default options.
+	 * Constructor
      *
-     * @param string $executable
-     * @param array $options
+     * @param  string $executable
+     * @param  array  $options
      */
     public function __construct($executable, array $options)
     {
@@ -42,9 +42,8 @@ abstract class Media
         }
     }
 
-
     /**
-     * Check if shell_exec isn't disabled
+     * Indicates whether the "check_exec" function is allowed
      *
      * @return boolean
      */
@@ -55,11 +54,11 @@ abstract class Media
         return (bool) !in_array('shell_exec', $disabled);
     }
 
-
     /**
-     * Write the media to the standard output.
+     * Writes the media to the standard output
      *
-     * @param string Url of the page
+     * @param  string $url Url of the page
+	 *
      * @return void
      */
     public function output($url)
@@ -72,11 +71,11 @@ abstract class Media
         unlink($file);
     }
 
-
     /**
-     * Return the content of a media
+     * Returns the content of a media
      *
-     * @param string Url of the page
+     * @param  string $url Url of the page
+	 *
      * @return string
      */
     public function get($url)
@@ -90,14 +89,14 @@ abstract class Media
         return $content;
     }
 
-
     /**
-     * Save a url or file location to an image.
-     * Will create directories if needed.
+	 * Creates the media from the specified url and saves it in the specified
+	 * path. It will create the directory if needed
      *
-     * @param string Url of the page
-     * @param string Path of the future image
-     * @return boolean True if success
+     * @param  string $url	Url of the page
+     * @param  string $path Path of the future image
+	 *
+     * @return boolean TRUE on success, or FALSE on failure
      */
     public function save($url, $path)
     {
@@ -129,18 +128,16 @@ abstract class Media
 
 
     /**
-     * Set the location of the binary after validating the binary by calling _validateExecutable
-     * if the validation method returns false an InvalidArgumentExceptin is thrown.
-     * if the validation method returns true, the class paramater $this->executable is set and
-     * true is returned.
+	 * Defines the location of the binary and validates it
      *
-     * @param string $executable Path/name of the binary
+     * @param  string $executable The path/name of the binary
+	 *
      * @return boolean
      */
     public function setExecutable($executable)
     {
         if (!$this->validateExecutable($executable)) {
-            throw new \InvalidArgumentException("Binary (".$executable.") doesn't exist or isn't executable");
+            throw new \InvalidArgumentException(sprintf('The binary \'%s\' does not exist or is not executable.', $executable));
         }
 
         $this->executable = $executable;
@@ -150,13 +147,13 @@ abstract class Media
 
 
     /**
-     * Tests the requested executable against an array with known/allowed binaries
-     * for this class and if the binary exists and is executable
+	 * Tests the requested executable against an array with known/allowed
+	 * binaries for this class and if the binary exists and is executable
      *
-     * @param string Path/name of the binary
+     * @param  string $executable The path/name of the binary
+	 *
      * @return boolean
      */
-
     private function validateExecutable($executable)
     {
         $knownBinaries = array(
@@ -168,13 +165,13 @@ abstract class Media
         return $fileObject->isExecutable() && in_array($fileObject->getBasename(), $knownBinaries);
     }
 
-
     /**
-     * Set a wkhtmltoimage option. Be aware that option values are NOT validated
-     * and that it is your responsibility to validate user inputs.
+	 * Sets an option. Be aware that option values are NOT validated and that
+	 * it is your responsibility to validate user inputs
      *
-     * @param string Option
-     * @param string|array Value. Null to unset the option.
+     * @param  string 		$option The option to set
+     * @param  string|array $value  The value for the option (NULL to unset)
+	 *
      * @return void
      */
     public function setOption($option, $value = null)
@@ -186,11 +183,11 @@ abstract class Media
         $this->options[$option] = $value;
     }
 
-
     /**
-     * Merge wkhtmltoimage options (passed as an array) with current options
+	 * Merges the given options array with the current options
      *
-     * @param array Array of options
+     * @param  array $options
+	 *
      * @return void
      */
     private function mergeOptions(array $options)
@@ -200,12 +197,12 @@ abstract class Media
         }
     }
 
-
     /**
-     * Return the command to wkhtmltoimage using the options attributes
+     * Returns the command to wkhtmltoimage using the options attributes
      *
-     * @param string Url or file location of the page to process
-     * @param string File location to the image-to-be
+     * @param  string $url  Url or file location of the page to process
+     * @param  string $path File location to the image-to-be
+	 *
      * @return string The command
      */
     protected function buildCommand($url, $path)
@@ -231,11 +228,16 @@ abstract class Media
         return $command;
     }
 
-
+	/**
+	 * Executes the given command via shell and returns the complete output as
+	 * a string
+	 *
+	 * @param  string $command
+	 *
+	 * @return string
+	 */
     protected function exec($command)
     {
         return shell_exec($command);
     }
-
-
 }
