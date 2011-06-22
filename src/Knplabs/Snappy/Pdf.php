@@ -128,7 +128,7 @@ class Pdf extends Media
 
     public function __construct($executable = null, array $options = array())
     {
-        if (defined('SNAPPY_PDF_BINARY') && is_null($executable)) {
+        if (null === $executable && defined('SNAPPY_PDF_BINARY')) {
             $executable = SNAPPY_PDF_BINARY;
         }
 
