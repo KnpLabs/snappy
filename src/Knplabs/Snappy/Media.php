@@ -29,7 +29,7 @@ abstract class Media
      */
     public function __construct($executable, array $options)
     {
-        if (!$this->_checkExecAllowed()) {
+        if (!$this->checkExecAllowed()) {
             throw new \Exception("shell_exec() is not allowed on this php install");
         }
 
@@ -38,7 +38,7 @@ abstract class Media
         }
 
         if (count($options) != 0) {
-            $this->_mergeOptions($options);
+            $this->mergeOptions($options);
         }
     }
 
@@ -48,7 +48,7 @@ abstract class Media
      *
      * @return boolean
      */
-    private function _checkExecAllowed()
+    private function checkExecAllowed()
     {
         $disabled = explode(', ', ini_get('disable_functions'));
         return (bool) !in_array('shell_exec', $disabled);
@@ -132,7 +132,7 @@ abstract class Media
      */
     public function setExecutable($executable)
     {
-        if (!$this->_validateExecutable($executable)) {
+        if (!$this->validateExecutable($executable)) {
             throw new \InvalidArgumentException("Binary (".$executable.") doesn't exist or isn't executable");
         }
         $this->executable = $executable;
@@ -148,7 +148,7 @@ abstract class Media
      * @return boolean
      */
 
-    private function _validateExecutable($executable)
+    private function validateExecutable($executable)
     {
         $knownBinaries = array(
             'wkhtmltoimage',
@@ -183,7 +183,7 @@ abstract class Media
      * @param array Array of options
      * @return void
      */
-    private function _mergeOptions(array $options)
+    private function mergeOptions(array $options)
     {
         foreach ($options as $key => $value) {
             $this->setOption($key, $value);
