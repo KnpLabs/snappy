@@ -4,22 +4,16 @@ namespace Knplabs\Snappy;
 
 /**
  * Base class for Snappy Media
+ *
+ * @package Snappy
+ *
+ * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
+ * @author  Antoine Hérault <antoine.herault@knplabs.com>
  */
 abstract class Media
 {
-    protected $binary;
-    protected $defaultExtension;
-
-    const URL_PATTERN = '~^
-            (http|https|ftp)://                       # protocol
-            (
-                ([a-z0-9-]+\.)+[a-z]{2,6}             # a domain name
-                    |                                 #  or
-                \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}    # a IP address
-            )
-            (:[0-9]+)?                                # a port (optional)
-            (/?|/\S+)                                 # a /, nothing or a / with something
-        $~ix';
+    private $binary;
+    private $options;
 
     /**
 	 * Constructor
@@ -29,16 +23,39 @@ abstract class Media
      */
     public function __construct($binary, array $options)
     {
-        if (!$this->isExecAllowed()) {
-			throw new \RuntimeException('The \'shell_exec\' function is not allowed on this php install.');
-        }
+        $this->configure();
 
-        if (null !== $binary) {
-            $this->setBinary($binary);
-        }
+        $this->setBinary($binary);
+        $this->setOptions($options);
+    }
 
-        if (count($options) !== 0) {
-            $this->mergeOptions($options);
+    /**
+     * This method must configure the media options
+     *
+     * @see Media::addOption()
+     */
+    abstract protected function configure();
+
+    /**
+     * Adds an option
+     *
+     * @param  string $name    The name
+     * @param  mixed  $default An optional default value
+     */
+    protected function addOption($name, $default = null)
+    {
+        $this->options[$name] = $default;
+    }
+
+    /**
+     * Adds an array of options
+     *
+     * @param  array $options
+     */
+    protected function addOptions(array $options)
+    {
+        foreach ($this->options as $name => $default) {
+            $this->addOption($name, $default);
         }
     }
 
@@ -46,35 +63,28 @@ abstract class Media
 	 * Sets an option. Be aware that option values are NOT validated and that
 	 * it is your responsibility to validate user inputs
      *
-     * @param  string 		$option The option to set
-     * @param  string|array $value  The value for the option (NULL to unset)
-	 *
-     * @return void
+     * @param  string $name  The option to set
+     * @param  mixed  $value The value (NULL to unset)
      */
-    public function setOption($option, $value = null)
+    public function setOption($name, $value)
     {
         if (!array_key_exists($option, $this->options)) {
-            throw new \Exception("Invalid option ".$option);
+            throw new \InvalidArgumentException(sprintf('The option \'%s\' does not exist.', $option));
         }
 
         $this->options[$option] = $value;
     }
 
     /**
-     * Writes the media to the standard output
+     * Sets an array of options
      *
-     * @param  string $url Url of the page
-	 *
-     * @return void
+     * @param  array $options An associative array of options as name/value
      */
-    public function output($url)
+    public function setOptions(array $options)
     {
-        $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.' . $this->defaultExtension;
-
-        $ok = $this->save($url, $file);
-
-        readfile($file);
-        unlink($file);
+        foreach ($options as $name => $value) {
+            $this->setOption($name, $value);
+        }
     }
 
     /**
@@ -84,124 +94,96 @@ abstract class Media
 	 *
      * @return string
      */
-    public function get($url)
+    public function getOutput($input)
     {
-        $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.' . $this->defaultExtension;
+        $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy');
 
-        $ok = $this->save($url, $file);
-        $content = null;
-        $content = file_get_contents($file);
+        $this->convert($url, $file);
 
-        return $content;
+        return file_get_contents($file);
     }
 
     /**
-	 * Creates the media from the specified url and saves it in the specified
-	 * path. It will create the directory if needed
+     * Converts the input HTML file into the output one
      *
-     * @param  string $url	Url of the page
-     * @param  string $path Path of the future image
-	 *
-     * @return boolean TRUE on success, or FALSE on failure
+     * @param  string $input     The input filename
+     * @param  string $output    The output filename
+     * @param  string $overwrite Whether to overwrite the output file if it
+     *                           already exist
      */
-    public function save($url, $path)
+    public function convert($input, $output, $overwrite = false)
     {
-        if ($this->binary === null) {
-            throw new \exception("Binary not set");
+        if (null === $this->binary) {
+            throw new \LogicException(
+                'You must define a binary prior to conversion.'
+            );
         }
 
-        if (!preg_match(self::URL_PATTERN, $url)) {
-            $data = $url;
-            $url = tempnam(sys_get_temp_dir(), 'knplabs_snappy') . '.html';
-            file_put_contents($url, $data);
+        $this->prepareOutput($output, $overwrite);
+
+        $this->executeCommand($this->getCommand($input, $output));
+
+        // todo manage the conversion error output. Currently, we simply do a
+        // small diagnostic of the file after the conversion
+
+        if (!$this->fileExists($output)) {
+            throw new \RuntimeException(sprintf(
+                'The file \'%s\' was not created.', $output
+            ));
         }
 
-        $command = $this->buildCommand($url, $path, $this->options);
-        $basePath = dirname($path);
-
-        if (!is_dir($basePath)) {
-            mkdir($basePath, 0777, true);
+        if (0 === $this->filesize($output)) {
+            throw new \RuntimeException(sprintf(
+                'The file \'%s\' was created but is empty.', $output
+            ));
         }
-
-        if (file_exists($path)) {
-            unlink($path);
-        }
-
-        $ok = $this->exec($command);
-
-        return file_exists($path) && filesize($path);
     }
 
     /**
-	 * Defines the location of the binary and validates it
+     * Converts the given HTML into the output file
+     *
+     * @param  string $html   The HTML content to convert
+     * @param  string $output The ouput filename
+     */
+    public function convertHtml($html, $output)
+    {
+        $filename = $this->createTemporaryFile($html);
+
+        return $this->convert($filename, $output);
+    }
+
+    /**
+	 * Defines the binary
      *
      * @param  string $binary The path/name of the binary
      */
     public function setBinary($binary)
     {
-        if (!$this->validateBinary($binary)) {
-            throw new \InvalidArgumentException(sprintf('The binary \'%s\' does not exist or is not binary.', $binary));
-        }
-
         $this->binary = $binary;
     }
 
     /**
-     * Indicates whether the "check_exec" function is allowed
+     * Returns the command for the given input and output files
      *
-     * @return boolean
+     * @param  string $input  The input file
+     * @param  string $output The ouput file
      */
-    private function isExecAllowed()
+    public function getCommand($input, $output)
     {
-        $disabled = explode(', ', ini_get('disable_functions'));
-
-        return (bool) !in_array('shell_exec', $disabled);
+        return $this->buildCommand($this->binary, $input, $output, $this->options);
     }
 
     /**
-	 * Tests the requested binary against an array with known/allowed
-	 * binaries for this class and if the binary exists and is binary
-     *
-     * @param  string $binary The path/name of the binary
-	 *
-     * @return boolean
-     */
-    private function validateBinary($binary)
-    {
-        $knownBinaries = array(
-            'wkhtmltoimage',
-            'wkhtmltopdf',
-        );
-        $fileObject = new \SplFileInfo($binary);
-
-        return $fileObject->isBinary() && in_array($fileObject->getBasename(), $knownBinaries);
-    }
-
-    /**
-	 * Merges the given options array with the current options
-     *
-     * @param  array $options
-	 *
-     * @return void
-     */
-    private function mergeOptions(array $options)
-    {
-        foreach ($options as $key => $value) {
-            $this->setOption($key, $value);
-        }
-    }
-
-    /**
-     * Returns the command to wkhtmltoimage using the options attributes
+     * Builds the command string
      *
 	 * @param  string $binary	The binary path/name
-     * @param  string $url     	Url or file location of the page to process
-     * @param  string $path    	File location to the image-to-be
+     * @param  string $input    Url or file location of the page to process
+     * @param  string $output   File location to the image-to-be
 	 * @param  array  $options 	An array of options
 	 *
-     * @return string The command
+     * @return string
      */
-    protected function buildCommand($binary, $url, $path, array $options)
+    private function buildCommand($binary, $input, $output, array $options)
     {
         $command = $binary;
 
@@ -232,8 +214,116 @@ abstract class Media
 	 *
 	 * @return string
 	 */
-    protected function exec($command)
+    private function executeCommand($command)
     {
         return shell_exec($command);
+    }
+
+    /**
+     * Prepares the specified output
+     *
+     * @param  string  $filename  The output filename
+     * @param  boolean $overwrite Whether to overwrite the file if it already
+     *                            exist
+     */
+    private function prepareOutput($filename, $overwrite)
+    {
+        $directory = dirname($filename);
+
+        if ($this->fileExists($filename)) {
+            if (!$this->isFile($filename)) {
+                throw new \InvalidArgumentException(sprintf(
+                    'The output file \'%s\' already exists and it is a %s.',
+                    $filename, $this->isDir($filename) ? 'directory' : 'link'
+                ));
+            } elseif (false === $overwrite) {
+                throw new \InvalidArgumentException(sprintf(
+                    'The output file \'%s\' already exists.',
+                    $filename
+                ));
+            } elseif (!$this->unlink($filename)) {
+                throw new \RuntimeException(sprintf(
+                    'Could not delete already existing output file \'%s\'.',
+                    $filename
+                ));
+            }
+        } elseif (!$this->isDir($directory) && !$this->mkdir($directory) {
+            throw new \RuntimeException(sprintf(
+                'The output file\'s directory \'%s\' could not be created.',
+                $directory
+            ));
+        }
+    }
+
+    /**
+     * Wrapper for the "file_exists" function
+     *
+     * @param  string $filename
+     *
+     * @return boolean
+     */
+    private function fileExists($filename)
+    {
+        return file_exists($filename);
+    }
+
+    /**
+     * Wrapper for the "is_file" method
+     *
+     * @param  string $filename
+     *
+     * @return boolean
+     */
+    private function isFile($filename)
+    {
+        return is_file($filename);
+    }
+
+    /**
+     * Wrapper for the "filesize" function
+     *
+     * @param  string $filename
+     *
+     * @return integer or FALSE on failure
+     */
+    private function filesize($filename)
+    {
+        return filesize($filename);
+    }
+
+    /**
+     * Wrapper for the "unlink" function
+     *
+     * @param  string $filename
+     *
+     * @return boolean
+     */
+    private function unlink($filename)
+    {
+        return unlink($filename);
+    }
+
+    /**
+     * Wrapper for the "is_dir" function
+     *
+     * @param  string $filename
+     *
+     * @return boolean
+     */
+    private function isDir($filename)
+    {
+        return is_dir($filename);
+    }
+
+    /**
+     * Wrapper for the mkdir function
+     *
+     * @param  string $pathname
+     *
+     * @return boolean
+     */
+    private function mkdir($pathname)
+    {
+        return mkdir($pathname, 0777, true);
     }
 }
