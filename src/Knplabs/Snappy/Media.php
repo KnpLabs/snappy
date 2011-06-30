@@ -96,7 +96,7 @@ abstract class Media
      * @param string Url of the page
      * @param string Path of the future image
      * @return boolean True if success
-     * @throw \ErrorException
+     * @throw \RuntimeException
      */
     public function save($url, $path)
     {
@@ -120,7 +120,7 @@ abstract class Media
         $this->exec($command);
 
         if(!file_exists($path) || !filesize($path)) {
-            throw new \ErrorException(sprintf('[Snappy] Error while snapping "%s" into "%s".', $url, $path));
+            throw new \RuntimeException(sprintf('[Snappy] Error while snapping "%s" into "%s".', $url, $path));
         }
 
         return true;
