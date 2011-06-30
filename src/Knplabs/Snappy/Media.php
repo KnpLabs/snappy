@@ -54,7 +54,7 @@ abstract class Media
      */
     protected function addOptions(array $options)
     {
-        foreach ($this->options as $name => $default) {
+        foreach ($options as $name => $default) {
             $this->addOption($name, $default);
         }
     }
@@ -97,8 +97,9 @@ abstract class Media
     public function getOutput($input)
     {
         $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy');
+        $this->unlink($file);
 
-        $this->convert($url, $file);
+        $this->convert($input, $file);
 
         return file_get_contents($file);
     }
@@ -201,7 +202,7 @@ abstract class Media
             }
         }
 
-        $command .= " \"$url\" \"$path\"";
+        $command .= " \"$input\" \"$output\"";
 
         return $command;
     }
@@ -247,7 +248,7 @@ abstract class Media
                     $filename
                 ));
             }
-        } elseif (!$this->isDir($directory) && !$this->mkdir($directory) {
+        } elseif (!$this->isDir($directory) && !$this->mkdir($directory)) {
             throw new \RuntimeException(sprintf(
                 'The output file\'s directory \'%s\' could not be created.',
                 $directory
