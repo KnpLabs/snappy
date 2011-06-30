@@ -12,6 +12,8 @@ class Image extends Media
 {
     protected $defaultExtension = 'jpg';
     protected $options = array(
+        'height' => null,                         // Set screen height (default is calculated from page content) (default 0)
+        'width' => null,                          // Set screen width (default is 1024) (default 1024)
         'allow' => null,                          // Allow the file or files from the specified folder to be loaded (repeatable)
         'background' => null,                     // Do print background (default)
         'no-background' => null,                  // Do not print background
