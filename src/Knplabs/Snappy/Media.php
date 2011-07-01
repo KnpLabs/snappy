@@ -96,11 +96,12 @@ abstract class Media
      * @param string Url of the page
      * @param string Path of the future image
      * @return boolean True if success
+     * @throw \RuntimeException
      */
     public function save($url, $path)
     {
         if ($this->executable === null) {
-            throw new \exception("Executable not set");
+            throw new \Exception("Executable not set");
         }
 
         if (!preg_match(self::URL_PATTERN, $url)) {
@@ -116,8 +117,13 @@ abstract class Media
         if (file_exists($path)) {
             unlink($path);
         }
-        $ok = $this->exec($command);
-        return file_exists($path) && filesize($path);
+        $this->exec($command);
+
+        if(!file_exists($path) || !filesize($path)) {
+            throw new \RuntimeException(sprintf('[Snappy] Error while snapping "%s" into "%s".', $url, $path));
+        }
+
+        return true;
     }
 
 
