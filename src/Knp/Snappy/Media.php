@@ -88,30 +88,14 @@ abstract class Media
     }
 
     /**
-     * Returns the content of a media
-     *
-     * @param  string $url Url of the page
-	 *
-     * @return string
-     */
-    public function getOutput($input)
-    {
-        $file = tempnam(sys_get_temp_dir(), 'knplabs_snappy');
-
-        $this->convert($url, $file);
-
-        return file_get_contents($file);
-    }
-
-    /**
-     * Converts the input HTML file into the output one
+     * Generates the media from the given input
      *
      * @param  string $input     The input filename
      * @param  string $output    The output filename
      * @param  string $overwrite Whether to overwrite the output file if it
      *                           already exist
      */
-    public function convert($input, $output, $overwrite = false)
+    public function generate($input, $output, $overwrite = false)
     {
         if (null === $this->binary) {
             throw new \LogicException(
@@ -140,16 +124,46 @@ abstract class Media
     }
 
     /**
-     * Converts the given HTML into the output file
+     * Generates the media from the given html
      *
      * @param  string $html   The HTML content to convert
      * @param  string $output The ouput filename
      */
-    public function convertHtml($html, $output)
+    public function generateFromHtml($html, $output)
     {
         $filename = $this->createTemporaryFile($html);
 
-        return $this->convert($filename, $output);
+        return $this->generate($filename, $output);
+    }
+
+    /**
+     * Returns the content of a media
+     *
+     * @param  string $url Url of the page
+	 *
+     * @return string
+     */
+    public function getOutput($input)
+    {
+        $filename = $this->createTemporaryFile();
+
+        $this->convert($input, $filename);
+
+        return file_get_contents($filename);
+    }
+
+    /**
+     * Returns the content of the media generated from the given html
+     *
+     * @param  string $html
+     *
+     * @return string
+     */
+    public function getOutputFromHtml($html)
+    {
+        $filename = $this->createTemporaryFile($html);
+
+        return $this->getOutput($filename);
     }
 
     /**
@@ -171,6 +185,24 @@ abstract class Media
     public function getCommand($input, $output)
     {
         return $this->buildCommand($this->binary, $input, $output, $this->options);
+    }
+
+    /**
+     * Creates a temparory file
+     *
+     * @param  string $contents Optional contents for the temporary file
+     *
+     * @return string The filename
+     */
+    private function createTemporaryFile($contents = null)
+    {
+        $filename = tempnam(sys_get_temp_dir(), 'knplabs_snappy');
+
+        if (null !== $contents) {
+            file_put_contents($filename, $contents);
+        }
+
+        return $filename;
     }
 
     /**
@@ -201,7 +233,7 @@ abstract class Media
             }
         }
 
-        $command .= " \"$url\" \"$path\"";
+        $command .= " \"$input\" \"$output\"";
 
         return $command;
     }
