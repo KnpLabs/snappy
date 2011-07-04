@@ -4,9 +4,9 @@ spl_autoload_register(
       static $classes = null;
       if ($classes === null) {
          $classes = array(
-            'knplabs\\snappy\\image' => '/Image.php',
-            'knplabs\\snappy\\media' => '/Media.php',
-            'knplabs\\snappy\\pdf' => '/Pdf.php'
+            'knp\\snappy\\image' => '/Image.php',
+            'knp\\snappy\\media' => '/Media.php',
+            'knp\\snappy\\pdf' => '/Pdf.php'
           );
       }
       $cn = strtolower($class);

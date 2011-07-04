@@ -1,6 +1,6 @@
 <?php
 
-namespace Knplabs\Snappy;
+namespace Knp\Snappy;
 
 /**
  * Base class for Snappy Media

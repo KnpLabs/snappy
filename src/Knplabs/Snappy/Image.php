@@ -1,6 +1,6 @@
 <?php
 
-namespace Knplabs\Snappy;
+namespace Knp\Snappy;
 
 /**
  * Use this class to create a snapshot / a thumbnail from a url
@@ -29,7 +29,7 @@ class Image extends Media
         'encoding' => null,                       // Set the default text encoding, for input
         'f' => null,                              // Output format
         'images' => null,                         // Do load or print images (default)
-        'no-images' => null,                      // Do not load or print images 
+        'no-images' => null,                      // Do not load or print images
         'disable-javascript' => null,             // Do not allow web pages to run javascript
         'enable-javascript' => null,              // Do allow web pages to run javascript (default)
         'javascript-delay' => null,               // Wait some milliseconds for javascript finish (default 200)
@@ -59,13 +59,13 @@ class Image extends Media
         'zoom' => null,                           // Use this zoom factor (default 1)
         'disable-smart-width' => null,            // Use the specified width even if it is not large enough for the content
     );
-    
+
     public function __construct($executable = null, array $options = array())
     {
         if (defined('SNAPPY_IMAGE_BINARY') && is_null($executable)) {
             $executable = SNAPPY_IMAGE_BINARY;
         }
-    
+
         parent::__construct($executable, $options);
     }
 }
