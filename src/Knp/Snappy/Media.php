@@ -131,7 +131,7 @@ abstract class Media
      */
     public function generateFromHtml($html, $output)
     {
-        $filename = $this->createTemporaryFile($html);
+        $filename = $this->createTemporaryFile($html, 'html');
 
         return $this->generate($filename, $output);
     }
@@ -161,7 +161,7 @@ abstract class Media
      */
     public function getOutputFromHtml($html)
     {
-        $filename = $this->createTemporaryFile($html);
+        $filename = $this->createTemporaryFile($html, 'html');
 
         return $this->getOutput($filename);
     }
@@ -190,13 +190,18 @@ abstract class Media
     /**
      * Creates a temparory file
      *
-     * @param  string $contents Optional contents for the temporary file
+     * @param  string $contents  Optional contents for the temporary file
+     * @param  string $extension An optional extension for the filename
      *
      * @return string The filename
      */
-    private function createTemporaryFile($contents = null)
+    private function createTemporaryFile($contents = null, $extension = null)
     {
         $filename = tempnam(sys_get_temp_dir(), 'knplabs_snappy');
+
+        if (null !== $extension) {
+            $filename .= '.'.$extension;
+        }
 
         if (null !== $contents) {
             file_put_contents($filename, $contents);
