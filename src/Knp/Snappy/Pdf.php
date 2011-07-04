@@ -143,5 +143,5 @@ class Pdf extends Media
             'toc-text-size-shrink'         => null,
             'xsl-style-sheet'              => null,
         ));
-    );
+    }
 }
