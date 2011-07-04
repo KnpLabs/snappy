@@ -1,6 +1,6 @@
 <?php
 
-namespace Knplabs\Snappy;
+namespace Knp\Snappy;
 
 /**
  * Base class for Snappy Media
@@ -54,7 +54,7 @@ abstract class Media
      */
     protected function addOptions(array $options)
     {
-        foreach ($this->options as $name => $default) {
+        foreach ($options as $name => $default) {
             $this->addOption($name, $default);
         }
     }
@@ -247,7 +247,7 @@ abstract class Media
                     $filename
                 ));
             }
-        } elseif (!$this->isDir($directory) && !$this->mkdir($directory) {
+        } elseif (!$this->isDir($directory) && !$this->mkdir($directory)) {
             throw new \RuntimeException(sprintf(
                 'The output file\'s directory \'%s\' could not be created.',
                 $directory

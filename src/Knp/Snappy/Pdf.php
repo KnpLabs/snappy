@@ -1,6 +1,6 @@
 <?php
 
-namespace Knplabs\Snappy;
+namespace Knp\Snappy;
 
 /**
  * Use this class to transform a html/a url to a pdf

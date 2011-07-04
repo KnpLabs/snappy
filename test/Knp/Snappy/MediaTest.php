@@ -1,6 +1,6 @@
 <?php
 
-namespace Knplabs\Snappy;
+namespace Knp\Snappy;
 
 class MediaTest extends \PHPUnit_Framework_TestCase
 {
@@ -9,7 +9,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testBuildCommand($binary, $url, $path, $options, $expected)
 	{
-		$media = $this->getMockForAbstractClass('Knplabs\Snappy\Media', array(), '', false);
+		$media = $this->getMockForAbstractClass('Knp\Snappy\Media', array(), '', false);
 
 		$r = new \ReflectionMethod($media, 'buildCommand');
 		$r->setAccessible(true);

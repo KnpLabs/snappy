@@ -1,6 +1,6 @@
 <?php
 
-namespace Knplabs\Snappy;
+namespace Knp\Snappy;
 
 /**
  * Use this class to create a snapshot / thumbnail from a HTML page
@@ -77,5 +77,5 @@ class Image extends Media
             'zoom'                         => null,    // Use this zoom factor (default 1)
             'disable-smart-width'          => null,    // Use the specified width even if it is not large enough for the content
         ));
-	);
+    }
 }
