@@ -12,9 +12,9 @@ namespace Knp\Snappy;
  */
 class Image extends Media
 {
-	/**
-	 * {@inheritDoc}
-	 */
+    /**
+     * {@inheritDoc}
+     */
     public function __construct($binary = null, array $options = array())
     {
         if (null === $binary && defined('SNAPPY_IMAGE_BINARY')) {

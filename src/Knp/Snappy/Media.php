@@ -16,7 +16,7 @@ abstract class Media
     private $options;
 
     /**
-	 * Constructor
+     * Constructor
      *
      * @param  string $binary
      * @param  array  $options
@@ -60,8 +60,8 @@ abstract class Media
     }
 
     /**
-	 * Sets an option. Be aware that option values are NOT validated and that
-	 * it is your responsibility to validate user inputs
+     * Sets an option. Be aware that option values are NOT validated and that
+     * it is your responsibility to validate user inputs
      *
      * @param  string $name  The option to set
      * @param  mixed  $value The value (NULL to unset)
@@ -140,7 +140,7 @@ abstract class Media
      * Returns the content of a media
      *
      * @param  string $url Url of the page
-	 *
+     *
      * @return string
      */
     public function getOutput($input)
@@ -167,7 +167,7 @@ abstract class Media
     }
 
     /**
-	 * Defines the binary
+     * Defines the binary
      *
      * @param  string $binary The path/name of the binary
      */
@@ -213,11 +213,11 @@ abstract class Media
     /**
      * Builds the command string
      *
-	 * @param  string $binary	The binary path/name
+     * @param  string $binary   The binary path/name
      * @param  string $input    Url or file location of the page to process
      * @param  string $output   File location to the image-to-be
-	 * @param  array  $options 	An array of options
-	 *
+     * @param  array  $options  An array of options
+     *
      * @return string
      */
     private function buildCommand($binary, $input, $output, array $options)
@@ -243,14 +243,14 @@ abstract class Media
         return $command;
     }
 
-	/**
-	 * Executes the given command via shell and returns the complete output as
-	 * a string
-	 *
-	 * @param  string $command
-	 *
-	 * @return string
-	 */
+    /**
+     * Executes the given command via shell and returns the complete output as
+     * a string
+     *
+     * @param  string $command
+     *
+     * @return string
+     */
     private function executeCommand($command)
     {
         return shell_exec($command);
