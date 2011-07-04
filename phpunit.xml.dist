@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="src/Knplabs/Snappy/autoload.php"
+<phpunit bootstrap="src/Knp/Snappy/autoload.php"
          backupGlobals="false"
          backupStaticAttributes="false"
          strict="true"
