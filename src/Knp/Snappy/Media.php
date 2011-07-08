@@ -14,6 +14,7 @@ abstract class Media
 {
     private $binary;
     private $options = array();
+    private $defaultExtension;
 
     /**
      * Constructor
@@ -36,6 +37,27 @@ abstract class Media
      */
     abstract protected function configure();
 
+    /**
+     * Sets the default extension.
+     * Useful when letting Snappy deal with file creation
+     *
+     * @param string $defaultExtension 
+     */
+    public function setDefaultExtension($defaultExtension)
+    {
+        $this->defaultExtension = $defaultExtension;
+    }
+    
+    /**
+     * Gets the default extension
+     *
+     * @return $string
+     */
+    public function getDefaultExtension()
+    {
+        return $this->defaultExtension;
+    }
+    
     /**
      * Adds an option
      *
@@ -159,9 +181,9 @@ abstract class Media
      */
     public function getOutput($input)
     {
-        $filename = $this->createTemporaryFile();
+        $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
 
-        $this->convert($input, $filename);
+        $this->generate($input, $filename);
 
         return file_get_contents($filename);
     }
@@ -202,23 +224,24 @@ abstract class Media
     }
 
     /**
-     * Creates a temparory file
+     * Creates a temporary file.
+     * The file is not created if the $content argument is null
      *
-     * @param  string $contents  Optional contents for the temporary file
+     * @param  string $content  Optional content for the temporary file
      * @param  string $extension An optional extension for the filename
      *
      * @return string The filename
      */
-    private function createTemporaryFile($contents = null, $extension = null)
+    private function createTemporaryFile($content = null, $extension = null)
     {
-        $filename = tempnam(sys_get_temp_dir(), 'knplabs_snappy');
+        $filename = sys_get_temp_dir() . PATH_SEPARATOR . uniqid('knp_snappy');
 
         if (null !== $extension) {
             $filename .= '.'.$extension;
         }
 
-        if (null !== $contents) {
-            file_put_contents($filename, $contents);
+        if (null !== $content) {
+            file_put_contents($filename, $content);
         }
 
         return $filename;

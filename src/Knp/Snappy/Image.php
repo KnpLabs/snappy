@@ -21,6 +21,8 @@ class Image extends Media
             $binary = SNAPPY_IMAGE_BINARY;
         }
 
+        $this->setDefaultExtension('jpg');
+
         parent::__construct($binary, $options);
     }
 
@@ -45,7 +47,7 @@ class Image extends Media
             'debug-javascript'             => null,    // Show javascript debugging output
             'no-debug-javascript'          => null,    // Do not show javascript debugging output (default)
             'encoding'                     => null,    // Set the default text encoding, for input
-            'format'                       => 'jpg',   // Output format
+            'format'                       => $this->getDefaultExtension(),   // Output format
             'images'                       => null,    // Do load or print images (default)
             'no-images'                    => null,    // Do not load or print images
             'disable-javascript'           => null,    // Do not allow web pages to run javascript

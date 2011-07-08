@@ -21,6 +21,8 @@ class Pdf extends Media
             $binary = SNAPPY_PDF_BINARY;
         }
 
+        $this->setDefaultExtension('pdf');
+
         parent::__construct($binary, $options);
     }
 
