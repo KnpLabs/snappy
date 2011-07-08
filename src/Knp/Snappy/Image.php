@@ -29,8 +29,8 @@ class Image extends Media
     {
         $this->addOptions(array(
             'allow'                        => null,    // Allow the file or files from the specified folder to be loaded (repeatable)
-            'background'                   => null,    // Do print background (default)
-            'no-background'                => null,    // Do not print background
+            'checkbox-checked-svg'         => null,    // Use this SVG file when rendering checked checkboxes
+            'checked-svg'                  => null,    // Use this SVG file when rendering unchecked checkboxes
             'cookie'                       => array(), // Set an additional cookie (repeatable)
             'cookie-jar'                   => null,    // Read and write cookies from and to the supplied cookie jar file
             'crop-h'                       => null,    // Set height for croping
@@ -44,6 +44,7 @@ class Image extends Media
             'no-debug-javascript'          => null,    // Do not show javascript debugging output (default)
             'encoding'                     => null,    // Set the default text encoding, for input
             'format'                       => $this->getDefaultExtension(),   // Output format
+            'height'                       => null,    // Set screen height (default is calculated from page content) (default 0)
             'images'                       => null,    // Do load or print images (default)
             'no-images'                    => null,    // Do not load or print images
             'disable-javascript'           => null,    // Do not allow web pages to run javascript
@@ -58,21 +59,20 @@ class Image extends Media
             'enable-plugins'               => null,    // Enable installed plugins (plugins will likely not work)
             'post'                         => array(), // Add an additional post field
             'post-file'                    => array(), // Post an additional file
-            'print-media-type'             => null,    // Use print media-type instead of screen
-            'no-print-media-type'          => null,    // Do not use print media-type instead of screen (default)
             'proxy'                        => null,    // Use a proxy
-            'scale-h'                      => null,    // Set height for resizing
-            'scale-w'                      => null,    // Set width for resizing
-            'disable-smart-shrinking'      => null,    // Disable the intelligent shrinking strategy used by WebKit that makes the pixel/dpi ratio none constant
-            'enable-smart-shrinking'       => null,    // Enable the intelligent shrinking strategy used by WebKit that makes the pixel/dpi ratio none constant (default)
+            'quality'                      => null,    // Output image quality (between 0 and 100) (default 94)
+            'radiobutton-checked-svg'      => null,    // Use this SVG file when rendering checked radiobuttons
+            'radiobutton-svg'              => null,    // Use this SVG file when rendering unchecked radiobuttons
+            'run-script'                   => null,    // Run this additional javascript after the page is done loading (repeatable)
+            'disable-smart-width'          => null,    // Use the specified width even if it is not large enough for the content
             'stop-slow-scripts'            => null,    // Stop slow running javascripts
             'no-stop-slow-scripts'         => null,    // Do not stop slow running javascripts (default)
             'transparent'                  => null,    // Make the background transparrent in pngs *
-            'use-xserver'                  => null,    // Use the X server (some plugins and other stuff might not work without X11)
             'user-style-sheet'             => null,    // Specify a user style sheet, to load with every page
             'username'                     => null,    // HTTP Authentication username
+            'width'                        => null,    // Set screen width (default is 1024)
+            'window-status'                => null,    // Wait until window.status is equal to this string before rendering page
             'zoom'                         => null,    // Use this zoom factor (default 1)
-            'disable-smart-width'          => null,    // Use the specified width even if it is not large enough for the content
         ));
     }
 }
