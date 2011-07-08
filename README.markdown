@@ -1,54 +1,44 @@
 # Snappy
 
 Snappy is a PHP5 library allowing thumbnail, snapshot or PDF generation from a url or a html page.  
-This is a simple PHP wrapper for the [wkhtmltopdf and wkhtmltoimage](http://code.google.com/p/wkhtmltopdf/) executable available on OSX, linux, windows.
+It uses the excellent webkit-based [wkhtmltopdf and wkhtmltoimage](http://code.google.com/p/wkhtmltopdf/)
+available on OSX, linux, windows.
 
-# Example use
-```php
-<?php
+You will have to download wkhtmltopdf 0.10.0 >= rc2 in order to use Snappy.
 
-require_once 'Knp/Snappy/autoload.php';
-
-use Knp\Snappy\Image;
-
-// location of the wkhtmltoimage binary, freebsd used in this example
-$snappy = new Image('/usr/local/bin/wkhtmltoimage');
- 
-// Display the resulting image in the browser by setting the Content-type header to jpg
-header("Content-Type: image/jpeg");
-$snappy->output('http://www.github.com');
-```
-## Alternative ways of creating a snappy object.
-
-### Alternative 1 (Set location of binary with class method)
+## Usage
 
 ```php
 <?php
 
-require_once 'Knp/Snappy/autoload.php';
+use Knp\Snappy\Pdf;
 
-use Knp\Snappy\Image;
+$snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 
-$snappy = new Image();
-$snappy->setExecutable('/usr/local/bin/wkhtmltoimage');
+// or you can do it in two steps
+$snappy = new Pdf();
+$snappy->setBinary('/usr/local/bin/wkhtmltopdf');
 
-header("Content-Type: image/jpeg");
-$snappy->output('http://www.github.com');
+// Display the resulting image in the browser 
+// by setting the Content-type header to jpg
+$snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
+header('Content-Type', 'application/pdf');
+header('Content-Disposition', 'attachment; filename="file.pdf"');
+echo $snappy->getOutput('http://www.github.com');
+
+// .. or simply save the PDF to a file
+$snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
+$snappy->generateFromHtml('<h1>Bill</h1><p>You owe me money, dude.</p>', '/tmp/bill-123.pdf');
+
+
+// Pass options to snappy
+// Type wkhtmltopdf -H to see the list of options
+$snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
+$snappy->setOption('disable-javascript', true);
+$snappy->setOption('no-background', true);
+
 ```
 
-### Alternative 2 (define location of binaries in constant):
+## Credits
 
-```php
-<?php
-
-require_once 'Knp/Snappy/autoload.php';
-
-use Knp\Snappy\Image;
-
-// can be defined in a configuration file or anywhere else 
-define("SNAPPY_IMAGE_BINARY", "/usr/local/bin/wkhtmltoimage");
-
-$snappy = new Image();
-header("Content-Type: image/jpeg");
-$snappy->output('http://www.github.com');
-```
+Snappy has been originally developed by the [Knp](http://www.knplabs.com) team.
