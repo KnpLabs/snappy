@@ -88,6 +88,16 @@ abstract class Media
     }
 
     /**
+     * Returns all the options
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
      * Generates the media from the given input
      *
      * @param  string $input     The input filename
