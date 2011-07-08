@@ -141,20 +141,21 @@ abstract class Media
 
         $this->prepareOutput($output, $overwrite);
 
-        $this->executeCommand($this->getCommand($input, $output));
+        $command = $this->getCommand($input, $output);
+        $this->executeCommand($command);
 
         // todo manage the conversion error output. Currently, we simply do a
         // small diagnostic of the file after the conversion
 
         if (!$this->fileExists($output)) {
             throw new \RuntimeException(sprintf(
-                'The file \'%s\' was not created.', $output
+                'The file \'%s\' was not created. Command: %s', $output, $command
             ));
         }
 
         if (0 === $this->filesize($output)) {
             throw new \RuntimeException(sprintf(
-                'The file \'%s\' was created but is empty.', $output
+                'The file \'%s\' was created but is empty. Command: %s', $output, $command
             ));
         }
     }
