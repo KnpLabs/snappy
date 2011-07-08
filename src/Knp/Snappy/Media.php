@@ -13,7 +13,7 @@ namespace Knp\Snappy;
 abstract class Media
 {
     private $binary;
-    private $options;
+    private $options = array();
 
     /**
      * Constructor
@@ -44,6 +44,10 @@ abstract class Media
      */
     protected function addOption($name, $default = null)
     {
+        if (array_key_exists($name, $this->options)) {
+            throw new \InvalidArgumentException(sprintf('The option \'%s\' already exists.', $name));
+        }
+
         $this->options[$name] = $default;
     }
 
