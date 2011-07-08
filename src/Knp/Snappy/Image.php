@@ -17,10 +17,6 @@ class Image extends Media
      */
     public function __construct($binary = null, array $options = array())
     {
-        if (null === $binary && defined('SNAPPY_IMAGE_BINARY')) {
-            $binary = SNAPPY_IMAGE_BINARY;
-        }
-
         $this->setDefaultExtension('jpg');
 
         parent::__construct($binary, $options);

@@ -17,10 +17,6 @@ class Pdf extends Media
      */
     public function __construct($binary = null, array $options = array())
     {
-        if (null === $binary && defined('SNAPPY_PDF_BINARY')) {
-            $binary = SNAPPY_PDF_BINARY;
-        }
-
         $this->setDefaultExtension('pdf');
 
         parent::__construct($binary, $options);
