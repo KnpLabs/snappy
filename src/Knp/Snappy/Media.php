@@ -68,11 +68,11 @@ abstract class Media
      */
     public function setOption($name, $value)
     {
-        if (!array_key_exists($option, $this->options)) {
-            throw new \InvalidArgumentException(sprintf('The option \'%s\' does not exist.', $option));
+        if (!array_key_exists($name, $this->options)) {
+            throw new \InvalidArgumentException(sprintf('The option \'%s\' does not exist.', $name));
         }
 
-        $this->options[$option] = $value;
+        $this->options[$name] = $value;
     }
 
     /**
