@@ -63,7 +63,6 @@ class Image extends Media
             'print-media-type'             => null,    // Use print media-type instead of screen
             'no-print-media-type'          => null,    // Do not use print media-type instead of screen (default)
             'proxy'                        => null,    // Use a proxy
-            'readme'                       => null,    // Output program readme
             'scale-h'                      => null,    // Set height for resizing
             'scale-w'                      => null,    // Set width for resizing
             'disable-smart-shrinking'      => null,    // Disable the intelligent shrinking strategy used by WebKit that makes the pixel/dpi ratio none constant
