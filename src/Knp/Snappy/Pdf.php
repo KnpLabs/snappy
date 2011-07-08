@@ -56,7 +56,6 @@ class Pdf extends Media
             'no-pdf-compression'           => null,
             'quiet'                        => null,
             'read-args-from-stdin'         => null,
-            'readme'                       => null,
             'title'                        => null,
             'use-xserver'                  => null,
             'version'                      => null,
