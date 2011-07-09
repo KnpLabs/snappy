@@ -235,7 +235,7 @@ abstract class Media
      */
     private function createTemporaryFile($content = null, $extension = null)
     {
-        $filename = sys_get_temp_dir() . PATH_SEPARATOR . uniqid('knp_snappy');
+        $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('knp_snappy');
 
         if (null !== $extension) {
             $filename .= '.'.$extension;
