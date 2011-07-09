@@ -175,7 +175,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
                     'bar'   => array('barvalue1', 'barvalue2'),
                     'baz'   => true
                 ),
-                'thebinary --foo foovalue --bar barvalue1 --bar barvalue2 --baz "http://the.url/" "/the/path"'
+                'thebinary --foo \'foovalue\' --bar \'barvalue1\' --bar \'barvalue2\' --baz "http://the.url/" "/the/path"'
             ),
         );
     }
