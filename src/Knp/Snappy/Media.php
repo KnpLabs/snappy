@@ -268,10 +268,10 @@ abstract class Media
                     $command .= " --".$key;
                 } elseif (is_array($value)) {
                     foreach ($value as $v) {
-                        $command .= " --".$key." ".$v;
+                        $command .= " --".$key." ".escapeshellarg($v);
                     }
                 } else {
-                    $command .= " --".$key." ".$value;
+                    $command .= " --".$key." ".escapeshellarg($value);
                 }
             }
         }
