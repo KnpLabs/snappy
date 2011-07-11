@@ -282,7 +282,7 @@ abstract class Media
      *
      * @return string The filename
      */
-    private function createTemporaryFile($content = null, $extension = null)
+    protected function createTemporaryFile($content = null, $extension = null)
     {
         $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('knp_snappy');
 
@@ -307,7 +307,7 @@ abstract class Media
      *
      * @return string
      */
-    private function buildCommand($binary, $input, $output, array $options)
+    protected function buildCommand($binary, $input, $output, array $options)
     {
         $command = $binary;
 
@@ -338,7 +338,7 @@ abstract class Media
      *
      * @return string
      */
-    private function executeCommand($command)
+    protected function executeCommand($command)
     {
         return shell_exec($command);
     }
@@ -350,7 +350,7 @@ abstract class Media
      * @param  boolean $overwrite Whether to overwrite the file if it already
      *                            exist
      */
-    private function prepareOutput($filename, $overwrite)
+    protected function prepareOutput($filename, $overwrite)
     {
         $directory = dirname($filename);
 
@@ -386,7 +386,7 @@ abstract class Media
      *
      * @return boolean
      */
-    private function fileExists($filename)
+    protected function fileExists($filename)
     {
         return file_exists($filename);
     }
@@ -398,7 +398,7 @@ abstract class Media
      *
      * @return boolean
      */
-    private function isFile($filename)
+    protected function isFile($filename)
     {
         return is_file($filename);
     }
@@ -410,7 +410,7 @@ abstract class Media
      *
      * @return integer or FALSE on failure
      */
-    private function filesize($filename)
+    protected function filesize($filename)
     {
         return filesize($filename);
     }
@@ -422,7 +422,7 @@ abstract class Media
      *
      * @return boolean
      */
-    private function unlink($filename)
+    protected function unlink($filename)
     {
         return unlink($filename);
     }
@@ -434,7 +434,7 @@ abstract class Media
      *
      * @return boolean
      */
-    private function isDir($filename)
+    protected function isDir($filename)
     {
         return is_dir($filename);
     }
@@ -446,7 +446,7 @@ abstract class Media
      *
      * @return boolean
      */
-    private function mkdir($pathname)
+    protected function mkdir($pathname)
     {
         return mkdir($pathname, 0777, true);
     }
