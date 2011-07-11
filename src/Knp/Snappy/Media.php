@@ -41,13 +41,13 @@ abstract class Media
      * Sets the default extension.
      * Useful when letting Snappy deal with file creation
      *
-     * @param string $defaultExtension 
+     * @param string $defaultExtension
      */
     public function setDefaultExtension($defaultExtension)
     {
         $this->defaultExtension = $defaultExtension;
     }
-    
+
     /**
      * Gets the default extension
      *
@@ -57,7 +57,7 @@ abstract class Media
     {
         return $this->defaultExtension;
     }
-    
+
     /**
      * Adds an option
      *
@@ -170,7 +170,11 @@ abstract class Media
     {
         $filename = $this->createTemporaryFile($html, 'html');
 
-        return $this->generate($filename, $output);
+        $result = $this->generate($filename, $output);
+
+        $this->unlink($filename);
+
+        return $result;
     }
 
     /**
@@ -186,7 +190,11 @@ abstract class Media
 
         $this->generate($input, $filename);
 
-        return file_get_contents($filename);
+        $result = file_get_contents($filename);
+
+        $this->unlink($filename);
+
+        return $result;
     }
 
     /**
@@ -200,7 +208,11 @@ abstract class Media
     {
         $filename = $this->createTemporaryFile($html, 'html');
 
-        return $this->getOutput($filename);
+        $result = $this->getOutput($filename);
+
+        $this->unlink($filename);
+
+        return $result;
     }
 
     /**
