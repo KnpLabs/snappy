@@ -3,14 +3,14 @@
 namespace Knp\Snappy;
 
 /**
- * Base class for Snappy Media
+ * Base generator class for medias
  *
  * @package Snappy
  *
  * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
  * @author  Antoine Hérault <antoine.herault@knplabs.com>
  */
-abstract class Media implements MediaInterface
+abstract class AbstractGenerator implements GeneratorInterface
 {
     private $binary;
     private $options = array();
@@ -33,7 +33,7 @@ abstract class Media implements MediaInterface
     /**
      * This method must configure the media options
      *
-     * @see Media::addOption()
+     * @see AbstractGenerator::addOption()
      */
     abstract protected function configure();
 
@@ -97,14 +97,7 @@ abstract class Media implements MediaInterface
     }
 
     /**
-     * Generates the media from the given input
-     *
-     * @param  string  $input     The input filename
-     * @param  string  $output    The output filename
-     * @param  array   $options   An optional array of options that will be used
-     *                            only for this generation
-     * @param  Boolean $overwrite Whether to overwrite the output file if it
-     *                            already exist
+     * {@inheritDoc}
      */
     public function generate($input, $output, array $options = array(), $overwrite = false)
     {
@@ -124,14 +117,7 @@ abstract class Media implements MediaInterface
     }
 
     /**
-     * Generates the media from the given html
-     *
-     * @param  string  $html      The HTML content to convert
-     * @param  string  $output    The ouput filename
-     * @param  array   $options   An optional array of options that will be used
-     *                            only for this generation
-     * @param  Boolean $overwrite Whether to overwrite the output file if it
-     *                            already exist
+     * {@inheritDoc}
      */
     public function generateFromHtml($html, $output, array $options = array(), $overwrite = false)
     {
@@ -143,13 +129,7 @@ abstract class Media implements MediaInterface
     }
 
     /**
-     * Returns the content of a media
-     *
-     * @param  string $url     Url of the page
-     * @param  array  $options An optional array of options that will be used
-     *                         only for this output rendering
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getOutput($input, array $options = array())
     {
@@ -165,13 +145,7 @@ abstract class Media implements MediaInterface
     }
 
     /**
-     * Returns the content of the media generated from the given html
-     *
-     * @param  string $html
-     * @param  array  $options An optional array of options that will be used
-     *                         only for this output rendering
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getOutputFromHtml($html, array $options = array())
     {
@@ -192,6 +166,16 @@ abstract class Media implements MediaInterface
     public function setBinary($binary)
     {
         $this->binary = $binary;
+    }
+
+    /**
+     * Returns the binary
+     *
+     * @return string
+     */
+    public function getBinary()
+    {
+        return $this->binary;
     }
 
     /**

@@ -5,9 +5,9 @@ spl_autoload_register(
       static $classes = null;
       if ($classes === null) {
          $classes = array(
-            'knp\\snappy\\mediainterface' => '/MediaInterface.php',
+            'knp\\snappy\\generatorinterface' => '/GeneratorInterface.php',
+            'knp\\snappy\\abstractgenerator' => '/AbstractGenerator.php',
             'knp\\snappy\\image' => '/Image.php',
-            'knp\\snappy\\media' => '/Media.php',
             'knp\\snappy\\pdf' => '/Pdf.php'
           );
       }

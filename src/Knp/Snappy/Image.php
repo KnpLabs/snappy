@@ -10,7 +10,7 @@ namespace Knp\Snappy;
  * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
  * @author  Antoine Hérault <antoine.herault@knplabs.com>
  */
-class Image extends Media
+class Image extends AbstractGenerator
 {
     /**
      * {@inheritDoc}

@@ -2,11 +2,11 @@
 
 namespace Knp\Snappy;
 
-class MediaTest extends \PHPUnit_Framework_TestCase
+class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
 {
     public function testAddOption()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\Media', array(), '', false);
+        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', array(), '', false);
 
         $this->assertEquals(array(), $media->getOptions());
 
@@ -38,7 +38,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
 
     public function testAddOptions()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\Media', array(), '', false);
+        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', array(), '', false);
 
         $this->assertEquals(array(), $media->getOptions());
 
@@ -79,7 +79,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
 
     public function testSetOption()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\Media', array(), '', false);
+        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', array(), '', false);
 
         $r = new \ReflectionMethod($media, 'addOption');
         $r->setAccessible(true);
@@ -106,7 +106,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
 
     public function testSetOptions()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\Media', array(), '', false);
+        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', array(), '', false);
 
         $r = new \ReflectionMethod($media, 'addOptions');
         $r->setAccessible(true);
@@ -135,7 +135,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
     public function testGenerate()
     {
         $media = $this->getMock(
-            'Knp\Snappy\Media',
+            'Knp\Snappy\AbstractGenerator',
             array(
                 'configure',
                 'prepareOutput',
@@ -183,7 +183,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
     public function testGenerateFromHtml()
     {
         $media = $this->getMock(
-            'Knp\Snappy\Media',
+            'Knp\Snappy\AbstractGenerator',
             array(
                 'configure',
                 'generate',
@@ -227,7 +227,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
     public function testGetOutput()
     {
         $media = $this->getMock(
-            'Knp\Snappy\Media',
+            'Knp\Snappy\AbstractGenerator',
             array(
                 'configure',
                 'getDefaultExtension',
@@ -282,7 +282,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
     public function testGetOutputFromHtml()
     {
         $media = $this->getMock(
-            'Knp\Snappy\Media',
+            'Knp\Snappy\AbstractGenerator',
             array(
                 'configure',
                 'getOutput',
@@ -323,7 +323,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
 
     public function testMergeOptions()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\Media', array(), '', false);
+        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', array(), '', false);
 
         $originalOptions = array('foo' => 'bar', 'baz' => 'bat');
 
@@ -376,7 +376,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildCommand($binary, $url, $path, $options, $expected)
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\Media', array(), '', false);
+        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', array(), '', false);
 
         $r = new \ReflectionMethod($media, 'buildCommand');
         $r->setAccessible(true);
@@ -422,7 +422,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
     public function testCheckOutput()
     {
         $media = $this->getMock(
-            'Knp\Snappy\Media',
+            'Knp\Snappy\AbstractGenerator',
             array(
                 'configure',
                 'fileExists',
@@ -460,7 +460,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
     public function testCheckOutputWhenTheFileDoesNotExist()
     {
         $media = $this->getMock(
-            'Knp\Snappy\Media',
+            'Knp\Snappy\AbstractGenerator',
             array(
                 'configure',
                 'fileExists',
@@ -492,7 +492,7 @@ class MediaTest extends \PHPUnit_Framework_TestCase
     public function testCheckOutputWhenTheFileIsEmpty()
     {
         $media = $this->getMock(
-            'Knp\Snappy\Media',
+            'Knp\Snappy\AbstractGenerator',
             array(
                 'configure',
                 'fileExists',

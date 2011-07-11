@@ -3,14 +3,14 @@
 namespace Knp\Snappy;
 
 /**
- * Interface for the medias
+ * Interface for the media generators
  *
  * @package Snappy
  *
  * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
  * @author  Antoine Hérault <antoine.herault@knplabs.com>*
  */
-interface MediaInterface
+interface GeneratorInterface
 {
     /**
      * Generates the output media file from the specified input HTML file
