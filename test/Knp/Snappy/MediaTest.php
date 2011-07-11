@@ -132,6 +132,200 @@ class MediaTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testGenerate()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\Media',
+            array(
+                'configure',
+                'prepareOutput',
+                'fileExists',
+                'fileSize',
+                'getCommand',
+                'executeCommand'
+            ),
+            array(
+                'the_binary',
+                array()
+            )
+        );
+        $media
+            ->expects($this->once())
+            ->method('prepareOutput')
+            ->with($this->equalTo('the_output_file'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('fileExists')
+            ->with($this->equalTo('the_output_file'))
+            ->will($this->returnValue(true))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('fileSize')
+            ->with($this->equalTo('the_output_file'))
+            ->will($this->returnValue(true))
+        ;
+        $media
+            ->expects($this->any())
+            ->method('getCommand')
+            ->with(
+                $this->equalTo('the_input_file'),
+                $this->equalTo('the_output_file'),
+                $this->equalTo(array('foo' => 'bar'))
+            )
+            ->will($this->returnValue('the command'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('executeCommand')
+            ->with($this->equalTo('the command'))
+        ;
+
+        $media->generate('the_input_file', 'the_output_file', array('foo' => 'bar'));
+    }
+
+    public function testGenerateFromHtml()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\Media',
+            array(
+                'configure',
+                'generate',
+                'createTemporaryFile',
+                'unlink'
+            ),
+            array(
+                'the_binary'
+            ),
+            '',
+            false
+        );
+        $media
+            ->expects($this->once())
+            ->method('createTemporaryFile')
+            ->with(
+                $this->equalTo('<html>foo</html>'),
+                $this->equalTo('html')
+            )
+            ->will($this->returnValue('the_temporary_file'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('unlink')
+            ->with($this->equalTo('the_temporary_file'))
+            ->will($this->returnValue(true))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('generate')
+            ->with(
+                $this->equalTo('the_temporary_file'),
+                $this->equalTo('the_output_file'),
+                $this->equalTo(array('foo' => 'bar'))
+            )
+        ;
+
+        $media->generateFromHtml('<html>foo</html>', 'the_output_file', array('foo' => 'bar'));
+    }
+
+    public function testGetOutput()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\Media',
+            array(
+                'configure',
+                'getDefaultExtension',
+                'createTemporaryFile',
+                'generate',
+                'getFileContents',
+                'unlink'
+            ),
+            array(),
+            '',
+            false
+        );
+        $media
+            ->expects($this->any())
+            ->method('getDefaultExtension')
+            ->will($this->returnValue('ext'))
+        ;
+        $media
+            ->expects($this->any())
+            ->method('createTemporaryFile')
+            ->with(
+                $this->equalTo(null),
+                $this->equalTo('ext')
+            )
+            ->will($this->returnValue('the_temporary_file'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('generate')
+            ->with(
+                $this->equalTo('the_input_file'),
+                $this->equalTo('the_temporary_file'),
+                $this->equalTo(array('foo' => 'bar'))
+            )
+        ;
+        $media
+            ->expects($this->once())
+            ->method('getFileContents')
+            ->will($this->returnValue('the file contents'))
+        ;
+
+        $media
+            ->expects($this->any())
+            ->method('unlink')
+            ->with($this->equalTo('the_temporary_file'))
+            ->will($this->returnValue(true))
+        ;
+
+        $this->assertEquals('the file contents', $media->getOutput('the_input_file', array('foo' => 'bar')));
+    }
+
+    public function testGetOutputFromHtml()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\Media',
+            array(
+                'configure',
+                'getOutput',
+                'createTemporaryFile',
+                'unlink'
+            ),
+            array(),
+            '',
+            false
+        );
+        $media
+            ->expects($this->once())
+            ->method('createTemporaryFile')
+            ->with(
+                $this->equalTo('<html>foo</html>'),
+                $this->equalTo('html')
+            )
+            ->will($this->returnValue('the_temporary_file'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('getOutput')
+            ->with(
+                $this->equalTo('the_temporary_file'),
+                $this->equalTo(array('foo' => 'bar'))
+            )
+            ->will($this->returnValue('the output'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('unlink')
+            ->with($this->equalTo('the_temporary_file'))
+            ->will($this->returnValue(true))
+        ;
+
+        $this->assertEquals('the output', $media->getOutputFromHtml('<html>foo</html>', array('foo' => 'bar')));
+    }
+
     public function testMergeOptions()
     {
         $media = $this->getMockForAbstractClass('Knp\Snappy\Media', array(), '', false);

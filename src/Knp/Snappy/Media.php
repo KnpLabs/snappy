@@ -169,7 +169,7 @@ abstract class Media
 
         $this->generate($input, $filename, $options);
 
-        $result = file_get_contents($filename);
+        $result = $this->getFileContents($filename);
 
         $this->unlink($filename);
 
@@ -377,6 +377,18 @@ abstract class Media
                 $directory
             ));
         }
+    }
+
+    /**
+     * Wrapper for the "file_get_contents" function
+     *
+     * @param  string $filename
+     *
+     * @return string
+     */
+    protected function getFileContents($filename)
+    {
+        return file_get_contents($filename);
     }
 
     /**
