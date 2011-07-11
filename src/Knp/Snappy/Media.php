@@ -10,7 +10,7 @@ namespace Knp\Snappy;
  * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
  * @author  Antoine Hérault <antoine.herault@knplabs.com>
  */
-abstract class Media
+abstract class Media implements MediaInterface
 {
     private $binary;
     private $options = array();
