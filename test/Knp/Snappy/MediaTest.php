@@ -132,6 +132,56 @@ class MediaTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testMergeOptions()
+    {
+        $media = $this->getMockForAbstractClass('Knp\Snappy\Media', array(), '', false);
+
+        $originalOptions = array('foo' => 'bar', 'baz' => 'bat');
+
+        $addOptions = new \ReflectionMethod($media, 'addOptions');
+        $addOptions->setAccessible(true);
+        $addOptions->invokeArgs($media, array($originalOptions));
+
+        $r = new \ReflectionMethod($media, 'mergeOptions');
+        $r->setAccessible(true);
+
+        $mergedOptions = $r->invokeArgs($media, array(array('foo' => 'ban')));
+
+        $this->assertEquals(
+            array(
+                'foo' => 'ban',
+                'baz' => 'bat'
+            ),
+            $mergedOptions,
+            '->mergeOptions() merges an option to the instance ones and returns the result options array'
+        );
+
+        $this->assertEquals(
+            $originalOptions,
+            $media->getOptions(),
+            '->mergeOptions() does NOT change the instance options'
+        );
+
+        $mergedOptions = $r->invokeArgs($media, array(array('foo' => 'ban', 'baz' => 'bag')));
+
+        $this->assertEquals(
+            array(
+                'foo' => 'ban',
+                'baz' => 'bag'
+            ),
+            $mergedOptions,
+            '->mergeOptions() merges many options to the instance ones and returns the result options array'
+        );
+
+        $message = '->mergeOptions() throws an InvalidArgumentException once there is an undefined option in the given array';
+        try {
+            $r->invokeArgs($media, array(array('foo' => 'ban', 'bad' => 'bah')));
+            $this->fail($message);
+        } catch (\InvalidArgumentException $e) {
+            $this->anything($message);
+        }
+    }
+
     /**
      * @dataProvider dataForBuildCommand
      */

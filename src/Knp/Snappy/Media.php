@@ -59,33 +59,6 @@ abstract class Media
     }
 
     /**
-     * Adds an option
-     *
-     * @param  string $name    The name
-     * @param  mixed  $default An optional default value
-     */
-    protected function addOption($name, $default = null)
-    {
-        if (array_key_exists($name, $this->options)) {
-            throw new \InvalidArgumentException(sprintf('The option \'%s\' already exists.', $name));
-        }
-
-        $this->options[$name] = $default;
-    }
-
-    /**
-     * Adds an array of options
-     *
-     * @param  array $options
-     */
-    protected function addOptions(array $options)
-    {
-        foreach ($options as $name => $default) {
-            $this->addOption($name, $default);
-        }
-    }
-
-    /**
      * Sets an option. Be aware that option values are NOT validated and that
      * it is your responsibility to validate user inputs
      *
@@ -126,12 +99,14 @@ abstract class Media
     /**
      * Generates the media from the given input
      *
-     * @param  string $input     The input filename
-     * @param  string $output    The output filename
-     * @param  string $overwrite Whether to overwrite the output file if it
-     *                           already exist
+     * @param  string  $input     The input filename
+     * @param  string  $output    The output filename
+     * @param  array   $options   An optional array of options that will be used
+     *                            only for this generation
+     * @param  Boolean $overwrite Whether to overwrite the output file if it
+     *                            already exist
      */
-    public function generate($input, $output, $overwrite = false)
+    public function generate($input, $output, array $options = array(), $overwrite = false)
     {
         if (null === $this->binary) {
             throw new \LogicException(
@@ -141,7 +116,7 @@ abstract class Media
 
         $this->prepareOutput($output, $overwrite);
 
-        $command = $this->getCommand($input, $output);
+        $command = $this->getCommand($input, $output, $options);
         $this->executeCommand($command);
 
         // todo manage the conversion error output. Currently, we simply do a
@@ -163,32 +138,36 @@ abstract class Media
     /**
      * Generates the media from the given html
      *
-     * @param  string $html   The HTML content to convert
-     * @param  string $output The ouput filename
+     * @param  string  $html      The HTML content to convert
+     * @param  string  $output    The ouput filename
+     * @param  array   $options   An optional array of options that will be used
+     *                            only for this generation
+     * @param  Boolean $overwrite Whether to overwrite the output file if it
+     *                            already exist
      */
-    public function generateFromHtml($html, $output)
+    public function generateFromHtml($html, $output, array $options = array(), $overwrite = false)
     {
         $filename = $this->createTemporaryFile($html, 'html');
 
-        $result = $this->generate($filename, $output);
+        $result = $this->generate($filename, $output, $options, $overwrite);
 
         $this->unlink($filename);
-
-        return $result;
     }
 
     /**
      * Returns the content of a media
      *
-     * @param  string $url Url of the page
+     * @param  string $url     Url of the page
+     * @param  array  $options An optional array of options that will be used
+     *                         only for this output rendering
      *
      * @return string
      */
-    public function getOutput($input)
+    public function getOutput($input, array $options = array())
     {
         $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
 
-        $this->generate($input, $filename);
+        $this->generate($input, $filename, $options);
 
         $result = file_get_contents($filename);
 
@@ -201,14 +180,16 @@ abstract class Media
      * Returns the content of the media generated from the given html
      *
      * @param  string $html
+     * @param  array  $options An optional array of options that will be used
+     *                         only for this output rendering
      *
      * @return string
      */
-    public function getOutputFromHtml($html)
+    public function getOutputFromHtml($html, array $options = array())
     {
         $filename = $this->createTemporaryFile($html, 'html');
 
-        $result = $this->getOutput($filename);
+        $result = $this->getOutput($filename, $options);
 
         $this->unlink($filename);
 
@@ -228,12 +209,68 @@ abstract class Media
     /**
      * Returns the command for the given input and output files
      *
-     * @param  string $input  The input file
-     * @param  string $output The ouput file
+     * @param  string $input   The input file
+     * @param  string $output  The ouput file
+     * @param  array  $options An optional array of options that will be used
+     *                         only for this command
+     *
+     * @return string
      */
-    public function getCommand($input, $output)
+    public function getCommand($input, $output, array $options = array())
     {
-        return $this->buildCommand($this->binary, $input, $output, $this->options);
+        $options = $this->mergeOptions($this->options, $options);
+
+        return $this->buildCommand($this->binary, $input, $output, $options);
+    }
+
+    /**
+     * Adds an option
+     *
+     * @param  string $name    The name
+     * @param  mixed  $default An optional default value
+     */
+    protected function addOption($name, $default = null)
+    {
+        if (array_key_exists($name, $this->options)) {
+            throw new \InvalidArgumentException(sprintf('The option \'%s\' already exists.', $name));
+        }
+
+        $this->options[$name] = $default;
+    }
+
+    /**
+     * Adds an array of options
+     *
+     * @param  array $options
+     */
+    protected function addOptions(array $options)
+    {
+        foreach ($options as $name => $default) {
+            $this->addOption($name, $default);
+        }
+    }
+
+    /**
+     * Merges the given array of options to the instance options and returns
+     * the result options array. It does NOT change the instance options.
+     *
+     * @param  array $options
+     *
+     * @return array
+     */
+    protected function mergeOptions(array $options)
+    {
+        $mergedOptions = $this->options;
+
+        foreach ($options as $name => $value) {
+            if (!array_key_exists($name, $mergedOptions)) {
+                throw new \InvalidArgumentException(sprintf('The option \'%s\' does not exist.', $name));
+            }
+
+            $mergedOptions[$name] = $value;
+        }
+
+        return $mergedOptions;
     }
 
     /**
