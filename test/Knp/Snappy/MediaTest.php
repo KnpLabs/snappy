@@ -139,10 +139,9 @@ class MediaTest extends \PHPUnit_Framework_TestCase
             array(
                 'configure',
                 'prepareOutput',
-                'fileExists',
-                'fileSize',
                 'getCommand',
-                'executeCommand'
+                'executeCommand',
+                'checkOutput'
             ),
             array(
                 'the_binary',
@@ -153,18 +152,6 @@ class MediaTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('prepareOutput')
             ->with($this->equalTo('the_output_file'))
-        ;
-        $media
-            ->expects($this->once())
-            ->method('fileExists')
-            ->with($this->equalTo('the_output_file'))
-            ->will($this->returnValue(true))
-        ;
-        $media
-            ->expects($this->once())
-            ->method('fileSize')
-            ->with($this->equalTo('the_output_file'))
-            ->will($this->returnValue(true))
         ;
         $media
             ->expects($this->any())
@@ -180,6 +167,14 @@ class MediaTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('executeCommand')
             ->with($this->equalTo('the command'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('checkOutput')
+            ->with(
+                $this->equalTo('the_output_file'),
+                $this->equalTo('the command')
+            )
         ;
 
         $media->generate('the_input_file', 'the_output_file', array('foo' => 'bar'));
@@ -422,5 +417,113 @@ class MediaTest extends \PHPUnit_Framework_TestCase
                 'thebinary --foo \'foovalue\' --bar \'barvalue1\' --bar \'barvalue2\' --baz "http://the.url/" "/the/path"'
             ),
         );
+    }
+
+    public function testCheckOutput()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\Media',
+            array(
+                'configure',
+                'fileExists',
+                'filesize'
+            ),
+            array(),
+            '',
+            false
+        );
+        $media
+            ->expects($this->once())
+            ->method('fileExists')
+            ->with($this->equalTo('the_output_file'))
+            ->will($this->returnValue(true))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('filesize')
+            ->with($this->equalTo('the_output_file'))
+            ->will($this->returnValue(123))
+        ;
+
+        $r = new \ReflectionMethod($media, 'checkOutput');
+        $r->setAccessible(true);
+
+        $message = '->checkOutput() checks both file existence and size';
+        try {
+            $r->invokeArgs($media, array('the_output_file', 'the command'));
+            $this->anything($message);
+        } catch (\RuntimeException $e) {
+            $this->fail($message);
+        }
+    }
+
+    public function testCheckOutputWhenTheFileDoesNotExist()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\Media',
+            array(
+                'configure',
+                'fileExists',
+                'filesize'
+            ),
+            array(),
+            '',
+            false
+        );
+        $media
+            ->expects($this->once())
+            ->method('fileExists')
+            ->with($this->equalTo('the_output_file'))
+            ->will($this->returnValue(false))
+        ;
+
+        $r = new \ReflectionMethod($media, 'checkOutput');
+        $r->setAccessible(true);
+
+        $message = '->checkOutput() throws an InvalidArgumentException when the file does not exist';
+        try {
+            $r->invokeArgs($media, array('the_output_file', 'the command'));
+            $this->fail($message);
+        } catch (\RuntimeException $e) {
+            $this->anything($message);
+        }
+    }
+
+    public function testCheckOutputWhenTheFileIsEmpty()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\Media',
+            array(
+                'configure',
+                'fileExists',
+                'filesize'
+            ),
+            array(),
+            '',
+            false
+        );
+        $media
+            ->expects($this->once())
+            ->method('fileExists')
+            ->with($this->equalTo('the_output_file'))
+            ->will($this->returnValue(true))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('filesize')
+            ->with($this->equalTo('the_output_file'))
+            ->will($this->returnValue(0))
+        ;
+
+        $r = new \ReflectionMethod($media, 'checkOutput');
+        $r->setAccessible(true);
+
+        $message = '->checkOutput() throws an InvalidArgumentException when the file is empty';
+        try {
+            $r->invokeArgs($media, array('the_output_file', 'the command'));
+            $this->fail($message);
+        } catch (\RuntimeException $e) {
+            $this->anything($message);
+        }
     }
 }
