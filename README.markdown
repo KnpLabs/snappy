@@ -22,8 +22,8 @@ $snappy->setBinary('/usr/local/bin/wkhtmltopdf');
 // Display the resulting image in the browser 
 // by setting the Content-type header to jpg
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
-header('Content-Type', 'application/pdf');
-header('Content-Disposition', 'attachment; filename="file.pdf"');
+header('Content-Type: application/pdf');
+header('Content-Disposition: attachment; filename="file.pdf"');
 echo $snappy->getOutput('http://www.github.com');
 
 // .. or simply save the PDF to a file
