@@ -19,7 +19,7 @@ interface GeneratorInterface
      * @param  string $output  The output media filename
      * @param  array  $options An array of options for this generation only
      */
-    function generate($input, $output, array $options, $overwrite);
+    function generate($input, $output, array $options = array(), $overwrite);
 
     /**
      * Generates the output media file from the given HTML
@@ -28,7 +28,7 @@ interface GeneratorInterface
      * @param  string $output  The output media filename
      * @param  array  $options An array of options for this generation only
      */
-    function generateFromHtml($html, $output, array $options, $overwrite);
+    function generateFromHtml($html, $output, array $options = array(), $overwrite);
 
     /**
      * Returns the output of the media generated from the specified input HTML
@@ -39,7 +39,7 @@ interface GeneratorInterface
      *
      * @return string
      */
-    function getOutput($input, array $options);
+    function getOutput($input, array $options = array());
 
     /**
      * Returns the output of the media generated from the given HTML
@@ -49,5 +49,5 @@ interface GeneratorInterface
      *
      * @return string
      */
-    function getOutputFromHtml($html, array $options);
+    function getOutputFromHtml($html, array $options = array());
 }

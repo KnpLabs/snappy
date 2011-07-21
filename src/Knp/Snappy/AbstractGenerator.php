@@ -22,7 +22,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      * @param  string $binary
      * @param  array  $options
      */
-    public function __construct($binary, array $options)
+    public function __construct($binary, array $options = array())
     {
         $this->configure();
 
@@ -306,7 +306,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      *
      * @return string
      */
-    protected function buildCommand($binary, $input, $output, array $options)
+    protected function buildCommand($binary, $input, $output, array $options = array())
     {
         $command = $binary;
 
