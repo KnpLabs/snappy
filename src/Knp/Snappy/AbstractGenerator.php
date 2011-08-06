@@ -190,7 +190,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     public function getCommand($input, $output, array $options = array())
     {
-        $options = $this->mergeOptions($this->options, $options);
+        $options = $this->mergeOptions($options);
 
         return $this->buildCommand($this->binary, $input, $output, $options);
     }
