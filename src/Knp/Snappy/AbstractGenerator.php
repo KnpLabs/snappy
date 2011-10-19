@@ -285,7 +285,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function checkProcessStatus($status, $stdout, $stderr, $command)
     {
-        if (0 !== $status or '' !== $stderr) {
+        if (0 !== $status and '' !== $stderr) {
             throw new \RuntimeException(sprintf(
                 'The exit status code \'%s\' says something went wrong:'."\n"
                 .'stderr: "%s"'."\n"

@@ -141,7 +141,8 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'prepareOutput',
                 'getCommand',
                 'executeCommand',
-                'checkOutput'
+                'checkOutput',
+                'checkProcessStatus',
             ),
             array(
                 'the_binary',
@@ -167,6 +168,11 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('executeCommand')
             ->with($this->equalTo('the command'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('checkProcessStatus')
+            ->with(null, '', '', 'the command')
         ;
         $media
             ->expects($this->once())
@@ -524,6 +530,43 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             $this->fail($message);
         } catch (\RuntimeException $e) {
             $this->anything($message);
+        }
+    }
+
+    public function testCheckProcessStatus()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\AbstractGenerator',
+            array(
+                'configure',
+            ),
+            array(),
+            '',
+            false
+        );
+
+        $r = new \ReflectionMethod($media, 'checkProcessStatus');
+        $r->setAccessible(true);
+
+        try {
+            $r->invokeArgs($media, array(0, '', '', 'the command'));
+            $this->anything('0 status means success');
+        } catch (\RuntimeException $e) {
+            $this->fail('0 status means success');
+        }
+
+        try {
+            $r->invokeArgs($media, array(1, '', '', 'the command'));
+            $this->anything('1 status means failure, but no stderr content');
+        } catch (\RuntimeException $e) {
+            $this->fail('1 status means failure, but no stderr content');
+        }
+
+        try {
+            $r->invokeArgs($media, array(1, '', 'Could not connect to X', 'the command'));
+            $this->fail('1 status means failure');
+        } catch (\RuntimeException $e) {
+            $this->anything('1 status means failure');
         }
     }
 }
