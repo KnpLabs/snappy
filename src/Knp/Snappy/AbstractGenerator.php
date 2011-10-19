@@ -111,7 +111,8 @@ abstract class AbstractGenerator implements GeneratorInterface
 
         $command = $this->getCommand($input, $output, $options);
 
-        $this->executeCommand($command);
+        list($status, $stdout, $stderr) = $this->executeCommand($command);
+        $this->checkProcessStatus($status, $stdout, $stderr, $command);
 
         $this->checkOutput($output, $command);
     }
@@ -273,6 +274,29 @@ abstract class AbstractGenerator implements GeneratorInterface
     }
 
     /**
+     * Checks the process return status
+     *
+     * @param  int   $status    The exit status code
+     * @param  string $stdout   The stdout content
+     * @param  string $stderr   The stderr content
+     * @param  string $command  The run command
+     *
+     * @throws RuntimeException if the output file generation failed
+     */
+    protected function checkProcessStatus($status, $stdout, $stderr, $command)
+    {
+        if (0 !== $status or '' !== $stderr) {
+            throw new \RuntimeException(sprintf(
+                'The exit status code \'%s\' says something went wrong:'."\n"
+                .'stderr: "%s"'."\n"
+                .'stdout: "%s"'."\n"
+                .'command: %s.',
+                $status, $stderr, $stdout, $command
+            ));
+        }
+    }
+
+    /**
      * Creates a temporary file.
      * The file is not created if the $content argument is null
      *
@@ -335,11 +359,36 @@ abstract class AbstractGenerator implements GeneratorInterface
      *
      * @param  string $command
      *
-     * @return string
+     * @return array(status, stdout, stderr)
      */
     protected function executeCommand($command)
     {
-        return shell_exec($command);
+        $stdout = $stderr = $status = null;
+        $descriptorspec = array(
+           1 => array('pipe', 'w'),  // stdout is a pipe that the child will write to
+           2 => array('pipe', 'w') // stderr is a pipe that the child will write to
+        );
+
+        $process = proc_open($command, $descriptorspec, $pipes);
+
+        if (is_resource($process)) {
+            // $pipes now looks like this:
+            // 0 => writeable handle connected to child stdin
+            // 1 => readable handle connected to child stdout
+            // 2 => readable handle connected to child stderr
+
+            $stdout = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+
+            $stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+
+            // It is important that you close any pipes before calling
+            // proc_close in order to avoid a deadlock
+            $status = proc_close($process);
+        }
+
+        return array($status, $stdout, $stderr);
     }
 
     /**
