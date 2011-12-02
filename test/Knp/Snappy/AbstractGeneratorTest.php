@@ -422,6 +422,16 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 ),
                 'thebinary --foo \'foovalue\' --bar \'barvalue1\' --bar \'barvalue2\' --baz "http://the.url/" "/the/path"'
             ),
+            array(
+                'thebinary',
+                'http://the.url/',
+                '/the/path',
+                array(
+                    'bar'   => array('tip tap', 'top'),
+                    'quz'   => 'hip hop',
+                ),
+                'thebinary --bar \'tip\' \'tap\' --bar \'top\' --quz \'hip\' \'hop\' "http://the.url/" "/the/path"'
+            ),
         );
     }
 
