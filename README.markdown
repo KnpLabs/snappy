@@ -36,9 +36,10 @@ $snappy->generateFromHtml('<h1>Bill</h1><p>You owe me money, dude.</p>', '/tmp/b
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 $snappy->setOption('disable-javascript', true);
 $snappy->setOption('no-background', true);
-
+$snappy->setOption('allow', array('/path1', '/path2'));
+$snappy->setOption('cookie', array('key' => 'value', 'key2' => 'value2'));
 ```
 
 ## Credits
 
-Snappy has been originally developed by the [Knp](http://www.knplabs.com) team.
+Snappy has been originally developed by the [KnpLabs](http://knplabs.com) team.

@@ -398,7 +398,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'http://the.url/',
                 '/the/path',
                 array(),
-                'thebinary "http://the.url/" "/the/path"'
+                "thebinary 'http://the.url/' '/the/path'"
             ),
             array(
                 'thebinary',
@@ -409,7 +409,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                     'bar'   => false,
                     'baz'   => array()
                 ),
-                'thebinary "http://the.url/" "/the/path"'
+                "thebinary 'http://the.url/' '/the/path'"
             ),
             array(
                 'thebinary',
@@ -420,7 +420,27 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                     'bar'   => array('barvalue1', 'barvalue2'),
                     'baz'   => true
                 ),
-                'thebinary --foo \'foovalue\' --bar \'barvalue1\' --bar \'barvalue2\' --baz "http://the.url/" "/the/path"'
+                "thebinary --foo 'foovalue' --bar 'barvalue1' --bar 'barvalue2' --baz 'http://the.url/' '/the/path'"
+            ),
+            array(
+                'thebinary',
+                'http://the.url/',
+                '/the/path',
+                array(
+                    'cookie'   => array('session' => 'bla', 'phpsess' => 12),
+                    'no-background'   => '1',
+                ),
+                "thebinary --cookie 'session' 'bla' --cookie 'phpsess' '12' --no-background '1' 'http://the.url/' '/the/path'"
+            ),
+            array(
+                'thebinary',
+                'http://the.url/',
+                '/the/path',
+                array(
+                    'allow'   => array('/path1', '/path2'),
+                    'no-background'   => '1',
+                ),
+                "thebinary --allow '/path1' --allow '/path2' --no-background '1' 'http://the.url/' '/the/path'"
             ),
         );
     }
@@ -568,5 +588,55 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         } catch (\RuntimeException $e) {
             $this->anything('1 status means failure');
         }
+    }
+
+    /**
+     * @dataProvider dataForIsAssociativeArray
+     */
+    public function testIsAssociativeArray($array, $isAssociativeArray)
+    {
+        $generator = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', array(), '', false);
+
+        $r = new \ReflectionMethod($generator, 'isAssociativeArray');
+        $r->setAccessible(true);
+        $this->assertEquals($isAssociativeArray, $r->invokeArgs($generator, array($array)));
+    }
+
+    public function dataForIsAssociativeArray()
+    {
+        return array(
+            array(
+                array('key' => 'value'),
+                true
+            ),
+            array(
+                array('key' => 2),
+                true
+            ),
+            array(
+                array('key' => 'value', 'key2' => 'value2'),
+                true
+            ),
+            array(
+                array(0 => 'value', 1 => 'value2', 'deux' => 'value3'),
+                true
+            ),
+            array(
+                array(0 => 'value'),
+                false
+            ),
+            array(
+                array(0 => 'value', 1 => 'value2', 3 => 'value3'),
+                false
+            ),
+            array(
+                array('0' => 'value', '1' => 'value2', '3' => 'value3'),
+                false
+            ),
+            array(
+                array(),
+                false
+            ),
+        );
     }
 }

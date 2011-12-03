@@ -334,23 +334,44 @@ abstract class AbstractGenerator implements GeneratorInterface
     {
         $command = $binary;
 
-        foreach ($options as $key => $value) {
-            if (null !== $value && false !== $value) {
-                if (true === $value) {
-                    $command .= " --".$key;
-                } elseif (is_array($value)) {
-                    foreach ($value as $v) {
-                        $command .= " --".$key." ".escapeshellarg($v);
+        foreach ($options as $key => $option) {
+            if (null !== $option && false !== $option) {
+
+                if (true === $option) {
+                    $command .= ' --'.$key;
+
+                } elseif (is_array($option)) {
+                    if ($this->isAssociativeArray($option)) {
+                        foreach ($option as $k => $v) {
+                            $command .= ' --'.$key.' '.escapeshellarg($k).' '.escapeshellarg($v);
+                        }
+                    } else {
+                        foreach ($option as $v) {
+                            $command .= " --".$key." ".escapeshellarg($v);
+                        }
                     }
+
                 } else {
-                    $command .= " --".$key." ".escapeshellarg($value);
+                    $command .= ' --'.$key." ".escapeshellarg($option);
                 }
             }
         }
 
-        $command .= " \"$input\" \"$output\"";
+        $command .= ' '.escapeshellarg($input).' '.escapeshellarg($output);;
 
         return $command;
+    }
+
+    /**
+     * Return true if the array is an associative array
+     * and not an indexed array
+     *
+     * @param array $array
+     * @return boolean
+     */
+    protected function isAssociativeArray(array $array)
+    {
+        return (bool)count(array_filter(array_keys($array), 'is_string'));
     }
 
     /**
