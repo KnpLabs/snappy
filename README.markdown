@@ -11,6 +11,8 @@ You will have to download wkhtmltopdf 0.10.0 >= rc2 in order to use Snappy.
 ```php
 <?php
 
+require_once '/path/to/snappy/src/autoload.php';
+
 use Knp\Snappy\Pdf;
 
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
