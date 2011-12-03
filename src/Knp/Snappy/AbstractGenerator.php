@@ -338,12 +338,17 @@ abstract class AbstractGenerator implements GeneratorInterface
             if (null !== $value && false !== $value) {
                 if (true === $value) {
                     $command .= " --".$key;
-                } elseif (is_array($value)) {
-                    foreach ($value as $v) {
-                        $command .= " --".$key." ".escapeshellarg($v);
+                    continue;
+                }
+                if (!is_array($value)) {
+                    $value = array($value);
+                }
+                foreach ($value as $k => $v) {
+                    $command .= " --".$key;
+                    if (!is_int($k)) {
+                    	$command .= " ".escapeshellarg($k);
                     }
-                } else {
-                    $command .= " --".$key." ".escapeshellarg($value);
+                    $command .= " ".escapeshellarg($v);
                 }
             }
         }
