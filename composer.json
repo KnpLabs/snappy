@@ -23,7 +23,7 @@
 
     "autoload": {
         "psr-0": {
-            "Knp\\Snappy": ""
+            "Knp\\Snappy": "src/"
         }
     }
 }
