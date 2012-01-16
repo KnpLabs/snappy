@@ -1,0 +1,29 @@
+{
+    "name":        "knplabs/knp-snappy",
+    "type":        "library",
+    "description": "PHP5 library allowing thumbnail, snapshot or PDF generation from a url or a html page. Wrapper for wkhtmltopdf/wkhtmltoimage.",
+    "keywords":    ["pdf", "thumbnail", "snapshot", "knplabs", "knp"],
+    "homepage":    "http://github.com/KnpLabs/KnpSnappy",
+    "license":     "MIT",
+
+    "authors": [
+        {
+            "name": "KnpLabs Team",
+            "homepage": "http://knplabs.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "http://github.com/KnpLabs/KnpSnappy/contributors"
+        }
+    ],
+
+    "require": {
+        "php": ">=5.3.0"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "Knp\\Snappy": ""
+        }
+    }
+}
