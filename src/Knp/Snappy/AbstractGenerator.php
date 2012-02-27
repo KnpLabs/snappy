@@ -307,7 +307,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function createTemporaryFile($content = null, $extension = null)
     {
-        $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('knp_snappy');
+        $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('knp_snappy', true);
 
         if (null !== $extension) {
             $filename .= '.'.$extension;
