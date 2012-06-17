@@ -150,11 +150,29 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     public function getOutputFromHtml($html, array $options = array())
     {
-        $filename = $this->createTemporaryFile($html, 'html');
+        $content = $this->createTemporaryFile($html, 'html');
+        if(isset($options['header']))
+        {
+            $header = $this->createTemporaryFile($options['header'], 'html');
+            if($header)
+                $options['header-html'] = $header;
+            unset($options['header']);
+        }
+        if(isset($options['footer']))
+        {
+            $footer = $this->createTemporaryFile($options['footer'], 'html');
+            if($footer)
+                $options['footer-html'] = $footer;
+            unset($options['footer']);
+        }
 
-        $result = $this->getOutput($filename, $options);
+        $result = $this->getOutput($content, $options);
 
-        $this->unlink($filename);
+        $this->unlink($content);
+        if(isset($header))
+            $this->unlink($header);
+        if(isset($footer))
+            $this->unlink($footer);
 
         return $result;
     }
