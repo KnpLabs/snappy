@@ -384,32 +384,19 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function executeCommand($command)
     {
-        $stdout = $stderr = $status = null;
-        $descriptorspec = array(
-           1 => array('pipe', 'w'),  // stdout is a pipe that the child will write to
-           2 => array('pipe', 'a') // stderr is a pipe that the child will append to
-        );
-
-        $process = proc_open($command, $descriptorspec, $pipes);
-
-        if (is_resource($process)) {
-            // $pipes now looks like this:
-            // 0 => writeable handle connected to child stdin
-            // 1 => readable handle connected to child stdout
-            // 2 => readable handle connected to child stderr
-
-            $stdout = stream_get_contents($pipes[1]);
-            fclose($pipes[1]);
-
-            $stderr = stream_get_contents($pipes[2]);
-            fclose($pipes[2]);
-
-            // It is important that you close any pipes before calling
-            // proc_close in order to avoid a deadlock
-            $status = proc_close($process);
+        if (class_exists('Symfony\Component\Process\Process')) {
+            $process = new \Symfony\Component\Process\Process($command);
+        } else {
+            $process = new Process($command);
         }
 
-        return array($status, $stdout, $stderr);
+        $process->run();
+
+        return array(
+            $process->getExitCode(),
+            $process->getOutput(),
+            $process->getErrorOutput(),
+        );
     }
 
     /**
