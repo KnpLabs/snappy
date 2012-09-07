@@ -390,7 +390,8 @@ abstract class AbstractGenerator implements GeneratorInterface
            2 => array('pipe', 'a') // stderr is a pipe that the child will append to
         );
 
-        $process = proc_open($command, $descriptorspec, $pipes);
+        $other_options = array('bypass_shell' => true);
+        $process = proc_open($command, $descriptorspec, $pipes, NULL, NULL, $other_options);
 
         if (is_resource($process)) {
             // $pipes now looks like this:
