@@ -21,6 +21,10 @@
         "php": ">=5.3.0"
     },
 
+    "suggest": {
+        "symfony/process": "Process Component of Symfony2."
+    },
+
     "autoload": {
         "psr-0": {
             "Knp\\Snappy": "src/"
