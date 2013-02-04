@@ -56,6 +56,36 @@ $snappy->setOption('allow', array('/path1', '/path2'));
 $snappy->setOption('cookie', array('key' => 'value', 'key2' => 'value2'));
 ```
 
+## wkhtmltopdf binary as composer dependencies
+
+If you want to download wkhtmltopdf with composer you add to composer.json
+
+```json
+{
+    "require" :  {
+        "google/wkhtmltopdf-i386"
+        // or
+        "google/wkhtmltopdf-amd64": "*"                 
+    }
+}
+```
+
+And then you can use it
+
+```php
+<?php
+
+use Knp\Snappy\Pdf;
+$myProjetDirectory = '/path/to/my/project'
+
+
+$snappy = new Pdf($myProjetDirectory . '/vendor/google/wkhtmltopdf-i386/wkhtmltopdf-i386');
+
+// or
+
+$snappy = new Pdf($myProjetDirectory . '/vendor/google/wkhtmltopdf-amd64/wkhtmltopdf-amd64');
+
+
 ## Credits
 
 Snappy has been originally developed by the [KnpLabs](http://knplabs.com) team.
