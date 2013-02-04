@@ -1,11 +1,10 @@
 {
-    "name":        "knplabs/knp-snappy",
-    "type":        "library",
+    "name": "knplabs/knp-snappy",
+    "type": "library",
     "description": "PHP5 library allowing thumbnail, snapshot or PDF generation from a url or a html page. Wrapper for wkhtmltopdf/wkhtmltoimage.",
-    "keywords":    ["pdf", "thumbnail", "snapshot", "knplabs", "knp"],
-    "homepage":    "http://github.com/KnpLabs/snappy",
-    "license":     "MIT",
-
+    "keywords": ["pdf", "thumbnail", "snapshot", "knplabs", "knp"],
+    "homepage": "http://github.com/KnpLabs/snappy",
+    "license": "MIT",
     "authors": [
         {
             "name": "KnpLabs Team",
@@ -16,18 +15,42 @@
             "homepage": "http://github.com/KnpLabs/snappy/contributors"
         }
     ],
-
     "require": {
         "php": ">=5.3.0"
     },
-
     "suggest": {
         "symfony/process": "Process Component of Symfony2."
     },
-
     "autoload": {
         "psr-0": {
             "Knp\\Snappy": "src/"
         }
-    }
+    },
+    "suggest": {
+        "google/wkhtmltopdf-amd64": "Provide wkhtmltopdf-amd64 binary as composer dependencies",
+        "google/wkhtmltopdf-i386": "Provide wkhtmltopdf-i386 binary as composer dependencies"
+    },
+    "repositories": [{
+            "type": "package",
+            "package": {
+                "name": "google/wkhtmltopdf-amd64",
+                "version": "0.11.0_rc1",
+                "dist": {
+                    "url": "http://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-static-amd64.tar.bz2",
+                    "type": "tar"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "google/wkhtmltopdf-i386",
+                "version": "0.11.0_rc1",
+                "dist": {
+                    "url": "http://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-static-i386.tar.bz2",
+                    "type": "tar"
+                }
+            }
+        }
+    ]
 }
