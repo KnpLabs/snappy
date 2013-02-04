@@ -8,7 +8,7 @@ You will have to download wkhtmltopdf `0.10.0 >= rc2` in order to use Snappy.
 
 [![Build Status](https://secure.travis-ci.org/KnpLabs/snappy.png?branch=master)](http://travis-ci.org/KnpLabs/snappy)
 
-## Instalation using [Composer](http://getcomposer.org/)
+## Installation using [Composer](http://getcomposer.org/)
 
 Add to your `composer.json`:
 
@@ -35,8 +35,8 @@ $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 $snappy = new Pdf();
 $snappy->setBinary('/usr/local/bin/wkhtmltopdf');
 
-// Display the resulting image in the browser
-// by setting the Content-type header to jpg
+// Display the resulting pdf in the browser
+// by setting the Content-type header to pdf
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 header('Content-Type: application/pdf');
 header('Content-Disposition: attachment; filename="file.pdf"');
