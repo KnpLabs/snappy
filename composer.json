@@ -19,16 +19,14 @@
         "php": ">=5.3.0"
     },
     "suggest": {
-        "symfony/process": "Process Component of Symfony2."
+        "symfony/process": "Process Component of Symfony2.",
+        "google/wkhtmltopdf-amd64": "Provide wkhtmltopdf-amd64 binary as composer dependencies",
+        "google/wkhtmltopdf-i386": "Provide wkhtmltopdf-i386 binary as composer dependencies"
     },
     "autoload": {
         "psr-0": {
             "Knp\\Snappy": "src/"
         }
-    },
-    "suggest": {
-        "google/wkhtmltopdf-amd64": "Provide wkhtmltopdf-amd64 binary as composer dependencies",
-        "google/wkhtmltopdf-i386": "Provide wkhtmltopdf-i386 binary as composer dependencies"
     },
     "repositories": [{
             "type": "package",
