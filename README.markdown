@@ -63,8 +63,7 @@ If you want to download wkhtmltopdf with composer you add to composer.json
 ```json
 {
     "require" :  {
-        "google/wkhtmltopdf-i386"
-        // or
+        "google/wkhtmltopdf-i386",
         "google/wkhtmltopdf-amd64": "*"                 
     }
 }
@@ -84,6 +83,7 @@ $snappy = new Pdf($myProjetDirectory . '/vendor/google/wkhtmltopdf-i386/wkhtmlto
 // or
 
 $snappy = new Pdf($myProjetDirectory . '/vendor/google/wkhtmltopdf-amd64/wkhtmltopdf-amd64');
+```
 
 
 ## Credits
