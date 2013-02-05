@@ -63,7 +63,7 @@ If you want to download wkhtmltopdf with composer you add to composer.json
 ```json
 {
     "require" :  {
-        "google/wkhtmltopdf-i386",
+        "google/wkhtmltopdf-i386": "*",
         "google/wkhtmltopdf-amd64": "*"                 
     }
 }
