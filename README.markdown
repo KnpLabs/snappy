@@ -46,7 +46,6 @@ echo $snappy->getOutput('http://www.github.com');
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 $snappy->generateFromHtml('<h1>Bill</h1><p>You owe me money, dude.</p>', '/tmp/bill-123.pdf');
 
-
 // Pass options to snappy
 // Type wkhtmltopdf -H to see the list of options
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
@@ -62,9 +61,8 @@ If you want to download wkhtmltopdf with composer you add to composer.json
 
 ```json
 {
-    "require" :  {
-        "google/wkhtmltopdf-i386": "*",
-        // ..
+    "require": {
+        "google/wkhtmltopdf-i386": "0.11.0-RC1"
     }
 }
 ```
@@ -72,9 +70,8 @@ or this if you are in 64 bit based system
 
 ```json
 {
-    "require" :  {
-        "google/wkhtmltopdf-amd64": "*",
-        // ..
+    "require": {
+        "google/wkhtmltopdf-amd64": "0.11.0-RC1"
     }
 }
 ```
@@ -85,8 +82,8 @@ And then you can use it
 <?php
 
 use Knp\Snappy\Pdf;
-$myProjetDirectory = '/path/to/my/project'
 
+$myProjetDirectory = '/path/to/my/project';
 
 $snappy = new Pdf($myProjetDirectory . '/vendor/google/wkhtmltopdf-i386/wkhtmltopdf-i386');
 
