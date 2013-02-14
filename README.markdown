@@ -57,7 +57,7 @@ $snappy->setOption('cookie', array('key' => 'value', 'key2' => 'value2'));
 
 ## wkhtmltopdf binary as composer dependencies
 
-If you want to download wkhtmltopdf with composer you add to composer.json
+If you want to download wkhtmltopdf with composer you add to `composer.json`:
 
 ```json
 {
@@ -66,13 +66,45 @@ If you want to download wkhtmltopdf with composer you add to composer.json
     }
 }
 ```
-or this if you are in 64 bit based system
+
+or this if you are in 64 bit based system:
 
 ```json
 {
     "require": {
         "google/wkhtmltopdf-amd64": "0.11.0-RC1"
     }
+}
+```
+
+> __NOTE__: to be able to use those custom defined packages you need to copy into your `composer.json` following code:
+
+```json
+{
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "google/wkhtmltopdf-amd64",
+                "version": "0.11.0-RC1",
+                "dist": {
+                    "url": "http://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-static-amd64.tar.bz2",
+                    "type": "tar"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "google/wkhtmltopdf-i386",
+                "version": "0.11.0-RC1",
+                "dist": {
+                    "url": "http://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.11.0_rc1-static-i386.tar.bz2",
+                    "type": "tar"
+                }
+            }
+        }
+    ]
 }
 ```
 
