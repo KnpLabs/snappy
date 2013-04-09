@@ -65,9 +65,11 @@ class Image extends AbstractGenerator
             'radiobutton-svg'              => null,    // Use this SVG file when rendering unchecked radiobuttons
             'run-script'                   => null,    // Run this additional javascript after the page is done loading (repeatable)
             'disable-smart-width'          => null,    // Use the specified width even if it is not large enough for the content
+            'enable-smart-width'           => null,    // Extend --width to fit unbreakable content (default)
             'stop-slow-scripts'            => null,    // Stop slow running javascripts
             'no-stop-slow-scripts'         => null,    // Do not stop slow running javascripts (default)
             'transparent'                  => null,    // Make the background transparrent in pngs *
+            'use-xserver'                  => null,    // Use the X server (some plugins and other stuff might not work without X11)
             'user-style-sheet'             => null,    // Specify a user style sheet, to load with every page
             'username'                     => null,    // HTTP Authentication username
             'width'                        => null,    // Set screen width (default is 1024)
