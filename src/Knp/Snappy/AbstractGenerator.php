@@ -14,6 +14,7 @@ abstract class AbstractGenerator implements GeneratorInterface
 {
     private $binary;
     private $options = array();
+    private $env;
     private $defaultExtension;
 
     /**
@@ -22,12 +23,13 @@ abstract class AbstractGenerator implements GeneratorInterface
      * @param  string $binary
      * @param  array  $options
      */
-    public function __construct($binary, array $options = array())
+    public function __construct($binary, array $options = array(), array $env = null)
     {
         $this->configure();
 
         $this->setBinary($binary);
         $this->setOptions($options);
+        $this->env = $env;
     }
 
     /**
@@ -385,9 +387,9 @@ abstract class AbstractGenerator implements GeneratorInterface
     protected function executeCommand($command)
     {
         if (class_exists('Symfony\Component\Process\Process')) {
-            $process = new \Symfony\Component\Process\Process($command);
+            $process = new \Symfony\Component\Process\Process($command, $this->env);
         } else {
-            $process = new Process($command);
+            $process = new Process($command, $this->env);
         }
 
         $process->run();

@@ -1,6 +1,8 @@
 <?php
 namespace Knp\Snappy;
 
+use Symfony\Component\Process\Process as SymfonyProcess;
+
 /**
  * Process a command, this class is a fallback if user has not
  * symfony component process
@@ -16,6 +18,11 @@ class Process
      * @var string
      */
     private $command;
+
+    /**
+     * @var array|null
+     */
+    private $env;
 
     /**
      * @var integer
@@ -35,9 +42,10 @@ class Process
     /**
      * @param string $command command
      */
-    public function __construct($command)
+    public function __construct($command, array $env = null)
     {
         $this->command = $command;
+        $this->env     = $env;
     }
 
     /**
@@ -50,7 +58,7 @@ class Process
             2 => array('pipe', 'a') // stderr is a pipe that the child will append to
         );
 
-        $process = proc_open($this->command, $descriptorspec, $pipes);
+        $process = proc_open($this->command, $descriptorspec, $pipes, null, $this->env);
 
         if (is_resource($process)) {
             // $pipes now looks like this:
