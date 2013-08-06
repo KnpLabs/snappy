@@ -1,8 +1,6 @@
 <?php
 namespace Knp\Snappy;
 
-use Symfony\Component\Process\Process as SymfonyProcess;
-
 /**
  * Process a command, this class is a fallback if user has not
  * symfony component process
