@@ -126,7 +126,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     {
         $filename = $this->createTemporaryFile($html, 'html');
 
-        $result = $this->generate($filename, $output, $options, $overwrite);
+        $this->generate($filename, $output, $options, $overwrite);
 
         $this->unlink($filename);
     }
