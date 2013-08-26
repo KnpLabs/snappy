@@ -334,7 +334,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function buildCommand($binary, $input, $output, array $options = array())
     {
-        $command = $binary;
+        $command = escapeshellarg($binary);
 
         foreach ($options as $key => $option) {
             if (null !== $option && false !== $option) {
