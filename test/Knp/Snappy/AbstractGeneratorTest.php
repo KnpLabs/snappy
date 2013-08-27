@@ -398,7 +398,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'http://the.url/',
                 '/the/path',
                 array(),
-                "thebinary 'http://the.url/' '/the/path'"
+                "'thebinary' 'http://the.url/' '/the/path'"
             ),
             array(
                 'thebinary',
@@ -409,7 +409,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                     'bar'   => false,
                     'baz'   => array()
                 ),
-                "thebinary 'http://the.url/' '/the/path'"
+                "'thebinary' 'http://the.url/' '/the/path'"
             ),
             array(
                 'thebinary',
@@ -420,7 +420,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                     'bar'   => array('barvalue1', 'barvalue2'),
                     'baz'   => true
                 ),
-                "thebinary --foo 'foovalue' --bar 'barvalue1' --bar 'barvalue2' --baz 'http://the.url/' '/the/path'"
+                "'thebinary' --foo 'foovalue' --bar 'barvalue1' --bar 'barvalue2' --baz 'http://the.url/' '/the/path'"
             ),
             array(
                 'thebinary',
@@ -430,7 +430,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                     'cookie'   => array('session' => 'bla', 'phpsess' => 12),
                     'no-background'   => '1',
                 ),
-                "thebinary --cookie 'session' 'bla' --cookie 'phpsess' '12' --no-background '1' 'http://the.url/' '/the/path'"
+                "'thebinary' --cookie 'session' 'bla' --cookie 'phpsess' '12' --no-background '1' 'http://the.url/' '/the/path'"
             ),
             array(
                 'thebinary',
@@ -440,7 +440,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                     'allow'   => array('/path1', '/path2'),
                     'no-background'   => '1',
                 ),
-                "thebinary --allow '/path1' --allow '/path2' --no-background '1' 'http://the.url/' '/the/path'"
+                "'thebinary' --allow '/path1' --allow '/path2' --no-background '1' 'http://the.url/' '/the/path'"
             ),
         );
     }
