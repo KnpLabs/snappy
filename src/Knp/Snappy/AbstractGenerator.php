@@ -85,7 +85,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     public function setTimeout($timeout)
     {
         if (!is_int($timeout)) {
-            return false;
+            throw new \InvalidArgumentException('Timeout only accepts integers. You provided '.gettype($timeout));
         }
 
         $this->timeout = $timeout;
@@ -383,7 +383,8 @@ abstract class AbstractGenerator implements GeneratorInterface
      * Return true if the array is an associative array
      * and not an indexed array
      *
-     * @param  array   $array
+     * @param array $array
+     *
      * @return boolean
      */
     protected function isAssociativeArray(array $array)
@@ -403,7 +404,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     {
         if (class_exists('Symfony\Component\Process\Process')) {
             $process = new \Symfony\Component\Process\Process($command, $this->env);
-            if (is_int($this->timeout) && $this->timeout > 0) {
+            if ($this->timeout !== null) {
                 $process->setTimeout($this->timeout);
             }
         } else {
