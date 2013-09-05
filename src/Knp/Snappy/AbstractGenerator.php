@@ -15,13 +15,14 @@ abstract class AbstractGenerator implements GeneratorInterface
     private $binary;
     private $options = array();
     private $env;
+    private $timeout = false;
     private $defaultExtension;
 
     /**
      * Constructor
      *
-     * @param  string $binary
-     * @param  array  $options
+     * @param string $binary
+     * @param array  $options
      */
     public function __construct($binary, array $options = array(), array $env = null)
     {
@@ -64,8 +65,8 @@ abstract class AbstractGenerator implements GeneratorInterface
      * Sets an option. Be aware that option values are NOT validated and that
      * it is your responsibility to validate user inputs
      *
-     * @param  string $name  The option to set
-     * @param  mixed  $value The value (NULL to unset)
+     * @param string $name  The option to set
+     * @param mixed  $value The value (NULL to unset)
      */
     public function setOption($name, $value)
     {
@@ -77,9 +78,19 @@ abstract class AbstractGenerator implements GeneratorInterface
     }
 
     /**
+     * Sets the timeout. Be aware that option only works with symfony
+     *
+     * @param integer $timeout The timeout to set
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
+    }
+
+    /**
      * Sets an array of options
      *
-     * @param  array $options An associative array of options as name/value
+     * @param array $options An associative array of options as name/value
      */
     public function setOptions(array $options)
     {
@@ -164,7 +175,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Defines the binary
      *
-     * @param  string $binary The path/name of the binary
+     * @param string $binary The path/name of the binary
      */
     public function setBinary($binary)
     {
@@ -184,9 +195,9 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Returns the command for the given input and output files
      *
-     * @param  string $input   The input file
-     * @param  string $output  The ouput file
-     * @param  array  $options An optional array of options that will be used
+     * @param string $input   The input file
+     * @param string $output  The ouput file
+     * @param array  $options An optional array of options that will be used
      *                         only for this command
      *
      * @return string
@@ -201,8 +212,8 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Adds an option
      *
-     * @param  string $name    The name
-     * @param  mixed  $default An optional default value
+     * @param string $name    The name
+     * @param mixed  $default An optional default value
      */
     protected function addOption($name, $default = null)
     {
@@ -216,7 +227,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Adds an array of options
      *
-     * @param  array $options
+     * @param array $options
      */
     protected function addOptions(array $options)
     {
@@ -229,7 +240,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      * Merges the given array of options to the instance options and returns
      * the result options array. It does NOT change the instance options.
      *
-     * @param  array $options
+     * @param array $options
      *
      * @return array
      */
@@ -251,8 +262,8 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Checks the specified output
      *
-     * @param  string $output  The output filename
-     * @param  string $command The generation command
+     * @param string $output  The output filename
+     * @param string $command The generation command
      *
      * @throws RuntimeException if the output file generation failed
      */
@@ -278,10 +289,10 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Checks the process return status
      *
-     * @param  int   $status    The exit status code
-     * @param  string $stdout   The stdout content
-     * @param  string $stderr   The stderr content
-     * @param  string $command  The run command
+     * @param int    $status  The exit status code
+     * @param string $stdout  The stdout content
+     * @param string $stderr  The stderr content
+     * @param string $command The run command
      *
      * @throws RuntimeException if the output file generation failed
      */
@@ -302,8 +313,8 @@ abstract class AbstractGenerator implements GeneratorInterface
      * Creates a temporary file.
      * The file is not created if the $content argument is null
      *
-     * @param  string $content  Optional content for the temporary file
-     * @param  string $extension An optional extension for the filename
+     * @param string $content   Optional content for the temporary file
+     * @param string $extension An optional extension for the filename
      *
      * @return string The filename
      */
@@ -325,10 +336,10 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Builds the command string
      *
-     * @param  string $binary   The binary path/name
-     * @param  string $input    Url or file location of the page to process
-     * @param  string $output   File location to the image-to-be
-     * @param  array  $options  An array of options
+     * @param string $binary  The binary path/name
+     * @param string $input   Url or file location of the page to process
+     * @param string $output  File location to the image-to-be
+     * @param array  $options An array of options
      *
      * @return string
      */
@@ -373,18 +384,19 @@ abstract class AbstractGenerator implements GeneratorInterface
      * and not an indexed array
      *
      * @param array $array
+     *
      * @return boolean
      */
     protected function isAssociativeArray(array $array)
     {
-        return (bool)count(array_filter(array_keys($array), 'is_string'));
+        return (bool) count(array_filter(array_keys($array), 'is_string'));
     }
 
     /**
      * Executes the given command via shell and returns the complete output as
      * a string
      *
-     * @param  string $command
+     * @param string $command
      *
      * @return array(status, stdout, stderr)
      */
@@ -392,6 +404,9 @@ abstract class AbstractGenerator implements GeneratorInterface
     {
         if (class_exists('Symfony\Component\Process\Process')) {
             $process = new \Symfony\Component\Process\Process($command, $this->env);
+            if ($this->timeout !== false) {
+                $process->setTimeout($this->timeout);
+            }
         } else {
             $process = new Process($command, $this->env);
         }
@@ -408,8 +423,8 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Prepares the specified output
      *
-     * @param  string  $filename  The output filename
-     * @param  boolean $overwrite Whether to overwrite the file if it already
+     * @param string  $filename  The output filename
+     * @param boolean $overwrite Whether to overwrite the file if it already
      *                            exist
      */
     protected function prepareOutput($filename, $overwrite)
@@ -444,7 +459,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Wrapper for the "file_get_contents" function
      *
-     * @param  string $filename
+     * @param string $filename
      *
      * @return string
      */
@@ -456,7 +471,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Wrapper for the "file_exists" function
      *
-     * @param  string $filename
+     * @param string $filename
      *
      * @return boolean
      */
@@ -468,7 +483,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Wrapper for the "is_file" method
      *
-     * @param  string $filename
+     * @param string $filename
      *
      * @return boolean
      */
@@ -480,7 +495,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Wrapper for the "filesize" function
      *
-     * @param  string $filename
+     * @param string $filename
      *
      * @return integer or FALSE on failure
      */
@@ -492,7 +507,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Wrapper for the "unlink" function
      *
-     * @param  string $filename
+     * @param string $filename
      *
      * @return boolean
      */
@@ -504,7 +519,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Wrapper for the "is_dir" function
      *
-     * @param  string $filename
+     * @param string $filename
      *
      * @return boolean
      */
@@ -516,7 +531,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Wrapper for the mkdir function
      *
-     * @param  string $pathname
+     * @param string $pathname
      *
      * @return boolean
      */
