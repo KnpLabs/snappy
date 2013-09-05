@@ -15,7 +15,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     private $binary;
     private $options = array();
     private $env;
-    private $timeout;
+    private $timeout = false;
     private $defaultExtension;
 
     /**
@@ -84,10 +84,6 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     public function setTimeout($timeout)
     {
-        if (!is_int($timeout)) {
-            throw new \InvalidArgumentException('Timeout only accepts integers. You provided '.gettype($timeout));
-        }
-
         $this->timeout = $timeout;
     }
 
@@ -404,7 +400,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     {
         if (class_exists('Symfony\Component\Process\Process')) {
             $process = new \Symfony\Component\Process\Process($command, $this->env);
-            if ($this->timeout !== null) {
+            if ($this->timeout !== false) {
                 $process->setTimeout($this->timeout);
             }
         } else {
