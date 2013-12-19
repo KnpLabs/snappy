@@ -60,6 +60,8 @@ $snappy->setOption('disable-javascript', true);
 $snappy->setOption('no-background', true);
 $snappy->setOption('allow', array('/path1', '/path2'));
 $snappy->setOption('cookie', array('key' => 'value', 'key2' => 'value2'));
+$snappy->setOption('cover', 'pathToCover.html');
+$snappy->setOption('toc', true);
 ```
 
 ## wkhtmltopdf binary as composer dependencies
