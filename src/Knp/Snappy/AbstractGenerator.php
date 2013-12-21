@@ -335,7 +335,8 @@ abstract class AbstractGenerator implements GeneratorInterface
 
     /**
      * Builds the command string
-     * Only with wkhtmltopdf v0.11, dont't add -- before toc and cover options
+     * Only with wkhtmltopdf 0.11.0, dont't add -- before toc and cover options
+     * 
      * @param string $binary  The binary path/name
      * @param string $input   Url or file location of the page to process
      * @param string $output  File location to the image-to-be
@@ -355,7 +356,13 @@ abstract class AbstractGenerator implements GeneratorInterface
             if (null !== $option && false !== $option) {
 
                 if (true === $option) {
-                    $command .= ' --'.$key;
+                    // Dont't put '--' if option is 'toc'.
+                    if ($key == 'toc')
+                        {
+                            $command .= ' '.$key;
+                        } else {
+                            $command .= ' --'.$key;
+                        }
 
                 } elseif (is_array($option)) {
                     if ($this->isAssociativeArray($option)) {
@@ -364,17 +371,19 @@ abstract class AbstractGenerator implements GeneratorInterface
                         }
                     } else {
                         foreach ($option as $v) {
-                            $command .= " --".$key." ".escapeshellarg($v);
+                            $command .= ' --'.$key.' '.escapeshellarg($v);
                         }
                     }
 
                 } else {
-                    if ($key == 'cover') { // Dont't add '--' if option is "cover"  or "toc".
-                            $command .= " ".$key." ".escapeshellarg($option);
-                        } else if ($key == "toc") {
-                            $command .= " ".$key;
+                    // Dont't add '--' if option is "cover"  or "toc".
+                    if ($key == 'cover') { 
+                            $command .= ' '.$key.' '.escapeshellarg($option);
+                        } else if ($key == 'toc') {
+                            // 'toc' option doesn't need param.
+                            $command .= ' '.$key;
                         } else {
-                            $command .= ' --'.$key." ".escapeshellarg($option);
+                            $command .= ' --'.$key.' '.escapeshellarg($option);
                         }
                 }
             }
