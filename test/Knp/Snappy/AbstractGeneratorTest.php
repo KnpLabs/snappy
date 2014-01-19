@@ -629,7 +629,6 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($isAssociativeArray, $r->invokeArgs($generator, array($array)));
     }
 
-
     /**
      * @expectedException Knp\Snappy\Exception\FileAlreadyExistsException
      */
@@ -661,7 +660,6 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $r->invokeArgs($media, array('', false));
     }
-
 
     public function dataForIsAssociativeArray()
     {
