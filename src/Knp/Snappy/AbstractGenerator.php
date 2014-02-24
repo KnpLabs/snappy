@@ -374,16 +374,12 @@ abstract class AbstractGenerator implements GeneratorInterface
             }
         }
 
-        if(is_array($input))
-        {
-            foreach($input as $i)
-            {
+        if (is_array($input)) {
+            foreach ($input as $i) {
                 $command .= ' '.escapeshellarg($i).' ';
             }
             $command .= escapeshellarg($output);
-        }
-        else
-        {
+        } else {
             $command .= ' '.escapeshellarg($input).' '.escapeshellarg($output);
         }
 
