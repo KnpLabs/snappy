@@ -337,7 +337,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      * Builds the command string
      *
      * @param string $binary  The binary path/name
-     * @param string $input   Url or file location of the page to process
+     * @param string/array $input  Url(s) or file location(s) of the page(s) to process
      * @param string $output  File location to the image-to-be
      * @param array  $options An array of options
      *
