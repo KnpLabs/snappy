@@ -95,11 +95,11 @@ use Knp\Snappy\Pdf;
 
 $myProjetDirectory = '/path/to/my/project';
 
-$snappy = new Pdf($myProjetDirectory . '/vendor/h4cc/wkhtmltopdf-i386/bin/wkhtmltopdf-i386');
+$snappy = new Pdf($myProjectDirectory . '/vendor/h4cc/wkhtmltopdf-i386/bin/wkhtmltopdf-i386');
 
 // or
 
-$snappy = new Pdf($myProjetDirectory . '/vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64');
+$snappy = new Pdf($myProjectDirectory . '/vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64');
 ```
 
 
