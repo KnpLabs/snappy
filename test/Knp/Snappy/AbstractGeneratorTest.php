@@ -629,6 +629,38 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($isAssociativeArray, $r->invokeArgs($generator, array($array)));
     }
 
+    /**
+     * @expectedException Knp\Snappy\Exception\FileAlreadyExistsException
+     */
+    public function testItThrowsTheProperExceptionWhenFileExistsAndNotOverwritting()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\AbstractGenerator',
+            array(
+                'configure',
+                'fileExists',
+                'isFile'
+            ),
+            array(),
+            '',
+            false
+        );
+        $media
+            ->expects($this->any())
+            ->method('fileExists')
+            ->will($this->returnValue(true))
+        ;
+        $media
+            ->expects($this->any())
+            ->method('isFile')
+            ->will($this->returnValue(true))
+        ;
+        $r = new \ReflectionMethod($media, 'prepareOutput');
+        $r->setAccessible(true);
+
+        $r->invokeArgs($media, array('', false));
+    }
+
     public function dataForIsAssociativeArray()
     {
         return array(

@@ -2,6 +2,8 @@
 
 namespace Knp\Snappy;
 
+use Knp\Snappy\Exception as Exceptions;
+
 /**
  * Base generator class for medias
  *
@@ -445,7 +447,7 @@ abstract class AbstractGenerator implements GeneratorInterface
                     $filename, $this->isDir($filename) ? 'directory' : 'link'
                 ));
             } elseif (false === $overwrite) {
-                throw new \InvalidArgumentException(sprintf(
+                throw new Exceptions\FileAlreadyExistsException(sprintf(
                     'The output file \'%s\' already exists.',
                     $filename
                 ));
