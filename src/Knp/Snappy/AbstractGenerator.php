@@ -379,7 +379,7 @@ abstract class AbstractGenerator implements GeneratorInterface
                     if (in_array($key, array('toc', 'cover'))) {
                         $command .= ' '.$key;
                     } else {
-                        $command .= ' --'.$key;
+                        $command .= ' --'.$key.' '.escapeshellarg($option);
                     }
                 }
             }
