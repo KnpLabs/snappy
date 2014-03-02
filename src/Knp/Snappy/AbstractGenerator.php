@@ -357,12 +357,11 @@ abstract class AbstractGenerator implements GeneratorInterface
 
                 if (true === $option) {
                     // Dont't put '--' if option is 'toc'.
-                    if ($key == 'toc')
-                        {
-                            $command .= ' '.$key;
-                        } else {
-                            $command .= ' --'.$key;
-                        }
+                    if ($key == 'toc') {
+                        $command .= ' '.$key;
+                    } else {
+                        $command .= ' --'.$key;
+                    }
 
                 } elseif (is_array($option)) {
                     if ($this->isAssociativeArray($option)) {
@@ -377,14 +376,11 @@ abstract class AbstractGenerator implements GeneratorInterface
 
                 } else {
                     // Dont't add '--' if option is "cover"  or "toc".
-                    if ($key == 'cover') { 
-                            $command .= ' '.$key.' '.escapeshellarg($option);
-                        } else if ($key == 'toc') {
-                            // 'toc' option doesn't need param.
-                            $command .= ' '.$key;
-                        } else {
-                            $command .= ' --'.$key.' '.escapeshellarg($option);
-                        }
+                    if (in_array($key, array('toc', 'cover'))) {
+                        $command .= ' '.$key;
+                    } else {
+                        $command .= ' --'.$key;
+                    }
                 }
             }
         }
