@@ -337,7 +337,8 @@ abstract class AbstractGenerator implements GeneratorInterface
 
     /**
      * Builds the command string
-     *
+     * Only with wkhtmltopdf 0.11.0, dont't add -- before toc and cover options
+     * 
      * @param string $binary  The binary path/name
      * @param string/array $input  Url(s) or file location(s) of the page(s) to process
      * @param string $output  File location to the image-to-be
@@ -357,7 +358,12 @@ abstract class AbstractGenerator implements GeneratorInterface
             if (null !== $option && false !== $option) {
 
                 if (true === $option) {
-                    $command .= ' --'.$key;
+                    // Dont't put '--' if option is 'toc'.
+                    if ($key == 'toc') {
+                        $command .= ' '.$key;
+                    } else {
+                        $command .= ' --'.$key;
+                    }
 
                 } elseif (is_array($option)) {
                     if ($this->isAssociativeArray($option)) {
@@ -366,12 +372,17 @@ abstract class AbstractGenerator implements GeneratorInterface
                         }
                     } else {
                         foreach ($option as $v) {
-                            $command .= " --".$key." ".escapeshellarg($v);
+                            $command .= ' --'.$key.' '.escapeshellarg($v);
                         }
                     }
 
                 } else {
-                    $command .= ' --'.$key." ".escapeshellarg($option);
+                    // Dont't add '--' if option is "cover"  or "toc".
+                    if (in_array($key, array('toc', 'cover'))) {
+                        $command .= ' '.$key;
+                    } else {
+                        $command .= ' --'.$key.' '.escapeshellarg($option);
+                    }
                 }
             }
         }

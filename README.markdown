@@ -5,6 +5,7 @@ It uses the excellent webkit-based [wkhtmltopdf and wkhtmltoimage](http://code.g
 available on OSX, linux, windows.
 
 You will have to download wkhtmltopdf `0.11.0 >= rc1` in order to use Snappy.
+Only with wkhtmltopdf 0.11.0, dont't add -- before toc and cover options.
 
 [![Build Status](https://secure.travis-ci.org/KnpLabs/snappy.png?branch=master)](http://travis-ci.org/KnpLabs/snappy)
 
@@ -60,6 +61,8 @@ $snappy->setOption('disable-javascript', true);
 $snappy->setOption('no-background', true);
 $snappy->setOption('allow', array('/path1', '/path2'));
 $snappy->setOption('cookie', array('key' => 'value', 'key2' => 'value2'));
+$snappy->setOption('cover', 'pathToCover.html');
+$snappy->setOption('toc', true);
 ```
 
 ## wkhtmltopdf binary as composer dependencies
