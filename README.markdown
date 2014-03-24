@@ -93,7 +93,7 @@ And then you can use it
 
 use Knp\Snappy\Pdf;
 
-$myProjetDirectory = '/path/to/my/project';
+$myProjectDirectory = '/path/to/my/project';
 
 $snappy = new Pdf($myProjectDirectory . '/vendor/h4cc/wkhtmltopdf-i386/bin/wkhtmltopdf-i386');
 
