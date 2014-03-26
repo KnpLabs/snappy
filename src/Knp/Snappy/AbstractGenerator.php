@@ -2,8 +2,6 @@
 
 namespace Knp\Snappy;
 
-use Knp\Snappy\Exception as Exceptions;
-
 /**
  * Base generator class for medias
  *
@@ -339,7 +337,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      * Builds the command string
      *
      * @param string $binary  The binary path/name
-     * @param string/array $input  Url(s) or file location(s) of the page(s) to process
+     * @param string $input   Url or file location of the page to process
      * @param string $output  File location to the image-to-be
      * @param array  $options An array of options
      *
@@ -375,15 +373,14 @@ abstract class AbstractGenerator implements GeneratorInterface
                 }
             }
         }
-
+        
         if (is_array($input)) {
-            foreach ($input as $i) {
-                $command .= ' '.escapeshellarg($i).' ';
-            }
-            $command .= escapeshellarg($output);
+            $input = implode(' ', array_map('escapeshellarg', $input));
         } else {
-            $command .= ' '.escapeshellarg($input).' '.escapeshellarg($output);
+            $input = escapeshellarg($input);
         }
+
+        $command .= ' '.$input.' '.escapeshellarg($output);;
 
         return $command;
     }
@@ -412,7 +409,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     protected function executeCommand($command)
     {
         if (class_exists('Symfony\Component\Process\Process')) {
-            $process = new \Symfony\Component\Process\Process($command, NULL, $this->env);
+            $process = new \Symfony\Component\Process\Process($command, $this->env);
             if ($this->timeout !== false) {
                 $process->setTimeout($this->timeout);
             }
@@ -447,7 +444,7 @@ abstract class AbstractGenerator implements GeneratorInterface
                     $filename, $this->isDir($filename) ? 'directory' : 'link'
                 ));
             } elseif (false === $overwrite) {
-                throw new Exceptions\FileAlreadyExistsException(sprintf(
+                throw new \InvalidArgumentException(sprintf(
                     'The output file \'%s\' already exists.',
                     $filename
                 ));
