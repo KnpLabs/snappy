@@ -613,6 +613,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             $r->invokeArgs($media, array(1, '', 'Could not connect to X', 'the command'));
             $this->fail('1 status means failure');
         } catch (\RuntimeException $e) {
+            $this->assertEquals(1, $e->getCode());
             $this->anything('1 status means failure');
         }
     }

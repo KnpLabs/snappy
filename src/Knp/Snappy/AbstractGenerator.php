@@ -307,7 +307,7 @@ abstract class AbstractGenerator implements GeneratorInterface
                 .'stdout: "%s"'."\n"
                 .'command: %s.',
                 $status, $stderr, $stdout, $command
-            ));
+            ), $status);
         }
     }
 
