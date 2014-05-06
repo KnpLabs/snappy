@@ -191,6 +191,7 @@ class Pdf extends AbstractGenerator
             'disable-toc-links'            => null,
             'toc-text-size-shrink'         => null,
             'xsl-style-sheet'              => null,
+            'viewport-size'                => null,
             'redirect-delay'               => null, // old v0.9
         ));
     }
