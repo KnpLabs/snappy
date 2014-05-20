@@ -132,6 +132,7 @@ class Pdf extends AbstractGenerator
             'enable-javascript'            => null,
             'javascript-delay'             => null,
             'load-error-handling'          => null,
+            'load-media-error-handling'    => null,
             'disable-local-file-access'    => null,
             'enable-local-file-access'     => null,
             'minimum-font-size'            => null,
