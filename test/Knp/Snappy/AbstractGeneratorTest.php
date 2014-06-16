@@ -312,7 +312,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('getOutput')
             ->with(
-                $this->equalTo('the_temporary_file'),
+                $this->equalTo(array('the_temporary_file')),
                 $this->equalTo(array('foo' => 'bar'))
             )
             ->will($this->returnValue('the output'))
@@ -325,6 +325,57 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->assertEquals('the output', $media->getOutputFromHtml('<html>foo</html>', array('foo' => 'bar')));
+    }
+
+    public function testGetOutputFromHtmlWithMultipleHtmlBlocks()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\AbstractGenerator',
+            array(
+                'configure',
+                'getOutput',
+                'createTemporaryFile',
+                'unlink'
+            ),
+            array(),
+            '',
+            false
+        );
+
+        $media
+            ->expects($this->exactly(2))
+            ->method('createTemporaryFile')
+            ->withConsecutive(
+                array($this->equalTo('<html>foo 1</html>'), $this->equalTo('html')),
+                array($this->equalTo('<html>foo 2</html>'), $this->equalTo('html'))
+            )
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue('the_temporary_file'),
+                    $this->returnValue('the_temporary_file_2')
+                )
+            );
+
+        $media
+            ->expects($this->once())
+            ->method('getOutput')
+            ->with(
+                $this->equalTo(array('the_temporary_file', 'the_temporary_file_2')),
+                $this->equalTo(array())
+            )
+            ->will($this->returnValue('the output'));
+
+        $media
+            ->expects($this->exactly(2))
+            ->method('unlink')
+            ->withConsecutive(
+                array($this->equalTo('the_temporary_file')),
+                array($this->equalTo('the_temporary_file_2'))
+            )
+            ->will($this->returnValue(true))
+        ;
+
+        $this->assertEquals('the output', $media->getOutputFromHtml(array('<html>foo 1</html>', '<html>foo 2</html>'), array()));
     }
 
     public function testMergeOptions()

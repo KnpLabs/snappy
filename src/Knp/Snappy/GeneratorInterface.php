@@ -46,7 +46,7 @@ interface GeneratorInterface
     /**
      * Returns the output of the media generated from the given HTML
      *
-     * @param  string $html    The HTML to be converted
+     * @param  array|string $html    The HTML to be converted
      * @param  array  $options An array of options for this output only
      *
      * @return string
