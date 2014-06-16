@@ -166,7 +166,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     public function getOutputFromHtml($html, array $options = array())
     {
-        $fileNames = [];
+        $fileNames = array();
         if (is_array($html)) {
             foreach ($html as $htmlInput) {
                 $fileNames[] = $this->createTemporaryFile($htmlInput, 'html');
