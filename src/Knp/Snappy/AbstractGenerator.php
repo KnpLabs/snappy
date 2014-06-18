@@ -22,9 +22,10 @@ abstract class AbstractGenerator implements GeneratorInterface
 
     /**
      * Constructor
-     * @param $binary
-     * @param array $options
-     * @param array $env
+     *
+     * @param string $binary
+     * @param array  $options
+     * @param array  $env
      */
     public function __construct($binary, array $options = array(), array $env = null)
     {
@@ -67,8 +68,9 @@ abstract class AbstractGenerator implements GeneratorInterface
      * Sets an option. Be aware that option values are NOT validated and that
      * it is your responsibility to validate user inputs
      *
-     * @param $name
-     * @param $value
+     * @param string $name  The option to set
+     * @param mixed  $value The value (NULL to unset)
+     *
      * @throws \InvalidArgumentException
      */
     public function setOption($name, $value)
@@ -224,8 +226,9 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Adds an option
      *
-     * @param $name
-     * @param  null                      $default
+     * @param string $name    The name
+     * @param mixed  $default An optional default value
+     *
      * @throws \InvalidArgumentException
      */
     protected function addOption($name, $default = null)
@@ -444,8 +447,10 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Prepares the specified output
      *
-     * @param $filename
-     * @param $overwrite
+     * @param string  $filename  The output filename
+     * @param boolean $overwrite Whether to overwrite the file if it already
+     *                           exist
+     *
      * @throws Exception\FileAlreadyExistsException
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
