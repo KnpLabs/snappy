@@ -312,7 +312,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('getOutput')
             ->with(
-                $this->equalTo('the_temporary_file'),
+                $this->equalTo(array('the_temporary_file')),
                 $this->equalTo(array('foo' => 'bar'))
             )
             ->will($this->returnValue('the output'))
@@ -325,6 +325,48 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->assertEquals('the output', $media->getOutputFromHtml('<html>foo</html>', array('foo' => 'bar')));
+    }
+
+    public function testGetOutputFromHtmlWithHtmlArray()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\AbstractGenerator',
+            array(
+                'configure',
+                'getOutput',
+                'createTemporaryFile',
+                'unlink'
+            ),
+            array(),
+            '',
+            false
+        );
+        $media
+            ->expects($this->once())
+            ->method('createTemporaryFile')
+            ->with(
+                $this->equalTo('<html>foo</html>'),
+                $this->equalTo('html')
+            )
+            ->will($this->returnValue('the_temporary_file'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('getOutput')
+            ->with(
+                $this->equalTo(array('the_temporary_file')),
+                $this->equalTo(array('foo' => 'bar'))
+            )
+            ->will($this->returnValue('the output'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('unlink')
+            ->with($this->equalTo('the_temporary_file'))
+            ->will($this->returnValue(true))
+        ;
+
+        $this->assertEquals('the output', $media->getOutputFromHtml(array('<html>foo</html>'), array('foo' => 'bar')));
     }
 
     public function testMergeOptions()
