@@ -25,7 +25,7 @@ Add to your `composer.json`:
 ```php
 <?php
 
-require_once '/path/to/snappy/src/autoload.php';
+require_once '/path/to/vendor/autoload.php';
 
 use Knp\Snappy\Pdf;
 
