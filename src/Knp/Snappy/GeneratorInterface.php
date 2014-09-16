@@ -25,7 +25,7 @@ interface GeneratorInterface
     /**
      * Generates the output media file from the given HTML
      *
-     * @param  string $html    The HTML to be converted
+     * @param  array|string $html    The HTML to be converted
      * @param  string $output  The output media filename
      * @param  array  $options An array of options for this generation only
      * @param  bool   $overwrite Overwrite the file if it exists. If not, throw an InvalidArgumentException
