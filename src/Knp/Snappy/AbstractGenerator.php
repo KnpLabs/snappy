@@ -221,7 +221,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      * @param array|string  $input      The input file
      * @param string        $output     The ouput file
      * @param array         $options    An optional array of options that will be used
- *                                      only for this command
+     *                                  only for this command
      *
      * @return string
      */
