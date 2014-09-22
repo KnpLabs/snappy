@@ -221,13 +221,57 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('generate')
             ->with(
-                $this->equalTo('the_temporary_file'),
+                $this->equalTo(array('the_temporary_file')),
                 $this->equalTo('the_output_file'),
                 $this->equalTo(array('foo' => 'bar'))
             )
         ;
 
         $media->generateFromHtml('<html>foo</html>', 'the_output_file', array('foo' => 'bar'));
+    }
+
+    public function testGenerateFromHtmlWithHtmlArray()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\AbstractGenerator',
+            array(
+                'configure',
+                'generate',
+                'createTemporaryFile',
+                'unlink'
+            ),
+            array(
+                'the_binary'
+            ),
+            '',
+            false
+        );
+        $media
+            ->expects($this->once())
+            ->method('createTemporaryFile')
+            ->with(
+                $this->equalTo('<html>foo</html>'),
+                $this->equalTo('html')
+            )
+            ->will($this->returnValue('the_temporary_file'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('unlink')
+            ->with($this->equalTo('the_temporary_file'))
+            ->will($this->returnValue(true))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('generate')
+            ->with(
+                $this->equalTo(array('the_temporary_file')),
+                $this->equalTo('the_output_file'),
+                $this->equalTo(array('foo' => 'bar'))
+            )
+        ;
+
+        $media->generateFromHtml(array('<html>foo</html>'), 'the_output_file', array('foo' => 'bar'));
     }
 
     public function testGetOutput()

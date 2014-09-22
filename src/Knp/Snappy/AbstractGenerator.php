@@ -140,11 +140,20 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     public function generateFromHtml($html, $output, array $options = array(), $overwrite = false)
     {
-        $filename = $this->createTemporaryFile($html, 'html');
+        $fileNames = array();
+        if (is_array($html)) {
+            foreach ($html as $htmlInput) {
+                $fileNames[] = $this->createTemporaryFile($htmlInput, 'html');
+            }
+        } else {
+            $fileNames[] = $this->createTemporaryFile($html, 'html');
+        }
 
-        $this->generate($filename, $output, $options, $overwrite);
+        $this->generate($fileNames, $output, $options, $overwrite);
 
-        $this->unlink($filename);
+        foreach ($fileNames as $filename) {
+            $this->unlink($filename);
+        }
     }
 
     /**
@@ -209,10 +218,10 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * Returns the command for the given input and output files
      *
-     * @param string $input   The input file
-     * @param string $output  The ouput file
-     * @param array  $options An optional array of options that will be used
-     *                        only for this command
+     * @param array|string  $input      The input file
+     * @param string        $output     The ouput file
+     * @param array         $options    An optional array of options that will be used
+     *                                  only for this command
      *
      * @return string
      */
