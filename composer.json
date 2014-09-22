@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.3.0"
     },
     "require-dev": {
         "symfony/process": "~2.1"
