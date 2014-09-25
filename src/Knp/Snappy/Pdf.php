@@ -52,11 +52,11 @@ class Pdf extends AbstractGenerator
         parent::generate($input, $output, $options, $overwrite);
 
         // to delete header or footer generated files
-        if (array_key_exists('header-html', $options)) {
+        if (array_key_exists('header-html', $options) && !filter_var($options['header-html'], FILTER_VALIDATE_URL)) {
             $this->unlink($options['header-html']);
         }
 
-        if (array_key_exists('footer-html', $options)) {
+        if (array_key_exists('footer-html', $options) && !filter_var($options['footer-html'], FILTER_VALIDATE_URL)) {
             $this->unlink($options['footer-html']);
         }
     }
