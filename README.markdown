@@ -10,14 +10,8 @@ You will have to download wkhtmltopdf `0.12.x` in order to use Snappy.
 
 ## Installation using [Composer](http://getcomposer.org/)
 
-Add to your `composer.json`:
-
-```json
-{
-    "require" :  {
-        "knplabs/knp-snappy": "*"
-    }
-}
+```bash
+$ composer require knplabs/knp-snappy
 ```
 
 ## Usage
