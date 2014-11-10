@@ -29,14 +29,12 @@ class Pdf extends AbstractGenerator
      */
     protected function handleOptions(array $options = array())
     {
-        $headerHtml = isset($options['header-html']) ? $options['header-html'] : null;
-        if (null !== $headerHtml && !filter_var($headerHtml, FILTER_VALIDATE_URL) && !$this->isFile($headerHtml)) {
-            $options['header-html'] = $this->createTemporaryFile($headerHtml, 'html');
+        if ($this->isFileHeader($options['header-html']) && !$this->isFile($options['header-html'])) {
+            $options['header-html'] = $this->createTemporaryFile($options['header-html'], 'html');
         }
 
-        $footerHtml = isset($options['footer-html']) ? $options['footer-html'] : null;
-        if (null !== $footerHtml && !filter_var($footerHtml, FILTER_VALIDATE_URL) && !$this->isFile($footerHtml)) {
-            $options['footer-html'] = $this->createTemporaryFile($footerHtml, 'html');
+        if ($this->isFileFooter($options['footer-html']) && !$this->isFile($options['footer-html'])) {
+            $options['footer-html'] = $this->createTemporaryFile($options['footer-html'], 'html');
         }
 
         return $options;
@@ -52,13 +50,47 @@ class Pdf extends AbstractGenerator
         parent::generate($input, $output, $options, $overwrite);
 
         // to delete header or footer generated files
-        if (array_key_exists('header-html', $options) && !filter_var($options['header-html'], FILTER_VALIDATE_URL)) {
+        if ($this->isFileHeader($options['header-html']) && $this->isFile($options['header-html'])) {
             $this->unlink($options['header-html']);
         }
 
-        if (array_key_exists('footer-html', $options) && !filter_var($options['footer-html'], FILTER_VALIDATE_URL)) {
+        if ($this->isFileFooter($options['footer-html']) && $this->isFile($options['footer-html'])) {
             $this->unlink($options['footer-html']);
         }
+    }
+
+    /**
+     * @param $options
+     * @return bool
+     */
+    protected function isFileHeader($options)
+    {
+        if ( isset($options['header-html']) )
+        {
+            return !$this->isOptionUrl($options['header-html']);
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isFileFooter()
+    {
+        if ( isset($options['footer-html']) )
+        {
+            return !$this->isOptionUrl($options['footer-html']);
+        }
+        return false;
+    }
+
+    /**
+     * @param $option
+     * @return bool
+     */
+    protected function isOptionUrl($option)
+    {
+        return (bool) filter_var($option, FILTER_VALIDATE_URL);
     }
 
     /**
