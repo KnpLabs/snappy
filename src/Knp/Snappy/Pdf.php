@@ -29,11 +29,11 @@ class Pdf extends AbstractGenerator
      */
     protected function handleOptions(array $options = array())
     {
-        if ($this->isFileHeader($options['header-html']) && !$this->isFile($options['header-html'])) {
+        if ($this->isFileHeader($options) && !$this->isFile($options['header-html'])) {
             $options['header-html'] = $this->createTemporaryFile($options['header-html'], 'html');
         }
 
-        if ($this->isFileFooter($options['footer-html']) && !$this->isFile($options['footer-html'])) {
+        if ($this->isFileFooter($options) && !$this->isFile($options['footer-html'])) {
             $options['footer-html'] = $this->createTemporaryFile($options['footer-html'], 'html');
         }
 
@@ -50,11 +50,11 @@ class Pdf extends AbstractGenerator
         parent::generate($input, $output, $options, $overwrite);
 
         // to delete header or footer generated files
-        if ($this->isFileHeader($options['header-html']) && $this->isFile($options['header-html'])) {
+        if ($this->isFileHeader($options) && $this->isFile($options['header-html'])) {
             $this->unlink($options['header-html']);
         }
 
-        if ($this->isFileFooter($options['footer-html']) && $this->isFile($options['footer-html'])) {
+        if ($this->isFileFooter($options) && $this->isFile($options['footer-html'])) {
             $this->unlink($options['footer-html']);
         }
     }
