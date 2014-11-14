@@ -65,8 +65,7 @@ class Pdf extends AbstractGenerator
      */
     protected function isFileHeader($options)
     {
-        if ( isset($options['header-html']) )
-        {
+        if (isset($options['header-html'])) {
             return !$this->isOptionUrl($options['header-html']);
         }
         return false;
@@ -77,8 +76,7 @@ class Pdf extends AbstractGenerator
      */
     protected function isFileFooter()
     {
-        if ( isset($options['footer-html']) )
-        {
+        if (isset($options['footer-html'])) {
             return !$this->isOptionUrl($options['footer-html']);
         }
         return false;
@@ -90,7 +88,7 @@ class Pdf extends AbstractGenerator
      */
     protected function isOptionUrl($option)
     {
-        return (bool) filter_var($option, FILTER_VALIDATE_URL);
+        return (bool)filter_var($option, FILTER_VALIDATE_URL);
     }
 
     /**
