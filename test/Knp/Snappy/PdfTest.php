@@ -20,6 +20,27 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $testObject->getOutputFromHtml('<html></html>', array());
         $this->assertRegExp("/emptyBinary --lowquality '.*' '.*'/", $testObject->getLastCommand());
     }
+
+    public function testThatSomethingUsingTmpFolder()
+    {
+        $testObject = new PdfSpy();
+        $testObject->setTemporaryFolder(__DIR__);
+
+        $testObject->getOutputFromHtml('<html></html>', array('footer-html' => 'footer'));
+        $this->assertRegExp("/emptyBinary --lowquality --footer-html '.*' '.*' '.*'/", $testObject->getLastCommand());
+    }
+
+    /**
+     * @expectedException PHPUnit_Framework_Error
+     */
+    public function testThatSomethingUsingWrongTmpFolder()
+    {
+        $testObject = new PdfSpy();
+        $testObject->setTemporaryFolder(__DIR__.'/i-dont-exist');
+
+        $testObject->getOutputFromHtml('<html></html>', array('footer-html' => 'footer'));
+    }
+
 }
 
 class PdfSpy extends Pdf
