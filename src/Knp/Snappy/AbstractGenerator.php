@@ -21,6 +21,11 @@ abstract class AbstractGenerator implements GeneratorInterface
     private $defaultExtension;
 
     /**
+     * @var string
+     */
+    protected $temporaryFolder;
+
+    /**
      * Constructor
      *
      * @param string $binary
@@ -346,7 +351,8 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function createTemporaryFile($content = null, $extension = null)
     {
-        $filename = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . uniqid('knp_snappy', true);
+        $filename = rtrim($this->getTemporaryFolder(), DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR . uniqid('knp_snappy', true);
 
         if (null !== $extension) {
             $filename .= '.'.$extension;
@@ -501,6 +507,34 @@ abstract class AbstractGenerator implements GeneratorInterface
                 $directory
             ));
         }
+    }
+
+    /**
+     * Get TemporaryFolder
+     *
+     * @return string
+     */
+    public function getTemporaryFolder()
+    {
+        if ($this->temporaryFolder === null) {
+            return sys_get_temp_dir();
+        }
+
+        return $this->temporaryFolder;
+    }
+
+    /**
+     * Set temporaryFolder
+     *
+     * @param string $temporaryFolder
+     *
+     * @return $this
+     */
+    public function setTemporaryFolder($temporaryFolder)
+    {
+        $this->temporaryFolder = $temporaryFolder;
+
+        return $this;
     }
 
     /**
