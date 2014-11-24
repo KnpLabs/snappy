@@ -26,6 +26,11 @@ abstract class AbstractGenerator implements GeneratorInterface
     protected $temporaryFolder;
 
     /**
+     * @var array
+     */
+    public $temporaryFiles = array();
+
+    /**
      * Constructor
      *
      * @param string $binary
@@ -39,6 +44,11 @@ abstract class AbstractGenerator implements GeneratorInterface
         $this->setBinary($binary);
         $this->setOptions($options);
         $this->env = $env;
+    }
+
+    public function __destruct()
+    {
+        $this->removeTemporaryFiles();
     }
 
     /**
@@ -155,10 +165,6 @@ abstract class AbstractGenerator implements GeneratorInterface
         }
 
         $this->generate($fileNames, $output, $options, $overwrite);
-
-        foreach ($fileNames as $filename) {
-            $this->unlink($filename);
-        }
     }
 
     /**
@@ -171,8 +177,6 @@ abstract class AbstractGenerator implements GeneratorInterface
         $this->generate($input, $filename, $options);
 
         $result = $this->getFileContents($filename);
-
-        $this->unlink($filename);
 
         return $result;
     }
@@ -192,10 +196,6 @@ abstract class AbstractGenerator implements GeneratorInterface
         }
 
         $result = $this->getOutput($fileNames, $options);
-
-        foreach ($fileNames as $filename) {
-            $this->unlink($filename);
-        }
 
         return $result;
     }
@@ -296,7 +296,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      * @param string $output  The output filename
      * @param string $command The generation command
      *
-     * @throws RuntimeException if the output file generation failed
+     * @throws \RuntimeException if the output file generation failed
      */
     protected function checkOutput($output, $command)
     {
@@ -325,7 +325,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      * @param string $stderr  The stderr content
      * @param string $command The run command
      *
-     * @throws RuntimeException if the output file generation failed
+     * @throws \RuntimeException if the output file generation failed
      */
     protected function checkProcessStatus($status, $stdout, $stderr, $command)
     {
@@ -360,9 +360,20 @@ abstract class AbstractGenerator implements GeneratorInterface
 
         if (null !== $content) {
             file_put_contents($filename, $content);
+            $this->temporaryFiles[md5($filename)] = $filename;
         }
 
         return $filename;
+    }
+
+    /**
+     * Removes all temporary files
+     */
+    protected function removeTemporaryFiles()
+    {
+        foreach ($this->temporaryFiles as $file) {
+            $this->unlink($file);
+        }
     }
 
     /**
