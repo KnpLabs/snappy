@@ -25,7 +25,7 @@ class Pdf extends AbstractGenerator
     /**
      * handle options to transform HTML header-html or footer-html into files contains HTML
      * @param array $options
-     * @return array $options Tranformed options
+     * @return array $options Transformed options
      */
     protected function handleOptions(array $options = array())
     {
@@ -48,15 +48,6 @@ class Pdf extends AbstractGenerator
         $options = $this->handleOptions($options);
 
         parent::generate($input, $output, $options, $overwrite);
-
-        // to delete header or footer generated files
-        if ($this->isFileHeader($options) && $this->isFile($options['header-html'])) {
-            $this->unlink($options['header-html']);
-        }
-
-        if ($this->isFileFooter($options) && $this->isFile($options['footer-html'])) {
-            $this->unlink($options['footer-html']);
-        }
     }
 
     /**
