@@ -51,7 +51,7 @@ class Pdf extends AbstractGenerator
     }
 
     /**
-     * @param $options
+     * @param array $options
      * @return bool
      */
     protected function isFileHeader($options)
@@ -63,9 +63,10 @@ class Pdf extends AbstractGenerator
     }
 
     /**
+     * @param array $options
      * @return bool
      */
-    protected function isFileFooter()
+    protected function isFileFooter($options)
     {
         if (isset($options['footer-html'])) {
             return !$this->isOptionUrl($options['footer-html']);
