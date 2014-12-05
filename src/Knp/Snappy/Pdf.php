@@ -87,6 +87,7 @@ class Pdf extends AbstractGenerator
         if (isset($options['cover'])) {
             return !$this->isOptionUrl($options['cover']);
         }
+
         return false;
     }
 
