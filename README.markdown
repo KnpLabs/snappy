@@ -55,6 +55,8 @@ $snappy->setOption('no-background', true);
 $snappy->setOption('allow', array('/path1', '/path2'));
 $snappy->setOption('cookie', array('key' => 'value', 'key2' => 'value2'));
 $snappy->setOption('cover', 'pathToCover.html');
+// .. or pass a cover as html
+$snappy->setOption('cover', '<h1>Bill cover</h1>');
 $snappy->setOption('toc', true);
 ```
 
