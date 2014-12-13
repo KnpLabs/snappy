@@ -15,11 +15,11 @@ class Pdf extends AbstractGenerator
     /**
      * {@inheritDoc}
      */
-    public function __construct($binary = null, array $options = array())
+    public function __construct($binary = null, array $options = array(), array $env = null)
     {
         $this->setDefaultExtension('pdf');
 
-        parent::__construct($binary, $options);
+        parent::__construct($binary, $options, $env );
     }
 
     /**
