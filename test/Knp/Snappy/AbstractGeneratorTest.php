@@ -194,7 +194,6 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'configure',
                 'generate',
                 'createTemporaryFile',
-                'unlink'
             ),
             array(
                 'the_binary'
@@ -210,12 +209,6 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo('html')
             )
             ->will($this->returnValue('the_temporary_file'))
-        ;
-        $media
-            ->expects($this->once())
-            ->method('unlink')
-            ->with($this->equalTo('the_temporary_file'))
-            ->will($this->returnValue(true))
         ;
         $media
             ->expects($this->once())
@@ -238,7 +231,6 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'configure',
                 'generate',
                 'createTemporaryFile',
-                'unlink'
             ),
             array(
                 'the_binary'
@@ -254,12 +246,6 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo('html')
             )
             ->will($this->returnValue('the_temporary_file'))
-        ;
-        $media
-            ->expects($this->once())
-            ->method('unlink')
-            ->with($this->equalTo('the_temporary_file'))
-            ->will($this->returnValue(true))
         ;
         $media
             ->expects($this->once())
@@ -337,7 +323,6 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'configure',
                 'getOutput',
                 'createTemporaryFile',
-                'unlink'
             ),
             array(),
             '',
@@ -360,12 +345,6 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo(array('foo' => 'bar'))
             )
             ->will($this->returnValue('the output'))
-        ;
-        $media
-            ->expects($this->once())
-            ->method('unlink')
-            ->with($this->equalTo('the_temporary_file'))
-            ->will($this->returnValue(true))
         ;
 
         $this->assertEquals('the output', $media->getOutputFromHtml('<html>foo</html>', array('foo' => 'bar')));
@@ -379,7 +358,6 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'configure',
                 'getOutput',
                 'createTemporaryFile',
-                'unlink'
             ),
             array(),
             '',
@@ -402,12 +380,6 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo(array('foo' => 'bar'))
             )
             ->will($this->returnValue('the output'))
-        ;
-        $media
-            ->expects($this->once())
-            ->method('unlink')
-            ->with($this->equalTo('the_temporary_file'))
-            ->will($this->returnValue(true))
         ;
 
         $this->assertEquals('the output', $media->getOutputFromHtml(array('<html>foo</html>'), array('foo' => 'bar')));

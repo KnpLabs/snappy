@@ -10,14 +10,8 @@ You will have to download wkhtmltopdf `0.12.x` in order to use Snappy.
 
 ## Installation using [Composer](http://getcomposer.org/)
 
-Add to your `composer.json`:
-
-```json
-{
-    "require" :  {
-        "knplabs/knp-snappy": "*"
-    }
-}
+```bash
+$ composer require knplabs/knp-snappy
 ```
 
 ## Usage
@@ -61,6 +55,8 @@ $snappy->setOption('no-background', true);
 $snappy->setOption('allow', array('/path1', '/path2'));
 $snappy->setOption('cookie', array('key' => 'value', 'key2' => 'value2'));
 $snappy->setOption('cover', 'pathToCover.html');
+// .. or pass a cover as html
+$snappy->setOption('cover', '<h1>Bill cover</h1>');
 $snappy->setOption('toc', true);
 ```
 
