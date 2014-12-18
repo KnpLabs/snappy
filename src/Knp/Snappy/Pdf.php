@@ -29,6 +29,9 @@ class Pdf extends AbstractGenerator
      */
     protected function handleOptions(array $options = array())
     {
+        $this->hasHtmlHeader = false;
+        $this->hasHtmlFooter = false;
+        
         if ($this->isFileHeader($options) && !$this->isFile($options['header-html'])) {
             $options['header-html'] = $this->createTemporaryFile($options['header-html'], 'html');
         }
