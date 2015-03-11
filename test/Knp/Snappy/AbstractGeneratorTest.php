@@ -756,4 +756,62 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             ),
         );
     }
+    
+    public function testCleanupEmptyTemporaryFiles()
+    {
+        $generator = $this->getMock(
+            'Knp\Snappy\AbstractGenerator',
+            array(
+                'configure',
+                'unlink',
+            ),
+            array(
+                'the_binary'
+            )
+        );
+        $generator
+            ->expects($this->once())
+            ->method('unlink');
+        
+        $create = new \ReflectionMethod($generator, 'createTemporaryFile');
+        $create->setAccessible(true);
+        $create->invoke($generator, null, null);
+        
+        $files = new \ReflectionProperty($generator, 'temporaryFiles');
+        $files->setAccessible(true);
+        $this->assertCount(1, $files->getValue($generator));
+        
+        $remove = new \ReflectionMethod($generator, 'removeTemporaryFiles');
+        $remove->setAccessible(true);
+        $remove->invoke($generator);
+    }
+    
+    public function testleanupTemporaryFiles()
+    {
+        $generator = $this->getMock(
+            'Knp\Snappy\AbstractGenerator',
+            array(
+                'configure',
+                'unlink',
+            ),
+            array(
+                'the_binary'
+            )
+        );
+        $generator
+            ->expects($this->once())
+            ->method('unlink');
+        
+        $create = new \ReflectionMethod($generator, 'createTemporaryFile');
+        $create->setAccessible(true);
+        $create->invoke($generator, '<html/>', 'html');
+        
+        $files = new \ReflectionProperty($generator, 'temporaryFiles');
+        $files->setAccessible(true);
+        $this->assertCount(1, $files->getValue($generator));
+        
+        $remove = new \ReflectionMethod($generator, 'removeTemporaryFiles');
+        $remove->setAccessible(true);
+        $remove->invoke($generator);
+    }
 }

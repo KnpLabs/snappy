@@ -71,7 +71,7 @@ class PdfSpy extends Pdf
     public function getOutput($input, array $options = array())
     {
         $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
-        $this->generate($input, $filename, $options);
+        $this->generate($input, $filename, $options, true);
 
         return "output";
     }
