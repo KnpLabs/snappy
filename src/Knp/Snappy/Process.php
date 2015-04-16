@@ -58,22 +58,24 @@ class Process
 
         $process = proc_open($this->command, $descriptorspec, $pipes, null, $this->env);
 
-        if (is_resource($process)) {
-            // $pipes now looks like this:
-            // 0 => writeable handle connected to child stdin
-            // 1 => readable handle connected to child stdout
-            // 2 => readable handle connected to child stderr
-
-            $this->output = stream_get_contents($pipes[1]);
-            fclose($pipes[1]);
-
-            $this->errorOutput = stream_get_contents($pipes[2]);
-            fclose($pipes[2]);
-
-            // It is important that you close any pipes before calling
-            // proc_close in order to avoid a deadlock
-            $this->exitCode = proc_close($process);
+        if (!is_resource($process)) {
+            throw new \RuntimeException('Unable to launch a new process.');
         }
+
+        // $pipes now looks like this:
+        // 0 => writeable handle connected to child stdin
+        // 1 => readable handle connected to child stdout
+        // 2 => readable handle connected to child stderr
+
+        $this->output = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+
+        $this->errorOutput = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+
+        // It is important that you close any pipes before calling
+        // proc_close in order to avoid a deadlock
+        $this->exitCode = proc_close($process);
     }
 
     /**
