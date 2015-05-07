@@ -43,7 +43,7 @@ abstract class AbstractGenerator implements GeneratorInterface
 
         $this->setBinary($binary);
         $this->setOptions($options);
-        $this->env = $env;
+        $this->env = empty($env) ? null : $env;
     }
 
     public function __destruct()
@@ -361,7 +361,7 @@ abstract class AbstractGenerator implements GeneratorInterface
         if (null !== $content) {
             file_put_contents($filename, $content);
         }
-        
+
         $this->temporaryFiles[] = $filename;
 
         return $filename;
