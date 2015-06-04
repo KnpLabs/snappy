@@ -46,7 +46,7 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $testObject->setTemporaryFolder(__DIR__);
 
         $testObject->getOutputFromHtml('<html></html>', array('footer-html' => 'footer', 'xsl-style-sheet' => 'http://google.com'));
-        $this->assertRegExp("/emptyBinary --lowquality --footer-html '.*.html' --xsl-style-sheet '.*.html' '.*.html' '.*.pdf'/", $testObject->getLastCommand());
+        $this->assertRegExp("/emptyBinary --lowquality --footer-html '.*.html' --xsl-style-sheet '.*.xsl' '.*.html' '.*.pdf'/", $testObject->getLastCommand());
     }
 
 }

@@ -33,9 +33,13 @@ class Pdf extends AbstractGenerator
     protected function handleOptions(array $options = array())
     {
         foreach ($options as $option => $value) {
-            if (in_array($option, $this->optionsWithContentCheck)) {
-                $fileContent = $this->isOptionUrl($value) ? file_get_contents($value) : $value;
-                $options[$option] = $this->createTemporaryFile($fileContent, 'html');
+            if(null === $value){
+                unset($options[$option]);
+                continue;
+            }
+            if (array_key_exists($option, $this->optionsWithContentCheck)) {
+                $fileContent = $value && $this->isOptionUrl($value) ? file_get_contents($value) : $value;
+                $options[$option] = $this->createTemporaryFile($fileContent, $this->optionsWithContentCheck[$option]);
             }
         }
 
@@ -47,7 +51,7 @@ class Pdf extends AbstractGenerator
      */
     public function generate($input, $output, array $options = array(), $overwrite = false)
     {
-        $options = $this->handleOptions($options);
+        $options = $this->handleOptions(array_merge($this->getOptions(), $options));
 
         parent::generate($input, $output, $options, $overwrite);
     }
@@ -199,10 +203,10 @@ class Pdf extends AbstractGenerator
     protected function setOptionsWithContentCheck()
     {
         $this->optionsWithContentCheck = array(
-            'header-html',
-            'footer-html',
-            'cover',
-            'xsl-style-sheet',
+            'header-html'    => 'html',
+            'footer-html'    => 'html',
+            'cover'          => 'html',
+            'xsl-style-sheet'=> 'xsl',
         );
     }
 }
