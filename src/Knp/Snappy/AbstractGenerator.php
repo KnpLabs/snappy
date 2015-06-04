@@ -88,10 +88,12 @@ abstract class AbstractGenerator implements GeneratorInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function setOption($name, $value)
+    public function setOption($name, $value, $force = false)
     {
-        if (!array_key_exists($name, $this->options)) {
-            throw new \InvalidArgumentException(sprintf('The option \'%s\' does not exist.', $name));
+        if(!$force) {
+            if (!array_key_exists($name, $this->options)) {
+                throw new \InvalidArgumentException(sprintf('The option \'%s\' does not exist.', $name));
+            }
         }
 
         $this->options[$name] = $value;
