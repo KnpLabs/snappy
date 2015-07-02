@@ -33,7 +33,7 @@ class Pdf extends AbstractGenerator
     protected function handleOptions(array $options = array())
     {
         foreach ($options as $option => $value) {
-            if(null === $value){
+            if (null === $value) {
                 unset($options[$option]);
                 continue;
             }

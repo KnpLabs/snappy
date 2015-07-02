@@ -48,7 +48,6 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $testObject->getOutputFromHtml('<html></html>', array('footer-html' => 'footer', 'xsl-style-sheet' => 'http://google.com'));
         $this->assertRegExp("/emptyBinary --lowquality --footer-html '.*.html' --xsl-style-sheet '.*.xsl' '.*.html' '.*.pdf'/", $testObject->getLastCommand());
     }
-
 }
 
 class PdfSpy extends Pdf
