@@ -230,6 +230,7 @@ class Pdf extends AbstractGenerator
             'xsl-style-sheet'              => null,
             'viewport-size'                => null,
             'redirect-delay'               => null, // old v0.9
+            'cache-dir'                    => null,
         ));
     }
 }
