@@ -51,7 +51,7 @@ class Pdf extends AbstractGenerator
      */
     public function generate($input, $output, array $options = array(), $overwrite = false)
     {
-        $options = $this->handleOptions(array_merge($this->getOptions(), $options));
+        $options = $this->handleOptions($this->mergeOptions($options));
 
         parent::generate($input, $output, $options, $overwrite);
     }
