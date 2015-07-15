@@ -2,7 +2,15 @@
 
 *Q*: It does not work and everything is broken.
 
-*A*: Please, try to execute the command manually in your shell. Snappy is a thin PHP wrapper and most likely your issue is with wkhtmltopdf itself or is already described in this FAQ. If not, feel free to open the issue in Snappy issue tracker
+*A*: Please, try to execute the command manually in your shell. Snappy is a thin PHP wrapper and most likely your issue is with wkhtmltopdf itself or is already described in this FAQ. If not, feel free to open the issue in Snappy issue tracker.
+
+How to get the command to execute - 
+
+```php
+var_dump($snappy->getCommand('http://google.com', 'test.pdf'), array('some' => 'option'));
+```
+
+Please, note that wkhtmltopdf takes only input url or file name as a source.
 
 
 *Q*: My tables are broken when it is rendered on multiple pages with break.
