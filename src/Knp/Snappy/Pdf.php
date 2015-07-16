@@ -58,6 +58,36 @@ class Pdf extends AbstractGenerator
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function generateFromHtml($html, $output, array $options = array(), $overwrite = false)
+    {
+        $options = $this->handleOptions($options);
+
+        return parent::generateFromHtml($html, $output, $options, $overwrite);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOutput($input, array $options = array())
+    {
+        $options = $this->handleOptions($options);
+
+        return parent::getOutput($input, $options);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOutputFromHtml($html, array $options = array())
+    {
+        $options = $this->handleOptions($options);
+
+        return parent::getOutputFromHtml($html, $options);
+    }
+
+    /**
      * @param array $options
      * @return bool
      */
