@@ -58,6 +58,7 @@ $snappy->setOption('cover', 'pathToCover.html');
 // .. or pass a cover as html
 $snappy->setOption('cover', '<h1>Bill cover</h1>');
 $snappy->setOption('toc', true);
+$snappy->setOption('cache-dir', '/path/to/cache/dir');
 ```
 
 ## wkhtmltopdf binary as composer dependencies
