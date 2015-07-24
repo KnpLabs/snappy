@@ -31,7 +31,7 @@ class Pdf extends AbstractGenerator
     {
         $this->hasHtmlHeader = false;
         $this->hasHtmlFooter = false;
-        
+
         if ($this->isFileHeader($options) && !$this->isFile($options['header-html'])) {
             $options['header-html'] = $this->createTemporaryFile($options['header-html'], 'html');
         }
@@ -42,6 +42,10 @@ class Pdf extends AbstractGenerator
 
         if ($this->isFileCover($options) && !$this->isFile($options['cover'])) {
             $options['cover'] = $this->createTemporaryFile($options['cover'], 'html');
+        }
+
+        if (isset($options['xsl-style-sheet']) && $this->isOptionUrl($options['xsl-style-sheet'])) {
+            $options['xsl-style-sheet'] = $this->createTemporaryFile(file_get_contents($options['xsl-style-sheet']), 'xsl');
         }
 
         return $options;
