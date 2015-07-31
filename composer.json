@@ -19,6 +19,9 @@
         "php": ">=5.3.3",
         "symfony/process": "~2.1"
     },
+    "require-dev": {
+        "phpunit/phpunit": "4.7.*"
+    },
     "suggest": {
         "h4cc/wkhtmltopdf-amd64": "Provide wkhtmltopdf-amd64 binary, use version `0.12.0` as dependency",
         "h4cc/wkhtmltopdf-i386": "Provide wkhtmltopdf-i386 binary, use version `0.12.0` as dependency"
@@ -56,5 +59,8 @@
         "branch-alias": {
             "dev-master": "0.3.x-dev"
         }
+    },
+    "config": {
+        "bin-dir": "bin"
     }
 }
