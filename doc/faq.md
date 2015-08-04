@@ -48,3 +48,8 @@ table, tr, td, th, tbody, thead, tfoot {
    new page
 </div>
 ```
+
+
+*Q*: It says ```wkhtmltopdf: cannot connect to X server```.
+
+*A*: Please, check your `wkhtmltopdf` version. It is recommended to use at least `0.12.2.1`. You can download it from http://wkhtmltopdf.org/downloads.html or install via composer for Linux servers as stated in [README](https://github.com/KnpLabs/snappy#wkhtmltopdf-binary-as-composer-dependencies). If there is no possibility to update `wkhtmltopdf`, please check http://stackoverflow.com/questions/9604625/wkhtmltopdf-cannot-connect-to-x-server
