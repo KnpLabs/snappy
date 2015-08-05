@@ -103,8 +103,9 @@ $snappy = new Pdf($myProjectDirectory . '/vendor/h4cc/wkhtmltopdf-amd64/bin/wkht
 
 ## Some use cases
 
-If you want to generate table of contents and you want to use custom XSL stylesheet, do the following
-```
+If you want to generate table of contents and you want to use custom XSL stylesheet, do the following:
+
+```php
 <?php
 $snappy = new Pdf('/path/to/binary');
 
