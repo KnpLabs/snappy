@@ -112,6 +112,7 @@ $snappy->setOption('toc', true);
 $snappy->setOption('xsl-style-sheet', 'http://path/to/stylesheet.xsl') //or local file;
 
 $snappy->generateFromHtml('<p>Some content</p>', 'test.pdf');
+```
 
 ## Credits
 
