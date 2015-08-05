@@ -36,17 +36,45 @@ class PdfTest extends \PHPUnit_Framework_TestCase
     public function testThatSomethingUsingWrongTmpFolder()
     {
         $testObject = new PdfSpy();
-        $testObject->setTemporaryFolder(__DIR__.'/i-dont-exist');
+        $testObject->setTemporaryFolder(__DIR__ . '/i-dont-exist');
 
         $testObject->getOutputFromHtml('<html></html>', array('footer-html' => 'footer'));
     }
 
-    public function testOptionsAreCorrectlySavedIfItIsLocalOrRemoteContent(){
+    public function testOptionsAreCorrectlySavedIfItIsLocalOrRemoteContent()
+    {
         $testObject = new PdfSpy();
         $testObject->setTemporaryFolder(__DIR__);
 
         $testObject->getOutputFromHtml('<html></html>', array('footer-html' => 'footer', 'xsl-style-sheet' => 'http://google.com'));
         $this->assertRegExp("/emptyBinary --lowquality --footer-html '.*.html' --xsl-style-sheet '.*.xsl' '.*.html' '.*.pdf'/", $testObject->getLastCommand());
+
+    }
+
+    public function testRemovesLocalFilesOnDestruct()
+    {
+        $pdf = new PdfSpy();
+        $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
+        $method->setAccessible(true);
+        $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
+        $this->assertEquals(1, count($pdf->temporaryFiles));
+        $this->assertTrue(file_exists(reset($pdf->temporaryFiles)));
+        $pdf->__destruct();
+        $this->assertFalse(file_exists(reset($pdf->temporaryFiles)));
+    }
+
+    public function testRemovesLocalFilesOnError()
+    {
+        $pdf = new PdfSpy();
+        $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
+        $method->setAccessible(true);
+        $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
+        $this->assertEquals(1, count($pdf->temporaryFiles));
+
+        $this->setExpectedException('PHPUnit_Framework_Error');
+        trigger_error('test error', E_USER_ERROR);
+
+        $this->assertFalse(file_exists(reset($pdf->temporaryFiles)));
     }
 }
 
