@@ -30,10 +30,7 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $this->assertRegExp("/emptyBinary --lowquality --footer-html '.*' '.*' '.*'/", $testObject->getLastCommand());
     }
 
-    /**
-     * @expectedException PHPUnit_Framework_Error
-     */
-    public function testThatSomethingUsingWrongTmpFolder()
+    public function testThatSomethingUsingNonexistentTmpFolder()
     {
         $testObject = new PdfSpy();
         $testObject->setTemporaryFolder(__DIR__ . '/i-dont-exist');

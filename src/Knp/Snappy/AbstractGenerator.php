@@ -354,8 +354,17 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function createTemporaryFile($content = null, $extension = null)
     {
-        $filename = rtrim($this->getTemporaryFolder(), DIRECTORY_SEPARATOR)
-            . DIRECTORY_SEPARATOR . uniqid('knp_snappy', true);
+        $dir = rtrim($this->getTemporaryFolder(), DIRECTORY_SEPARATOR);
+
+        if (!is_dir($dir)) {
+            if (false === @mkdir($dir, 0777, true) && !is_dir($dir)) {
+                throw new \RuntimeException(sprintf("Unable to create directory: %s\n", $dir));
+            }
+        } elseif (!is_writable($dir)) {
+            throw new \RuntimeException(sprintf("Unable to write in directory: %s\n", $dir));
+        }
+
+        $filename = $dir . DIRECTORY_SEPARATOR . uniqid('knp_snappy', true);
 
         if (null !== $extension) {
             $filename .= '.'.$extension;
