@@ -12,18 +12,6 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Knp\Snappy\Pdf', $testObject);
     }
 
-    public function testThatSomething()
-    {
-        $q = self::SHELL_ARG_QUOTE_REGEX;
-        $testObject = new PdfSpy();
-
-        $testObject->getOutputFromHtml('<html></html>', array('footer-html' => 'footer'));
-        $this->assertRegExp('/emptyBinary --lowquality --footer-html '.$q.'.*'.$q.' '.$q.'.*'.$q.' '.$q.'.*'.$q.'/', $testObject->getLastCommand());
-
-        $testObject->getOutputFromHtml('<html></html>', array());
-        $this->assertRegExp('/emptyBinary --lowquality '.$q.'.*'.$q.' '.$q.'.*'.$q.'/', $testObject->getLastCommand());
-    }
-
     public function testThatSomethingUsingTmpFolder()
     {
         $q = self::SHELL_ARG_QUOTE_REGEX;
@@ -42,14 +30,46 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $testObject->getOutputFromHtml('<html></html>', array('footer-html' => 'footer'));
     }
 
-    public function testOptionsAreCorrectlySavedIfItIsLocalOrRemoteContent()
+    /**
+     * @dataProvider dataOptions
+     */
+    public function testOptions(array $options, $expectedRegex)
     {
-        $q = self::SHELL_ARG_QUOTE_REGEX;
         $testObject = new PdfSpy();
-        $testObject->setTemporaryFolder(__DIR__);
+        $testObject->getOutputFromHtml('<html></html>', $options);
+        $this->assertRegExp($expectedRegex, $testObject->getLastCommand());
+    }
 
-        $testObject->getOutputFromHtml('<html></html>', array('footer-html' => 'footer', 'xsl-style-sheet' => 'http://google.com'));
-        $this->assertRegExp('/emptyBinary --lowquality --footer-html '.$q.'.*\.html'.$q.' --xsl-style-sheet '.$q.'.*\.xsl'.$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/', $testObject->getLastCommand());
+    public function dataOptions() {
+        $q = self::SHELL_ARG_QUOTE_REGEX;
+
+        return array(
+            // no options
+            array(
+                array(),
+                '/emptyBinary --lowquality '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
+            ),
+            // just pass the given footer URL
+            array(
+                array('footer-html' => 'http://google.com'),
+                '/emptyBinary --lowquality --footer-html '.$q.'http:\/\/google\.com'.$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
+            ),
+            // just pass the given footer file
+            array(
+                array('footer-html' => __FILE__),
+                '/emptyBinary --lowquality --footer-html '.$q.preg_quote(__FILE__, '/').$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
+            ),
+            // save the given footer HTML string into a temporary file and pass that filename
+            array(
+                array('footer-html' => 'footer'),
+                '/emptyBinary --lowquality --footer-html '.$q.'.*\.html'.$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
+            ),
+            // save the content of the given XSL URL to a file and pass that filename
+            array(
+                array('xsl-style-sheet' => 'http://google.com'),
+                '/emptyBinary --lowquality --xsl-style-sheet '.$q.'.*\.xsl'.$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
+            ),
+        );
     }
 
     public function testRemovesLocalFilesOnDestruct()
