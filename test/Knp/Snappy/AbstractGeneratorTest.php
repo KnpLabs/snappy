@@ -483,7 +483,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'http://the.url/',
                 '/the/path',
                 array(),
-                "{$theBinary} 'http://the.url/' '/the/path'"
+                $theBinary . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
             ),
             array(
                 $theBinary,
@@ -494,7 +494,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                     'bar'   => false,
                     'baz'   => array()
                 ),
-                "{$theBinary} 'http://the.url/' '/the/path'"
+                $theBinary . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
             ),
             array(
                 $theBinary,
@@ -505,7 +505,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                     'bar'   => array('barvalue1', 'barvalue2'),
                     'baz'   => true
                 ),
-                "{$theBinary} --foo 'foovalue' --bar 'barvalue1' --bar 'barvalue2' --baz 'http://the.url/' '/the/path'"
+                $theBinary . ' --foo ' . escapeshellarg('foovalue') . ' --bar ' . escapeshellarg('barvalue1') . ' --bar ' . escapeshellarg('barvalue2') . ' --baz ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
             ),
             array(
                 $theBinary,
@@ -515,7 +515,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                     'cookie'   => array('session' => 'bla', 'phpsess' => 12),
                     'no-background'   => '1',
                 ),
-                "{$theBinary} --cookie 'session' 'bla' --cookie 'phpsess' '12' --no-background '1' 'http://the.url/' '/the/path'"
+                $theBinary . ' --cookie ' . escapeshellarg('session') . ' ' . escapeshellarg('bla') . ' --cookie ' .  escapeshellarg('phpsess') . ' ' . escapeshellarg('12') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
             ),
             array(
                 $theBinary,
@@ -525,7 +525,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                     'allow'   => array('/path1', '/path2'),
                     'no-background'   => '1',
                 ),
-                "{$theBinary} --allow '/path1' --allow '/path2' --no-background '1' 'http://the.url/' '/the/path'"
+                $theBinary . ' --allow ' . escapeshellarg('/path1') . ' --allow ' . escapeshellarg('/path2') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
             ),
         );
     }
