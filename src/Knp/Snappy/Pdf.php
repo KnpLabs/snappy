@@ -26,7 +26,7 @@ class Pdf extends AbstractGenerator
     }
 
     /**
-     * handle options to transform HTML header-html or footer-html into files contains HTML
+     * Handle options to transform HTML strings into temporary files containing HTML
      * @param array $options
      * @return array $options Transformed options
      */
@@ -37,9 +37,15 @@ class Pdf extends AbstractGenerator
                 unset($options[$option]);
                 continue;
             }
-            if (array_key_exists($option, $this->optionsWithContentCheck)) {
-                $fileContent = $value && $this->isOptionUrl($value) ? file_get_contents($value) : $value;
-                $options[$option] = $this->createTemporaryFile($fileContent, $this->optionsWithContentCheck[$option]);
+
+            if (!empty($value) && array_key_exists($option, $this->optionsWithContentCheck)) {
+                $saveToTempFile = !$this->isFile($value) && !$this->isOptionUrl($value);
+                $fetchUrlContent = $option === 'xsl-style-sheet' && $this->isOptionUrl($value);
+
+                if ($saveToTempFile || $fetchUrlContent) {
+                    $fileContent = $fetchUrlContent ? file_get_contents($value) : $value;
+                    $options[$option] = $this->createTemporaryFile($fileContent, $this->optionsWithContentCheck[$option]);
+                }
             }
         }
 
