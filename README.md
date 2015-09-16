@@ -6,6 +6,8 @@ available on OSX, linux, windows.
 
 You will have to download wkhtmltopdf `0.12.x` in order to use Snappy.
 
+Please, check [FAQ](doc/faq.md) before opening a new issue. Snappy is a tiny wrapper around wkhtmltox, so lots of issues are already answered, resolved or wkhtmltox ones.
+
 [![Build Status](https://secure.travis-ci.org/KnpLabs/snappy.png?branch=master)](http://travis-ci.org/KnpLabs/snappy)
 
 ## Installation using [Composer](http://getcomposer.org/)
