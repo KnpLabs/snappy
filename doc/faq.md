@@ -52,7 +52,7 @@ table, tr, td, th, tbody, thead, tfoot {
 
 ###### *Q*: It says `wkhtmltopdf: cannot connect to X server` or `xvfb-run: error: Xvfb failed to start.`
 
-*A*: Please, check your `wkhtmltopdf` version. It is recommended to use at least `0.12.2.1` and what is important - staring from `wkhtmltopdf >= 0.12.2` it doesn't require X server or emulation anymore. You can download new version from http://wkhtmltopdf.org/downloads.html or install via composer for Linux servers as stated in [README](https://github.com/KnpLabs/snappy#wkhtmltopdf-binary-as-composer-dependencies). If there is no possibility to update `wkhtmltopdf`, please check http://stackoverflow.com/questions/9604625/wkhtmltopdf-cannot-connect-to-x-server
+*A*: Please, check your `wkhtmltopdf` version. It is recommended to use at least `0.12.2.1` and what is important - starting from `wkhtmltopdf >= 0.12.2` it doesn't require X server or emulation anymore. You can download new version from http://wkhtmltopdf.org/downloads.html or install via composer for Linux servers as stated in [README](https://github.com/KnpLabs/snappy#wkhtmltopdf-binary-as-composer-dependencies). If there is no possibility to update `wkhtmltopdf`, please check http://stackoverflow.com/questions/9604625/wkhtmltopdf-cannot-connect-to-x-server
 
 
 ###### *Q*: My PDF is always generated for a small screen resolution\I always receive a mobile version.
