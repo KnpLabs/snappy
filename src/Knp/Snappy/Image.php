@@ -51,6 +51,7 @@ class Image extends AbstractGenerator
             'enable-javascript'            => null,    // Do allow web pages to run javascript (default)
             'javascript-delay'             => null,    // Wait some milliseconds for javascript finish (default 200)
             'load-error-handling'          => null,    // Specify how to handle pages that fail to load: abort, ignore or skip (default abort)
+            'load-media-error-handling'    => null,    // Specify how to handle media files that fail to load: abort, ignore or skip (default ignore)
             'disable-local-file-access'    => null,    // Do not allowed conversion of a local file to read in other local files, unless explecitily allowed with allow
             'enable-local-file-access'     => null,    // Allowed conversion of a local file to read in other local files. (default)
             'minimum-font-size'            => null,    // Minimum font size
