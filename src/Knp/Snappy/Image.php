@@ -17,7 +17,7 @@ class Image extends AbstractGenerator
      */
     public function __construct($binary = null, array $options = array(), array $env = null)
     {
-        $this->setErrorStatuses(1, 2, 'X', 'Y', 'Z', 'A', 'B', 'C');
+        $this->setErrorStatuses(array(1, 2, 'X', 'Y', 'Z', 'A', 'B', 'C'));
         $this->setDefaultExtension('jpg');
 
         parent::__construct($binary, $options, $env);
