@@ -62,3 +62,7 @@ table, tr, td, th, tbody, thead, tfoot {
 ###### *Q*: My chars with accents in HTML document are not correctly rendered.
 
 *A*: Make sure that you have set `<meta charset="UTF-8" />`
+
+###### *Q*: My document text is not correctly rendered, it is just black squares
+
+*A*: Make sure you have installed `xfonts-base`, `xfonts-75dpi` and `urw-fonts`
