@@ -18,7 +18,7 @@ interface GeneratorInterface
      * @param  array|string $input   The input HTML filename or URL
      * @param  string $output  The output media filename
      * @param  array  $options An array of options for this generation only
-     * @param  bool   $overwrite Overwrite the file if it exists. If not, throw an InvalidArgumentException
+     * @param  bool   $overwrite Overwrite the file if it exists. If not, throw a FileAlreadyExistsException
      */
     function generate($input, $output, array $options = array(), $overwrite = false);
 
@@ -28,7 +28,7 @@ interface GeneratorInterface
      * @param  array|string $html    The HTML to be converted
      * @param  string $output  The output media filename
      * @param  array  $options An array of options for this generation only
-     * @param  bool   $overwrite Overwrite the file if it exists. If not, throw an InvalidArgumentException
+     * @param  bool   $overwrite Overwrite the file if it exists. If not, throw a FileAlreadyExistsException
      */
     function generateFromHtml($html, $output, array $options = array(), $overwrite = false);
 
