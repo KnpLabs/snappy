@@ -95,6 +95,7 @@ $snappy = new Pdf($myProjectDirectory . '/vendor/h4cc/wkhtmltopdf-i386/bin/wkhtm
 $snappy = new Pdf($myProjectDirectory . '/vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64');
 ```
 
+*N.B.* These static binaries are extracted from  [Debian7 packages](https://github.com/h4cc/wkhtmltopdf-amd64/issues/13#issuecomment-150948179), so it might not be compatible with non-debian based linux distros 
 ## Some use cases
 
 If you want to generate table of contents and you want to use custom XSL stylesheet, do the following:
