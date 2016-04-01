@@ -57,7 +57,7 @@ table, tr, td, th, tbody, thead, tfoot {
 
 ###### *Q*: My PDF is always generated for a small screen resolution\I always receive a mobile version.
 
-*A*: It is well-known issue of wkhtmltopdf, you can check https://github.com/wkhtmltopdf/wkhtmltopdf/issues/1508. One of solutions is to use xvbf and to setup xvbf resolution to desired one.
+*A*: It is well-known issue of wkhtmltopdf, you can check https://github.com/wkhtmltopdf/wkhtmltopdf/issues/1508. One of solutions is to use xvbf and to setup xvbf resolution to desired one though a simple bit of css such as `zoom: .75;` would be sufficient in most cases.
 
 ###### *Q*: My chars with accents in HTML document are not correctly rendered.
 
