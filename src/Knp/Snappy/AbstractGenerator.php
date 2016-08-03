@@ -591,7 +591,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function isFile($filename)
     {
-        return strlen($filename) <= 4096 && is_file($filename);
+        return strlen($filename) <= PHP_MAXPATHLEN && is_file($filename);
     }
 
     /**
