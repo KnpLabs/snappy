@@ -30,8 +30,8 @@
         "wemersonjanuario/wkhtmltopdf-windows": "Provides wkhtmltopdf executable for Windows, use version `~0.12` as dependency"
     },
     "autoload": {
-        "psr-0": {
-            "Knp\\Snappy": "src/"
+        "psr-4": {
+            "Knp\\Snappy\\": "src/Knp/Snappy"
         }
     },
     "extra": {
