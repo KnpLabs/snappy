@@ -20,6 +20,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     private $env;
     private $timeout = false;
     private $defaultExtension;
+    private $errorStatuses = array();
 
     /**
      * @var string
@@ -130,6 +131,24 @@ abstract class AbstractGenerator implements GeneratorInterface
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * Set error statuses
+     */
+    public function setErrorStatuses(array $errorStatuses)
+    {
+        $this->errorStatuses = $errorStatuses;
+    }
+
+    /**
+     * Get error statuses
+     *
+     * @return array
+     */
+    public function getErrorStatuses()
+    {
+        return $this->errorStatuses;
     }
 
     /**
@@ -332,7 +351,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function checkProcessStatus($status, $stdout, $stderr, $command)
     {
-        if (0 !== $status and '' !== $stderr) {
+        if (in_array($status, $this->getErrorStatuses()) and '' !== $stderr) {
             throw new \RuntimeException(sprintf(
                 'The exit status code \'%s\' says something went wrong:'."\n"
                 .'stderr: "%s"'."\n"

@@ -19,6 +19,7 @@ class Pdf extends AbstractGenerator
      */
     public function __construct($binary = null, array $options = array(), array $env = null)
     {
+        $this->setErrorStatuses(array(1, 2, 'X', 'Y', 'Z', 'A', 'B', 'C'));
         $this->setDefaultExtension('pdf');
         $this->setOptionsWithContentCheck();
 
