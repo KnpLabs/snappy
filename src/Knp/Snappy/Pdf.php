@@ -200,6 +200,7 @@ class Pdf extends AbstractGenerator
             'viewport-size'                => null,
             'redirect-delay'               => null, // old v0.9
             'cache-dir'                    => null,
+            'keep-relative-links'          => null,
         ));
     }
 
