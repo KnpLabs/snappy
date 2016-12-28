@@ -210,7 +210,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     public function setBinary($binary)
     {
-        $this->binary = $binary;
+        $this->binary = realpath($binary);
     }
 
     /**
