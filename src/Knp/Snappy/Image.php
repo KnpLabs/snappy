@@ -76,6 +76,7 @@ class Image extends AbstractGenerator
             'width'                        => null,    // Set screen width (default is 1024)
             'window-status'                => null,    // Wait until window.status is equal to this string before rendering page
             'zoom'                         => null,    // Use this zoom factor (default 1)
+            'quiet'                        => null,    // Be less verbose
         ));
     }
 }
