@@ -1,6 +1,6 @@
 # Snappy
 
-Snappy is a PHP5 library allowing thumbnail, snapshot or PDF generation from a url or a html page.
+Snappy is a PHP library allowing thumbnail, snapshot or PDF generation from a url or a html page.
 It uses the excellent webkit-based [wkhtmltopdf and wkhtmltoimage](http://wkhtmltopdf.org/)
 available on OSX, linux, windows.
 
