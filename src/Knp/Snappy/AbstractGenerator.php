@@ -16,7 +16,7 @@ use Symfony\Component\Process\Process;
 abstract class AbstractGenerator implements GeneratorInterface
 {
     private $binary;
-    private $options = array();
+    private $options = [];
     private $env;
     private $timeout = false;
     private $defaultExtension;
@@ -29,7 +29,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * @var array
      */
-    public $temporaryFiles = array();
+    public $temporaryFiles = [];
 
     /**
      * Constructor
@@ -38,7 +38,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      * @param array  $options
      * @param array  $env
      */
-    public function __construct($binary, array $options = array(), array $env = null)
+    public function __construct($binary, array $options = [], array $env = null)
     {
         $this->configure();
 
@@ -46,7 +46,7 @@ abstract class AbstractGenerator implements GeneratorInterface
         $this->setOptions($options);
         $this->env = empty($env) ? null : $env;
 
-        register_shutdown_function(array($this, 'removeTemporaryFiles'));
+        register_shutdown_function([$this, 'removeTemporaryFiles']);
     }
 
     public function __destruct()
@@ -135,7 +135,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * {@inheritDoc}
      */
-    public function generate($input, $output, array $options = array(), $overwrite = false)
+    public function generate($input, $output, array $options = [], $overwrite = false)
     {
         if (null === $this->binary) {
             throw new \LogicException(
@@ -156,9 +156,9 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * {@inheritDoc}
      */
-    public function generateFromHtml($html, $output, array $options = array(), $overwrite = false)
+    public function generateFromHtml($html, $output, array $options = [], $overwrite = false)
     {
-        $fileNames = array();
+        $fileNames = [];
         if (is_array($html)) {
             foreach ($html as $htmlInput) {
                 $fileNames[] = $this->createTemporaryFile($htmlInput, 'html');
@@ -173,7 +173,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * {@inheritDoc}
      */
-    public function getOutput($input, array $options = array())
+    public function getOutput($input, array $options = [])
     {
         $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
 
@@ -187,9 +187,9 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * {@inheritDoc}
      */
-    public function getOutputFromHtml($html, array $options = array())
+    public function getOutputFromHtml($html, array $options = [])
     {
-        $fileNames = array();
+        $fileNames = [];
         if (is_array($html)) {
             foreach ($html as $htmlInput) {
                 $fileNames[] = $this->createTemporaryFile($htmlInput, 'html');
@@ -233,7 +233,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      *
      * @return string
      */
-    public function getCommand($input, $output, array $options = array())
+    public function getCommand($input, $output, array $options = [])
     {
         $options = $this->mergeOptions($options);
 
@@ -399,7 +399,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      *
      * @return string
      */
-    protected function buildCommand($binary, $input, $output, array $options = array())
+    protected function buildCommand($binary, $input, $output, array $options = [])
     {
         $command = $binary;
         $escapedBinary = escapeshellarg($binary);
@@ -431,7 +431,7 @@ abstract class AbstractGenerator implements GeneratorInterface
 
                 } else {
                     // Dont't add '--' if option is "cover"  or "toc".
-                    if (in_array($key, array('toc', 'cover'))) {
+                    if (in_array($key, ['toc', 'cover'])) {
                         $command .= ' '.$key.' '.escapeshellarg($option);
                     } else {
                         $command .= ' --'.$key.' '.escapeshellarg($option);
@@ -483,11 +483,11 @@ abstract class AbstractGenerator implements GeneratorInterface
 
         $process->run();
 
-        return array(
+        return [
             $process->getExitCode(),
             $process->getOutput(),
             $process->getErrorOutput(),
-        );
+        ];
     }
 
     /**
