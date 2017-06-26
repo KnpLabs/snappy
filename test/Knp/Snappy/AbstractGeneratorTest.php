@@ -527,6 +527,16 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 ),
                 $theBinary . ' --allow ' . escapeshellarg('/path1') . ' --allow ' . escapeshellarg('/path2') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
             ),
+            [
+                $theBinary,
+                'http://the.url/',
+                '/the/path',
+                [
+                    'image-dpi' => 100,
+                    'image-quality' => 50,
+                ],
+                $theBinary . ' ' . '--image-dpi 100 --image-quality 50 ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
+            ],
         );
     }
 
@@ -756,7 +766,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             ),
         );
     }
-    
+
     public function testCleanupEmptyTemporaryFiles()
     {
         $generator = $this->getMock(
@@ -772,20 +782,20 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $generator
             ->expects($this->once())
             ->method('unlink');
-        
+
         $create = new \ReflectionMethod($generator, 'createTemporaryFile');
         $create->setAccessible(true);
         $create->invoke($generator, null, null);
-        
+
         $files = new \ReflectionProperty($generator, 'temporaryFiles');
         $files->setAccessible(true);
         $this->assertCount(1, $files->getValue($generator));
-        
+
         $remove = new \ReflectionMethod($generator, 'removeTemporaryFiles');
         $remove->setAccessible(true);
         $remove->invoke($generator);
     }
-    
+
     public function testleanupTemporaryFiles()
     {
         $generator = $this->getMock(
@@ -801,15 +811,15 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $generator
             ->expects($this->once())
             ->method('unlink');
-        
+
         $create = new \ReflectionMethod($generator, 'createTemporaryFile');
         $create->setAccessible(true);
         $create->invoke($generator, '<html/>', 'html');
-        
+
         $files = new \ReflectionProperty($generator, 'temporaryFiles');
         $files->setAccessible(true);
         $this->assertCount(1, $files->getValue($generator));
-        
+
         $remove = new \ReflectionMethod($generator, 'removeTemporaryFiles');
         $remove->setAccessible(true);
         $remove->invoke($generator);
