@@ -433,6 +433,8 @@ abstract class AbstractGenerator implements GeneratorInterface
                     // Dont't add '--' if option is "cover"  or "toc".
                     if (in_array($key, array('toc', 'cover'))) {
                         $command .= ' '.$key.' '.escapeshellarg($option);
+                    } elseif (in_array($key, ['image-dpi', 'image-quality'])) {
+                        $command .= ' --'.$key.' '. (int) $option;
                     } else {
                         $command .= ' --'.$key.' '.escapeshellarg($option);
                     }
