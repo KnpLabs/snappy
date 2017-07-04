@@ -527,6 +527,16 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 ],
                 $theBinary . ' --allow ' . escapeshellarg('/path1') . ' --allow ' . escapeshellarg('/path2') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
             ],
+            [
+                $theBinary,
+                'http://the.url/',
+                '/the/path',
+                [
+                    'image-dpi' => 100,
+                    'image-quality' => 50,
+                ],
+                $theBinary . ' ' . '--image-dpi 100 --image-quality 50 ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
+            ],
         ];
     }
 

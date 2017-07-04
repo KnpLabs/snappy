@@ -433,6 +433,8 @@ abstract class AbstractGenerator implements GeneratorInterface
                     // Dont't add '--' if option is "cover"  or "toc".
                     if (in_array($key, ['toc', 'cover'])) {
                         $command .= ' '.$key.' '.escapeshellarg($option);
+                    } elseif (in_array($key, ['image-dpi', 'image-quality'])) {
+                        $command .= ' --'.$key.' '. (int) $option;
                     } else {
                         $command .= ' --'.$key.' '.escapeshellarg($option);
                     }
@@ -591,7 +593,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function isFile($filename)
     {
-        return is_file($filename);
+        return strlen($filename) <= PHP_MAXPATHLEN && is_file($filename);
     }
 
     /**
