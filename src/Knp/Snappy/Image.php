@@ -15,7 +15,7 @@ class Image extends AbstractGenerator
     /**
      * {@inheritDoc}
      */
-    public function __construct($binary = null, array $options = array(), array $env = null)
+    public function __construct($binary = null, array $options = [], array $env = null)
     {
         $this->setDefaultExtension('jpg');
 
@@ -31,13 +31,13 @@ class Image extends AbstractGenerator
             'allow'                        => null,    // Allow the file or files from the specified folder to be loaded (repeatable)
             'checkbox-checked-svg'         => null,    // Use this SVG file when rendering checked checkboxes
             'checked-svg'                  => null,    // Use this SVG file when rendering unchecked checkboxes
-            'cookie'                       => array(), // Set an additional cookie (repeatable)
+            'cookie'                       => [],      // Set an additional cookie (repeatable)
             'cookie-jar'                   => null,    // Read and write cookies from and to the supplied cookie jar file
             'crop-h'                       => null,    // Set height for cropping
             'crop-w'                       => null,    // Set width for cropping
             'crop-x'                       => null,    // Set x coordinate for cropping (default 0)
             'crop-y'                       => null,    // Set y coordinate for cropping (default 0)
-            'custom-header'                => array(), // Set an additional HTTP header (repeatable)
+            'custom-header'                => [],      // Set an additional HTTP header (repeatable)
             'custom-header-propagation'    => null,    // Add HTTP headers specified by --custom-header for each resource request.
             'no-custom-header-propagation' => null,    // Do not add HTTP headers specified by --custom-header for each resource request.
             'debug-javascript'             => null,    // Show javascript debugging output
@@ -58,8 +58,8 @@ class Image extends AbstractGenerator
             'password'                     => null,    // HTTP Authentication password
             'disable-plugins'              => null,    // Disable installed plugins (default)
             'enable-plugins'               => null,    // Enable installed plugins (plugins will likely not work)
-            'post'                         => array(), // Add an additional post field
-            'post-file'                    => array(), // Post an additional file
+            'post'                         => [],      // Add an additional post field
+            'post-file'                    => [],      // Post an additional file
             'proxy'                        => null,    // Use a proxy
             'quality'                      => null,    // Output image quality (between 0 and 100) (default 94)
             'radiobutton-checked-svg'      => null,    // Use this SVG file when rendering checked radio-buttons

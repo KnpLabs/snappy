@@ -20,7 +20,7 @@ interface GeneratorInterface
      * @param  array  $options An array of options for this generation only
      * @param  bool   $overwrite Overwrite the file if it exists. If not, throw a FileAlreadyExistsException
      */
-    public function generate($input, $output, array $options = array(), $overwrite = false);
+    public function generate($input, $output, array $options = [], $overwrite = false);
 
     /**
      * Generates the output media file from the given HTML
@@ -30,7 +30,7 @@ interface GeneratorInterface
      * @param  array  $options An array of options for this generation only
      * @param  bool   $overwrite Overwrite the file if it exists. If not, throw a FileAlreadyExistsException
      */
-    public function generateFromHtml($html, $output, array $options = array(), $overwrite = false);
+    public function generateFromHtml($html, $output, array $options = [], $overwrite = false);
 
     /**
      * Returns the output of the media generated from the specified input HTML
@@ -41,7 +41,7 @@ interface GeneratorInterface
      *
      * @return string
      */
-    public function getOutput($input, array $options = array());
+    public function getOutput($input, array $options = []);
 
     /**
      * Returns the output of the media generated from the given HTML
@@ -51,5 +51,5 @@ interface GeneratorInterface
      *
      * @return string
      */
-    public function getOutputFromHtml($html, array $options = array());
+    public function getOutputFromHtml($html, array $options = []);
 }

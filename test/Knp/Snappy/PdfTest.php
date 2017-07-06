@@ -18,7 +18,7 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $testObject = new PdfSpy();
         $testObject->setTemporaryFolder(__DIR__);
 
-        $testObject->getOutputFromHtml('<html></html>', array('footer-html' => 'footer'));
+        $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
         $this->assertRegExp('/emptyBinary --lowquality --footer-html '.$q.'.*'.$q.' '.$q.'.*'.$q.' '.$q.'.*'.$q.'/', $testObject->getLastCommand());
     }
 
@@ -27,7 +27,7 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $testObject = new PdfSpy();
         $testObject->setTemporaryFolder(__DIR__ . '/i-dont-exist');
 
-        $testObject->getOutputFromHtml('<html></html>', array('footer-html' => 'footer'));
+        $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
     }
 
     /**
@@ -43,33 +43,33 @@ class PdfTest extends \PHPUnit_Framework_TestCase
     public function dataOptions() {
         $q = self::SHELL_ARG_QUOTE_REGEX;
 
-        return array(
+        return [
             // no options
-            array(
-                array(),
+            [
+                [],
                 '/emptyBinary --lowquality '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
-            ),
+            ],
             // just pass the given footer URL
-            array(
-                array('footer-html' => 'http://google.com'),
+            [
+                ['footer-html' => 'http://google.com'],
                 '/emptyBinary --lowquality --footer-html '.$q.'http:\/\/google\.com'.$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
-            ),
+            ],
             // just pass the given footer file
-            array(
-                array('footer-html' => __FILE__),
+            [
+                ['footer-html' => __FILE__],
                 '/emptyBinary --lowquality --footer-html '.$q.preg_quote(__FILE__, '/').$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
-            ),
+            ],
             // save the given footer HTML string into a temporary file and pass that filename
-            array(
-                array('footer-html' => 'footer'),
+            [
+                ['footer-html' => 'footer'],
                 '/emptyBinary --lowquality --footer-html '.$q.'.*\.html'.$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
-            ),
+            ],
             // save the content of the given XSL URL to a file and pass that filename
-            array(
-                array('xsl-style-sheet' => 'http://google.com'),
+            [
+                ['xsl-style-sheet' => 'http://google.com'],
                 '/emptyBinary --lowquality --xsl-style-sheet '.$q.'.*\.xsl'.$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
-            ),
-        );
+            ],
+        ];
     }
 
     public function testRemovesLocalFilesOnDestruct()
@@ -116,7 +116,7 @@ class PdfSpy extends Pdf
     protected function executeCommand($command)
     {
         $this->lastCommand = $command;
-        return array(0, 'output', 'errorOutput');
+        return [0, 'output', 'errorOutput'];
     }
 
     protected function checkOutput($output, $command)
@@ -124,7 +124,7 @@ class PdfSpy extends Pdf
         //let's say everything went right
     }
 
-    public function getOutput($input, array $options = array())
+    public function getOutput($input, array $options = [])
     {
         $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
         $this->generate($input, $filename, $options, true);

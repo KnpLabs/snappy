@@ -12,12 +12,12 @@ namespace Knp\Snappy;
  */
 class Pdf extends AbstractGenerator
 {
-    protected $optionsWithContentCheck = array();
+    protected $optionsWithContentCheck = [];
 
     /**
      * {@inheritDoc}
      */
-    public function __construct($binary = null, array $options = array(), array $env = null)
+    public function __construct($binary = null, array $options = [], array $env = null)
     {
         $this->setDefaultExtension('pdf');
         $this->setOptionsWithContentCheck();
@@ -30,7 +30,7 @@ class Pdf extends AbstractGenerator
      * @param array $options
      * @return array $options Transformed options
      */
-    protected function handleOptions(array $options = array())
+    protected function handleOptions(array $options = [])
     {
         foreach ($options as $option => $value) {
             if (null === $value) {
@@ -55,7 +55,7 @@ class Pdf extends AbstractGenerator
     /**
      * {@inheritDoc}
      */
-    public function generate($input, $output, array $options = array(), $overwrite = false)
+    public function generate($input, $output, array $options = [], $overwrite = false)
     {
         $options = $this->handleOptions($this->mergeOptions($options));
 
@@ -77,7 +77,7 @@ class Pdf extends AbstractGenerator
      */
     protected function configure()
     {
-        $this->addOptions(array(
+        $this->addOptions([
             'ignore-load-errors'           => null, // old v0.9
             'lowquality'                   => true,
             'collate'                      => null,
@@ -202,7 +202,7 @@ class Pdf extends AbstractGenerator
             'cache-dir'                    => null,
             'keep-relative-links'          => null,
             'resolve-relative-links'       => null,
-        ));
+        ]);
     }
 
     /**
@@ -210,11 +210,11 @@ class Pdf extends AbstractGenerator
      */
     protected function setOptionsWithContentCheck()
     {
-        $this->optionsWithContentCheck = array(
+        $this->optionsWithContentCheck = [
             'header-html'    => 'html',
             'footer-html'    => 'html',
             'cover'          => 'html',
             'xsl-style-sheet'=> 'xsl',
-        );
+        ];
     }
 }
