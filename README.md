@@ -18,6 +18,7 @@ $ composer require knplabs/knp-snappy
 
 ## Usage
 
+### Initialization
 ```php
 <?php
 
@@ -30,26 +31,33 @@ $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 // or you can do it in two steps
 $snappy = new Pdf();
 $snappy->setBinary('/usr/local/bin/wkhtmltopdf');
+```
 
-// Display the resulting pdf in the browser
-// by setting the Content-type header to pdf
+### Display the pdf in the browser
+
+```php
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 header('Content-Type: application/pdf');
 header('Content-Disposition: attachment; filename="file.pdf"');
 echo $snappy->getOutput('http://www.github.com');
+```
 
-// Merge multiple urls into one pdf
-// by sending an array of urls to getOutput()
+### Merge multiple urls into one pdf
+```php
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 header('Content-Type: application/pdf');
 header('Content-Disposition: attachment; filename="file.pdf"');
 echo $snappy->getOutput(array('http://www.github.com','http://www.knplabs.com','http://www.php.net'));
+```
 
-// .. or simply save the PDF to a file
+### Generate local pdf file 
+```php
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 $snappy->generateFromHtml('<h1>Bill</h1><p>You owe me money, dude.</p>', '/tmp/bill-123.pdf');
+```
 
-// Pass options to snappy
+### Pass options to snappy
+```php
 // Type wkhtmltopdf -H to see the list of options
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 $snappy->setOption('disable-javascript', true);
