@@ -27,6 +27,11 @@ abstract class AbstractGenerator implements GeneratorInterface
     protected $temporaryFolder;
 
     /**
+     * @var boolean
+     */
+    protected $ignoreContentNotFound = false;
+
+    /**
      * @var array
      */
     public $temporaryFiles = [];
@@ -332,15 +337,19 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function checkProcessStatus($status, $stdout, $stderr, $command)
     {
-        if (0 !== $status and '' !== $stderr) {
-            throw new \RuntimeException(sprintf(
-                'The exit status code \'%s\' says something went wrong:'."\n"
-                .'stderr: "%s"'."\n"
-                .'stdout: "%s"'."\n"
-                .'command: %s.',
-                $status, $stderr, $stdout, $command
-            ));
+        if  (0 === $status || '' === $stderr){
+            return;
         }
+        if ($this->isIgnoreContentNotFound() && 1 === $status && preg_match('/contentnotfound/i', $stderr)) {
+            return;
+        }
+        throw new \RuntimeException(sprintf(
+            'The exit status code \'%s\' says something went wrong:'."\n"
+            .'stderr: "%s"'."\n"
+            .'stdout: "%s"'."\n"
+            .'command: %s.',
+            $status, $stderr, $stdout, $command
+        ));
     }
 
     /**
@@ -556,6 +565,26 @@ abstract class AbstractGenerator implements GeneratorInterface
     public function setTemporaryFolder($temporaryFolder)
     {
         $this->temporaryFolder = $temporaryFolder;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIgnoreContentNotFound()
+    {
+        return $this->ignoreContentNotFound;
+    }
+
+    /**
+     * @param bool $ignoreContentNotFound
+     *
+     * @return AbstractGenerator
+     */
+    public function setIgnoreContentNotFound($ignoreContentNotFound)
+    {
+        $this->ignoreContentNotFound = $ignoreContentNotFound;
 
         return $this;
     }
