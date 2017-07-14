@@ -654,6 +654,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             'Knp\Snappy\AbstractGenerator',
             [
                 'configure',
+                'isIgnoreContentNotFound'
             ],
             [],
             '',
@@ -682,6 +683,17 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             $this->fail('1 status means failure');
         } catch (\RuntimeException $e) {
             $this->anything('1 status means failure');
+        }
+
+        $media->expects($this->once())
+            ->method('isIgnoreContentNotFound')
+            ->will($this->returnValue(true))
+        ;
+        try {
+            $r->invokeArgs($media, [1, '', 'ContentNotFound', 'the command']);
+            $this->anything('1 with option ignorecontentnotfound means success');
+        } catch (\RuntimeException $e) {
+            $this->fail('1 status means failure, but ignorecontentnotfound is set');
         }
     }
 
