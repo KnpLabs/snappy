@@ -533,7 +533,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     }
 
     /**
-     * Get TemporaryFolder
+     * Get temporaryFolder
      *
      * @return string
      */
