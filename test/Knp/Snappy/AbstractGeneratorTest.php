@@ -180,11 +180,18 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         ;
         $media->setLogger($logger);
         $logger
-            ->expects($this->once())
-            ->method('debug')
-            ->with('Generate from file(s) "the_input_file" to file "the_output_file".', [
-                'command' => "the command",
-            ])
+            ->expects($this->exactly(2))
+            ->method('info')
+            ->with(
+                $this->logicalOr(
+                    'Generate from file(s) "the_input_file" to file "the_output_file".',
+                    'File "the_output_file" has been successfully generated.'
+                ),
+                $this->logicalOr(
+                    ['command' => "the command", 'env' => null, 'timeout' => false],
+                    ['command' => "the command", 'stdout'  => 'stdout', 'stderr'  => 'stderr']
+                )
+            )
         ;
 
         $media
@@ -206,11 +213,12 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('executeCommand')
             ->with($this->equalTo('the command'))
+            ->willReturn([0, 'stdout', 'stderr'])
         ;
         $media
             ->expects($this->once())
             ->method('checkProcessStatus')
-            ->with(null, '', '', 'the command')
+            ->with(0, 'stdout', 'stderr', 'the command')
         ;
         $media
             ->expects($this->once())
@@ -220,6 +228,80 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo('the command')
             )
         ;
+
+        $media->generate('the_input_file', 'the_output_file', ['foo' => 'bar']);
+    }
+
+    public function testFailingGenerate()
+    {
+        $media = $this->getMock(
+            'Knp\Snappy\AbstractGenerator',
+            [
+                'configure',
+                'prepareOutput',
+                'getCommand',
+                'executeCommand',
+                'checkOutput',
+                'checkProcessStatus',
+            ],
+            [
+                'the_binary',
+                [],
+                ['PATH' => '/usr/bin']
+            ]
+        );
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $media->setLogger($logger);
+        $media->setTimeout(2000);
+
+        $logger
+            ->expects($this->once())
+            ->method('info')
+            ->with(
+                $this->equalTo('Generate from file(s) "the_input_file" to file "the_output_file".'),
+                $this->equalTo(['command' => "the command", 'env' => ['PATH' => '/usr/bin'], 'timeout' => 2000])
+            )
+        ;
+
+        $logger
+            ->expects($this->once())
+            ->method('error')
+            ->with(
+                $this->equalTo('An error happened while generating "the_output_file".'),
+                $this->equalTo(['command' => "the command", 'status' => 1, 'stdout'  => 'stdout', 'stderr'  => 'stderr'])
+            )
+        ;
+
+        $media
+            ->expects($this->once())
+            ->method('prepareOutput')
+            ->with($this->equalTo('the_output_file'))
+        ;
+        $media
+            ->expects($this->any())
+            ->method('getCommand')
+            ->with(
+                $this->equalTo('the_input_file'),
+                $this->equalTo('the_output_file')
+            )
+            ->will($this->returnValue('the command'))
+        ;
+        $media
+            ->expects($this->once())
+            ->method('executeCommand')
+            ->with($this->equalTo('the command'))
+            ->willReturn([1, 'stdout', 'stderr'])
+        ;
+        $media
+            ->expects($this->once())
+            ->method('checkProcessStatus')
+            ->with(1, 'stdout', 'stderr', 'the command')
+            ->willThrowException(new \RuntimeException())
+        ;
+
+        $this->setExpectedException(\RuntimeException::class);
+
 
         $media->generate('the_input_file', 'the_output_file', ['foo' => 'bar']);
     }

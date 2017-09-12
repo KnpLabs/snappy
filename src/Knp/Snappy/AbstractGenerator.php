@@ -121,7 +121,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     }
 
     /**
-     * Sets the timeout. Be aware that option only works with symfony
+     * Sets the timeout.
      *
      * @param integer $timeout The timeout to set
      */
@@ -169,13 +169,32 @@ abstract class AbstractGenerator implements GeneratorInterface
 
         $inputFiles = is_array($input) ? implode('", "', $input) : $input;
 
-        $this->logger->debug(sprintf('Generate from file(s) "%s" to file "%s".', $inputFiles, $output), [
+        $this->logger->info(sprintf('Generate from file(s) "%s" to file "%s".', $inputFiles, $output), [
             'command' => $command,
+            'env'     => $this->env,
+            'timeout' => $this->timeout,
         ]);
 
-        list($status, $stdout, $stderr) = $this->executeCommand($command);
-        $this->checkProcessStatus($status, $stdout, $stderr, $command);
-        $this->checkOutput($output, $command);
+        try {
+            list($status, $stdout, $stderr) = $this->executeCommand($command);
+            $this->checkProcessStatus($status, $stdout, $stderr, $command);
+            $this->checkOutput($output, $command);
+        } catch (\Exception $e) { // @TODO: should be replaced by \Throwable when support for php5.6 is dropped
+            $this->logger->error(sprintf('An error happened while generating "%s".', $output), [
+                'command' => $command,
+                'status'  => isset($status) ? $status : null,
+                'stdout'  => isset($stdout) ? $stdout : null,
+                'stderr'  => isset($stderr) ? $stderr : null,
+            ]);
+
+            throw $e;
+        }
+
+        $this->logger->info(sprintf('File "%s" has been successfully generated.', $output), [
+            'command' => $command,
+            'stdout'  => $stdout,
+            'stderr'  => $stderr,
+        ]);
     }
 
     /**
