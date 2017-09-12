@@ -119,6 +119,17 @@ $snappy->setOption('xsl-style-sheet', 'http://path/to/stylesheet.xsl') //or loca
 $snappy->generateFromHtml('<p>Some content</p>', 'test.pdf');
 ```
 
+## Bugs & Support
+
+If you found a bug please fill a detailed issue with all the following points.  
+If you need some help, please at least provide a complete reproducer so we could help you based on facts rather than assumptions.
+
+* OS and its version
+* Wkhtmltopdf, its version and how you installed it
+* A complete reproducer with relevant php and html/css/js code
+
+If your reproducer is big, please try to shrink it. It will help everyone to narrow the bug.
+
 ## Credits
 
 Snappy has been originally developed by the [KnpLabs](http://knplabs.com) team.
