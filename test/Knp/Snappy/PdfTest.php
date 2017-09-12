@@ -6,6 +6,33 @@ class PdfTest extends \PHPUnit_Framework_TestCase
 {
     const SHELL_ARG_QUOTE_REGEX = '(?:"|\')'; // escapeshellarg produces double quotes on Windows, single quotes otherwise
 
+    public function tearDown()
+    {
+        $directory = __DIR__ . '/i-dont-exist';
+
+        if (file_exists($directory)) {
+            $iterator = new \RecursiveDirectoryIterator(
+                $directory,
+                \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS
+            );
+
+            foreach ($iterator as $item) {
+                unlink(strval($item));
+            }
+
+            rmdir($directory);
+        }
+
+        $htmlFiles = new \CallbackFilterIterator(
+            new \DirectoryIterator(__DIR__),
+            function ($filename) { return preg_match('/\.html$/', $filename) === 1; }
+        );
+
+        foreach ($htmlFiles as $file) {
+            unlink($file->getPathname());
+        }
+    }
+
     public function testCreateInstance()
     {
         $testObject = new \Knp\Snappy\Pdf();
