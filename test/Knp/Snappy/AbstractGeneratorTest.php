@@ -2,6 +2,8 @@
 
 namespace Knp\Snappy;
 
+use Psr\Log\LoggerInterface;
+
 class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
 {
     public function testAddOption()
@@ -79,7 +81,18 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
 
     public function testSetOption()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $media = $this
+            ->getMockBuilder(AbstractGenerator::class)
+            ->setConstructorArgs(['/usr/local/bin/wkhtmltopdf'])
+            ->getMockForAbstractClass()
+        ;
+
+        $logger = $this
+            ->getMockBuilder(LoggerInterface::class)
+            ->getMock()
+        ;
+        $media->setLogger($logger);
+        $logger->expects($this->once())->method('debug');
 
         $r = new \ReflectionMethod($media, 'addOption');
         $r->setAccessible(true);
@@ -106,7 +119,18 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
 
     public function testSetOptions()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $media = $this
+            ->getMockBuilder(AbstractGenerator::class)
+            ->setConstructorArgs(['/usr/local/bin/wkhtmltopdf'])
+            ->getMockForAbstractClass()
+        ;
+
+        $logger = $this
+            ->getMockBuilder(LoggerInterface::class)
+            ->getMock()
+        ;
+        $media->setLogger($logger);
+        $logger->expects($this->exactly(4))->method('debug');
 
         $r = new \ReflectionMethod($media, 'addOptions');
         $r->setAccessible(true);
@@ -149,6 +173,20 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 []
             ]
         );
+
+        $logger = $this
+            ->getMockBuilder(LoggerInterface::class)
+            ->getMock()
+        ;
+        $media->setLogger($logger);
+        $logger
+            ->expects($this->once())
+            ->method('debug')
+            ->with('Generate from file(s) "the_input_file" to file "the_output_file".', [
+                'command' => "the command",
+            ])
+        ;
+
         $media
             ->expects($this->once())
             ->method('prepareOutput')
