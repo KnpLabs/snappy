@@ -152,3 +152,14 @@ On Linux, you should check the value of `LD_LIBRARY_PATH`. Also note that, depen
 *A*: You should check with sysinternals procmon if you experience `ACCESS_DENIED` error. If that's the case, you need to give execution permission to IIS users on wkhtmltopdf binary. Also, your user(s) should have write permissions on the temporary folder.
 
 For more details see [#123](https://github.com/KnpLabs/snappy/issues/123).
+
+###### *Q*: Snappy takes an endless amount of time to generate a PDF and eventually fails due to timeout
+
+*A*: This is generally indicating some networking issues. It might be bad DNS record(s), some sporadic packet losses, ...
+
+###### *Q*: How to proceed when experiencing `ContentNotFound`, `ConnectionRefusedError` or timeouts?
+
+*A*: When you experience errors like `ContentNotFound`, `ConnectionRefusedError` or timeouts it is hard to know what is failing. The best you can do to narrow the scope of the bug is to slightly change your HTML code until you found the culprit. 
+Start by removing whole parts, like document body. If that's now working, re-add it but now remove one half of its content. And repeat again and again until you find which URLs is buggy.
+
+There's one more (better) way though: fire up tcpdump or wireshark and listen for http requests. You should see which request(s) is failing, and you can even check the content of the request/response.
