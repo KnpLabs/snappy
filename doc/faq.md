@@ -102,3 +102,39 @@ or any locale which is suitable for you. You should take into account that if gi
 locale -a
 ```
 If the needed locale is missing on the server - you should install/configure it.
+
+###### *Q*: How to put an header/footer on every page of the PDF?
+
+You need to provide either a valid file path or some HTML content. Note that your HTML document(s) needs to start with a valid doctype or wkhtmltopdf will fail to render it properly.
+
+```php
+require __DIR__ . '/vendor/autoload.php';
+
+$header = <<<HTML
+<!DOCTYPE html>
+<html>
+  <head><style type="text/css">p { color: #FF0000; }</style></head>
+  <body><p>Lorem ipsum</p></body>
+</html>
+HTML;
+
+$footer = <<<HTML
+<!DOCTYPE html>
+<html>
+  <head><style type="text/css">p { color: #0000FF; }</style></head>
+  <body><p>Lorem ipsum</p></body>
+</html>
+HTML;
+
+// Without html extension you might face following error:
+// Exit with code 1, due to unknown error.
+$footerPath = tempnam('/tmp', 'footer') . '.html';
+file_put_contents($footerPath, $footer);
+
+$pdf = new \Knp\Snappy\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
+$pdf->generateFromHtml('', '/tmp/out/test.pdf', ['header-html' => $header, 'footer-html' => $footerPath], true);
+```
+
+###### *Q*: Is it possible to include an header and/or footer only on some specific pages?
+
+No, wkhtmtopdf does not allow to do this.
