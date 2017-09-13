@@ -4,28 +4,23 @@
 
 *A*: Please, try to execute the command manually in your shell. Snappy is a thin PHP wrapper and most likely your issue is with wkhtmltopdf itself or is already described in this FAQ. If not, feel free to open the issue in Snappy issue tracker.
 
-How to get the command to execute - 
-
-```php
-var_dump($snappy->getCommand('http://google.com', 'test.pdf'), array('some' => 'option'));
-```
-
-Please, note that wkhtmltopdf takes only input URL(s) or file names as source.
+Please, note that wkhtmltopdf takes only input URL(s) or file name(s) as source.
 
 
-###### *Q*: How to get the command executed by wkhtmltopdf?
+###### *Q*: How to get the command executed by Snappy?
 
 *A*: You need to install any PSR-3 compliant logging library and call `setLogger()` method on the generator. It will 
-log every command executed, its env vars and timeout. It will also log stdout and stderr whenever a command finish, even if it fails.
+log every command executed, its env vars and timeout. It will also log stdout and stderr whenever a command finishes, even if it fails.
 
 
 ###### *Q*: My tables are broken when it is rendered on multiple pages with break.
 
 *A*: Add ```thead``` and ```tbody``` tags. Add the following css 
 ```css
-table, tr, td, th, tbody, thead, tfoot {
-    page-break-inside: avoid !important;
-}
+table { page-break-inside:auto; }
+tr    { page-break-inside:avoid; page-break-after:auto; }
+thead { display:table-header-group; }
+tfoot { display:table-footer-group; }
 ```
 
 
@@ -63,11 +58,11 @@ table, tr, td, th, tbody, thead, tfoot {
 
 ###### *Q*: My PDF is always generated for a small screen resolution\I always receive a mobile version.
 
-*A*: It is well-known issue of wkhtmltopdf, you can check https://github.com/wkhtmltopdf/wkhtmltopdf/issues/1508. One of solutions is to use xvbf and to setup xvbf resolution to desired one though a simple bit of css such as `zoom: .75;` would be sufficient in most cases.
+*A*: It is well-known issue of wkhtmltopdf, you can check https://github.com/wkhtmltopdf/wkhtmltopdf/issues/1508. One of solutions is to use xvfb and to setup xvfb resolution to desired one though a simple bit of css such as `zoom: .75;` would be sufficient in most cases.
 
 ###### *Q*: My chars with accents in HTML document are not correctly rendered.
 
-*A*: Make sure that you have set `<meta charset="UTF-8" />`
+*A*: Make sure that you have set `<meta charset="UTF-8" />` in your HTML document, and you used the option `"encoding" => "utf-8"`.
 
 ###### *Q*: My document text is not correctly rendered, it is just black squares
 
@@ -79,11 +74,13 @@ table, tr, td, th, tbody, thead, tfoot {
 * Switch to absolute links/media URLs
 * Or use `<base></base>` tag to specify what's the base URL of those relative links.
 
-###### *Q*: How to generate a single PDF from multiple source?
+###### *Q*: How to generate a single PDF from multiple sources?
 
-*A*: Snappy and wkhtmltopdf both support generating a single PDF from multiple source. To do so, you need to provide an array of input rather than a string.
+*A*: Snappy and wkhtmltopdf both support generating a single PDF from multiple sources. To do so, you need to provide an array of input rather than a string.
 
 ```php
+<?php
+
 $pdf = new \Knp\Snappy\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
 $pdf->generate(['https://google.com', 'https://google.jp'], '/tmp/out/test.pdf');
 // or
@@ -111,6 +108,7 @@ If the needed locale is missing on the server - you should install/configure it.
 official version available on [wkhtmltopdf.org](https://wkhtmltopdf.org) or the version available from `h4cc/wkhtmltopdf` package.*
 
 ```php
+<?php
 require __DIR__ . '/vendor/autoload.php';
 
 $header = <<<HTML
@@ -140,7 +138,7 @@ $pdf->generateFromHtml('', '/tmp/out/test.pdf', ['header-html' => $header, 'foot
 
 ###### *Q*: Is it possible to include an header and/or footer only on some specific pages?
 
-*A*: No, wkhtmtopdf does not allow to do this.
+*A*: No, wkhtmtopdf does not allow this.
 
 ###### *Q*: When running wkhtmltopdf through Snappy, I got an exit code 5 or 6
 
