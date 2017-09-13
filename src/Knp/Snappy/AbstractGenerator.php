@@ -3,6 +3,8 @@
 namespace Knp\Snappy;
 
 use Knp\Snappy\Exception as Exceptions;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Process\Process;
 
 /**
@@ -32,6 +34,11 @@ abstract class AbstractGenerator implements GeneratorInterface
     public $temporaryFiles = [];
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor
      *
      * @param string $binary
@@ -45,6 +52,7 @@ abstract class AbstractGenerator implements GeneratorInterface
         $this->setBinary($binary);
         $this->setOptions($options);
         $this->env = empty($env) ? null : $env;
+        $this->logger = new NullLogger();
 
         register_shutdown_function([$this, 'removeTemporaryFiles']);
     }
@@ -52,6 +60,16 @@ abstract class AbstractGenerator implements GeneratorInterface
     public function __destruct()
     {
         $this->removeTemporaryFiles();
+    }
+
+    /**
+     * Set the logger to use to log debugging data.
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -98,10 +116,12 @@ abstract class AbstractGenerator implements GeneratorInterface
         }
 
         $this->options[$name] = $value;
+
+        $this->logger->debug(sprintf('Set option "%s" to "%s".', $name, var_export($value, true)));
     }
 
     /**
-     * Sets the timeout. Be aware that option only works with symfony
+     * Sets the timeout.
      *
      * @param integer $timeout The timeout to set
      */
@@ -147,10 +167,34 @@ abstract class AbstractGenerator implements GeneratorInterface
 
         $command = $this->getCommand($input, $output, $options);
 
-        list($status, $stdout, $stderr) = $this->executeCommand($command);
-        $this->checkProcessStatus($status, $stdout, $stderr, $command);
+        $inputFiles = is_array($input) ? implode('", "', $input) : $input;
 
-        $this->checkOutput($output, $command);
+        $this->logger->info(sprintf('Generate from file(s) "%s" to file "%s".', $inputFiles, $output), [
+            'command' => $command,
+            'env'     => $this->env,
+            'timeout' => $this->timeout,
+        ]);
+
+        try {
+            list($status, $stdout, $stderr) = $this->executeCommand($command);
+            $this->checkProcessStatus($status, $stdout, $stderr, $command);
+            $this->checkOutput($output, $command);
+        } catch (\Exception $e) { // @TODO: should be replaced by \Throwable when support for php5.6 is dropped
+            $this->logger->error(sprintf('An error happened while generating "%s".', $output), [
+                'command' => $command,
+                'status'  => isset($status) ? $status : null,
+                'stdout'  => isset($stdout) ? $stdout : null,
+                'stderr'  => isset($stderr) ? $stderr : null,
+            ]);
+
+            throw $e;
+        }
+
+        $this->logger->info(sprintf('File "%s" has been successfully generated.', $output), [
+            'command' => $command,
+            'stdout'  => $stdout,
+            'stderr'  => $stderr,
+        ]);
     }
 
     /**
