@@ -10,7 +10,13 @@ How to get the command to execute -
 var_dump($snappy->getCommand('http://google.com', 'test.pdf'), array('some' => 'option'));
 ```
 
-Please, note that wkhtmltopdf takes only input url or file name as a source.
+Please, note that wkhtmltopdf takes only input URL(s) or file names as source.
+
+
+###### *Q*: How to get the command executed by wkhtmltopdf?
+
+*A*: You need to install any PSR-3 compliant logging library and call `setLogger()` method on the generator. It will 
+log every command executed, its env vars and timeout. It will also log stdout and stderr whenever a command finish, even if it fails.
 
 
 ###### *Q*: My tables are broken when it is rendered on multiple pages with break.
