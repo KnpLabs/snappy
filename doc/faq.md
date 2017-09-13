@@ -143,3 +143,9 @@ $pdf->generateFromHtml('', '/tmp/out/test.pdf', ['header-html' => $header, 'foot
 
 *A*: It's usually due to bad environment variables. For example, on MacOS, you need to check the value of `DYLD_LIBRARY_PATH` (see [#27](https://github.com/KnpLabs/snappy/issues/27#issuecomment-7199659)). 
 On Linux, you should check the value of `LD_LIBRARY_PATH`. Also note that, depending on the way you execute PHP, your environment variables might be reset for security reasons (for instance, look at `clear_env` on php-fpm).
+
+###### *Q*: On Windows, when I generate a PDF nothing happens (there's no PDF file written)
+
+*A*: You should check with sysinternals procmon if you experience `ACCESS_DENIED` error. If that's the case, you need to give execution permission to IIS users on wkhtmltopdf binary. Also, your user(s) should have write permissions on the temporary folder.
+
+For more details see [#123](https://github.com/KnpLabs/snappy/issues/123).
