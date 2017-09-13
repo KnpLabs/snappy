@@ -10,7 +10,13 @@ How to get the command to execute -
 var_dump($snappy->getCommand('http://google.com', 'test.pdf'), array('some' => 'option'));
 ```
 
-Please, note that wkhtmltopdf takes only input url or file name as a source.
+Please, note that wkhtmltopdf takes only input URL(s) or file names as source.
+
+
+###### *Q*: How to get the command executed by wkhtmltopdf?
+
+*A*: You need to install any PSR-3 compliant logging library and call `setLogger()` method on the generator. It will 
+log every command executed, its env vars and timeout. It will also log stdout and stderr whenever a command finish, even if it fails.
 
 
 ###### *Q*: My tables are broken when it is rendered on multiple pages with break.
@@ -73,3 +79,73 @@ table, tr, td, th, tbody, thead, tfoot {
 * Switch to absolute links/media URLs
 * Or use `<base></base>` tag to specify what's the base URL of those relative links.
 
+###### *Q*: How to generate a single PDF from multiple source?
+
+*A*: Snappy and wkhtmltopdf both support generating a single PDF from multiple source. To do so, you need to provide an array of input rather than a string.
+
+```php
+$pdf = new \Knp\Snappy\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
+$pdf->generate(['https://google.com', 'https://google.jp'], '/tmp/out/test.pdf');
+// or
+$pdf->generateFromHtml(['<html><body>Doc 1</body></html>', '<html><body>Doc 2</body></html>'], '/tmp/out/test.pdf');
+```
+
+###### *Q*: My chars with accents passed to wkhtmltopdf options are not correctly rendered, i.e. `footer-right => 'Página [page] de [toPage]'` is converted to 'PÃ¡gina 1 de 1'.
+
+*A*: The answer is long here. We use `escapeshellarg` function to escape all the option value passed to `wkhtmltox`. `escapeshellarg` makes its escape based on server locale, so if you are  experiencing this issue - you can set 
+```php
+setlocale(LC_CTYPE, 'es_ES.UTF-8')
+``` 
+
+or any locale which is suitable for you. You should take into account that if given locale is not configured on the server - you will still have an issue. Check your locales installed via running
+```bash
+locale -a
+```
+If the needed locale is missing on the server - you should install/configure it.
+
+###### *Q*: How to put an header/footer on every page of the PDF?
+
+*A*: You need to provide either a valid file path or some HTML content. Note that your HTML document(s) needs to start with a valid doctype or wkhtmltopdf will fail to render it properly.
+
+```php
+require __DIR__ . '/vendor/autoload.php';
+
+$header = <<<HTML
+<!DOCTYPE html>
+<html>
+  <head><style type="text/css">p { color: #FF0000; }</style></head>
+  <body><p>Lorem ipsum</p></body>
+</html>
+HTML;
+
+$footer = <<<HTML
+<!DOCTYPE html>
+<html>
+  <head><style type="text/css">p { color: #0000FF; }</style></head>
+  <body><p>Lorem ipsum</p></body>
+</html>
+HTML;
+
+// Without html extension you might face following error:
+// Exit with code 1, due to unknown error.
+$footerPath = tempnam('/tmp', 'footer') . '.html';
+file_put_contents($footerPath, $footer);
+
+$pdf = new \Knp\Snappy\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
+$pdf->generateFromHtml('', '/tmp/out/test.pdf', ['header-html' => $header, 'footer-html' => $footerPath], true);
+```
+
+###### *Q*: Is it possible to include an header and/or footer only on some specific pages?
+
+*A*: No, wkhtmtopdf does not allow to do this.
+
+###### *Q*: When running wkhtmltopdf through Snappy, I got an exit code 5 or 6
+
+*A*: It's usually due to bad environment variables. For example, on MacOS, you need to check the value of `DYLD_LIBRARY_PATH` (see [#27](https://github.com/KnpLabs/snappy/issues/27#issuecomment-7199659)). 
+On Linux, you should check the value of `LD_LIBRARY_PATH`. Also note that, depending on the way you execute PHP, your environment variables might be reset for security reasons (for instance, look at `clear_env` on php-fpm).
+
+###### *Q*: On Windows, when I generate a PDF nothing happens (there's no PDF file written)
+
+*A*: You should check with sysinternals procmon if you experience `ACCESS_DENIED` error. If that's the case, you need to give execution permission to IIS users on wkhtmltopdf binary. Also, your user(s) should have write permissions on the temporary folder.
+
+For more details see [#123](https://github.com/KnpLabs/snappy/issues/123).
