@@ -105,7 +105,7 @@ If the needed locale is missing on the server - you should install/configure it.
 
 ###### *Q*: How to put an header/footer on every page of the PDF?
 
-You need to provide either a valid file path or some HTML content. Note that your HTML document(s) needs to start with a valid doctype or wkhtmltopdf will fail to render it properly.
+*A*: You need to provide either a valid file path or some HTML content. Note that your HTML document(s) needs to start with a valid doctype or wkhtmltopdf will fail to render it properly.
 
 ```php
 require __DIR__ . '/vendor/autoload.php';
@@ -137,4 +137,9 @@ $pdf->generateFromHtml('', '/tmp/out/test.pdf', ['header-html' => $header, 'foot
 
 ###### *Q*: Is it possible to include an header and/or footer only on some specific pages?
 
-No, wkhtmtopdf does not allow to do this.
+*A*: No, wkhtmtopdf does not allow to do this.
+
+###### *Q*: When running wkhtmltopdf through Snappy, I got an exit code 5 or 6
+
+*A*: It's usually due to bad environment variables. For example, on MacOS, you need to check the value of `DYLD_LIBRARY_PATH` (see [#27](https://github.com/KnpLabs/snappy/issues/27#issuecomment-7199659)). 
+On Linux, you should check the value of `LD_LIBRARY_PATH`. Also note that, depending on the way you execute PHP, your environment variables might be reset for security reasons (for instance, look at `clear_env` on php-fpm).
