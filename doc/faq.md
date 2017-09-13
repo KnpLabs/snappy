@@ -105,7 +105,10 @@ If the needed locale is missing on the server - you should install/configure it.
 
 ###### *Q*: How to put an header/footer on every page of the PDF?
 
-*A*: You need to provide either a valid file path or some HTML content. Note that your HTML document(s) needs to start with a valid doctype or wkhtmltopdf will fail to render it properly.
+*A*: You need to provide either a valid file path or some HTML content. Note that your HTML document(s) needs to start with a valid doctype and have html, head and body tags, or wkhtmltopdf will fail to render the PDF properly.
+
+*Note that this feature does not work with wkhtmltopdf compiled against unpatched Qt. Most of the time, wkhtmltopdf packages from Linux distributions are not fine. You should rather rely on the 
+official version available on [wkhtmltopdf.org](https://wkhtmltopdf.org) or the version available from `h4cc/wkhtmltopdf` package.*
 
 ```php
 require __DIR__ . '/vendor/autoload.php';
