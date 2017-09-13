@@ -73,3 +73,13 @@ table, tr, td, th, tbody, thead, tfoot {
 * Switch to absolute links/media URLs
 * Or use `<base></base>` tag to specify what's the base URL of those relative links.
 
+###### *Q*: How to generate a single PDF from multiple source?
+
+*A*: Snappy and wkhtmltopdf both support generating a single PDF from multiple source. To do so, you need to provide an array of input rather than a string.
+
+```php
+$pdf = new \Knp\Snappy\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
+$pdf->generate(['https://google.com', 'https://google.jp'], '/tmp/out/test.pdf');
+// or
+$pdf->generateFromHtml(['<html><body>Doc 1</body></html>', '<html><body>Doc 2</body></html>'], '/tmp/out/test.pdf');
+```
