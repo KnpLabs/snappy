@@ -1,5 +1,9 @@
 # Snappy
 
+[![Build Status](https://travis-ci.org/KnpLabs/snappy.svg?branch=master)](https://travis-ci.org/KnpLabs/snappy)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KnpLabs/Gaufrette/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/KnpLabs/Gaufrette/?branch=master)
+[![StyleCI](https://styleci.io/repos/723980/shield?branch=master)](https://styleci.io/repos/723980)
+
 Snappy is a PHP library allowing thumbnail, snapshot or PDF generation from a url or a html page.
 It uses the excellent webkit-based [wkhtmltopdf and wkhtmltoimage](http://wkhtmltopdf.org/)
 available on OSX, linux, windows.

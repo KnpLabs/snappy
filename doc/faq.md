@@ -153,7 +153,11 @@ For more details see [#123](https://github.com/KnpLabs/snappy/issues/123).
 
 ###### *Q*: Snappy takes an endless amount of time to generate a PDF and eventually fails due to timeout
 
-*A*: This is generally indicating some networking issues. It might be bad DNS record(s), some sporadic packet losses, ...
+*A*: This is generally indicating some networking issues. It might be bad DNS record(s), some sporadic packet losses, unresponsive HTTP server ...
+
+Note that if you use the PHP embedded server, you can't generate a PDF from an HTML page accessible from the same embedded server. 
+Indeed, the embedded server never forks and does not use threads. That means it's not able to process two requests 
+at the same time: it processes the first one, send the first response and only then starts to process the second one. 
 
 ###### *Q*: How to proceed when experiencing `ContentNotFound`, `ConnectionRefusedError` or timeouts?
 
