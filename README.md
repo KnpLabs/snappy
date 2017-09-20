@@ -14,6 +14,10 @@ Please, check [FAQ](doc/faq.md) before opening a new issue. Snappy is a tiny wra
 
 [![Build Status](https://secure.travis-ci.org/KnpLabs/snappy.png?branch=master)](http://travis-ci.org/KnpLabs/snappy)
 
+Following integrations are available:
+* [`knplabs/knp-snappy-bundle`](https://github.com/KnpLabs/KnpSnappyBundle), for Symfony
+* [`barryvdh/laravel-snappy`](barryvdh/laravel-snappy), for Laravel
+
 ## Installation using [Composer](http://getcomposer.org/)
 
 ```bash
