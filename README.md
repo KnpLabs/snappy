@@ -18,6 +18,10 @@ Following integrations are available:
 * [`knplabs/knp-snappy-bundle`](https://github.com/KnpLabs/KnpSnappyBundle), for Symfony
 * [`barryvdh/laravel-snappy`](barryvdh/laravel-snappy), for Laravel
 
+## Current maintainer(s)
+
+* [NiR-](https://github.com/NiR-)
+
 ## Installation using [Composer](http://getcomposer.org/)
 
 ```bash
