@@ -3,9 +3,8 @@
 namespace Knp\Snappy;
 
 /**
- * Use this class to create a snapshot / thumbnail from a HTML page
+ * Use this class to create a snapshot / thumbnail from a HTML page.
  *
- * @package Snappy
  *
  * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
  * @author  Antoine Hérault <antoine.herault@knplabs.com>
@@ -13,7 +12,7 @@ namespace Knp\Snappy;
 class Image extends AbstractGenerator
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function __construct($binary = null, array $options = [], array $env = null)
     {
@@ -23,11 +22,11 @@ class Image extends AbstractGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->addOptions(array(
+        $this->addOptions([
             'allow'                        => null,    // Allow the file or files from the specified folder to be loaded (repeatable)
             'checkbox-checked-svg'         => null,    // Use this SVG file when rendering checked checkboxes
             'checked-svg'                  => null,    // Use this SVG file when rendering unchecked checkboxes
@@ -77,6 +76,6 @@ class Image extends AbstractGenerator
             'window-status'                => null,    // Wait until window.status is equal to this string before rendering page
             'zoom'                         => null,    // Use this zoom factor (default 1)
             'quiet'                        => null,    // Be less verbose
-        ));
+        ]);
     }
 }

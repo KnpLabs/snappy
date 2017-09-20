@@ -23,13 +23,14 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                'baz' => 'bat'
+                'baz' => 'bat',
             ],
             $media->getOptions(),
             '->addOption() appends the option to the existing ones'
         );
 
         $message = '->addOption() raises an exception when the specified option already exists';
+
         try {
             $r->invokeArgs($media, ['baz', 'bat']);
             $this->fail($message);
@@ -51,7 +52,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             [
                 'foo' => 'bar',
-                'baz' => 'bat'
+                'baz' => 'bat',
             ],
             $media->getOptions(),
             '->addOptions() adds all the given options'
@@ -64,13 +65,14 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'foo' => 'bar',
                 'baz' => 'bat',
                 'ban' => 'bag',
-                'bal' => 'bac'
+                'bal' => 'bac',
             ],
             $media->getOptions(),
             '->addOptions() adds the given options to the existing ones'
         );
 
         $message = '->addOptions() raises an exception when one of the given options already exists';
+
         try {
             $r->invokeArgs($media, [['bak' => 'bam', 'bah' => 'bap', 'baz' => 'bat']]);
             $this->fail($message);
@@ -102,13 +104,14 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             [
-                'foo' => 'abc'
+                'foo' => 'abc',
             ],
             $media->getOptions(),
             '->setOption() defines the value of an option'
         );
 
         $message = '->setOption() raises an exception when the specified option does not exist';
+
         try {
             $media->setOption('bad', 'def');
             $this->fail($message);
@@ -141,13 +144,14 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             [
                 'foo'   => 'abc',
-                'baz'   => 'def'
+                'baz'   => 'def',
             ],
             $media->getOptions(),
             '->setOptions() defines the values of all the specified options'
         );
 
         $message = '->setOptions() raises an exception when one of the specified options does not exist';
+
         try {
             $media->setOptions(['foo' => 'abc', 'baz' => 'def', 'bad' => 'ghi']);
             $this->fail($message);
@@ -170,7 +174,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             ],
             [
                 'the_binary',
-                []
+                [],
             ]
         );
 
@@ -188,8 +192,8 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                     'File "the_output_file" has been successfully generated.'
                 ),
                 $this->logicalOr(
-                    ['command' => "the command", 'env' => null, 'timeout' => false],
-                    ['command' => "the command", 'stdout'  => 'stdout', 'stderr'  => 'stderr']
+                    ['command' => 'the command', 'env' => null, 'timeout' => false],
+                    ['command' => 'the command', 'stdout'  => 'stdout', 'stderr'  => 'stderr']
                 )
             )
         ;
@@ -247,7 +251,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             [
                 'the_binary',
                 [],
-                ['PATH' => '/usr/bin']
+                ['PATH' => '/usr/bin'],
             ]
         );
 
@@ -260,7 +264,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             ->method('info')
             ->with(
                 $this->equalTo('Generate from file(s) "the_input_file" to file "the_output_file".'),
-                $this->equalTo(['command' => "the command", 'env' => ['PATH' => '/usr/bin'], 'timeout' => 2000])
+                $this->equalTo(['command' => 'the command', 'env' => ['PATH' => '/usr/bin'], 'timeout' => 2000])
             )
         ;
 
@@ -269,7 +273,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             ->method('error')
             ->with(
                 $this->equalTo('An error happened while generating "the_output_file".'),
-                $this->equalTo(['command' => "the command", 'status' => 1, 'stdout'  => 'stdout', 'stderr'  => 'stderr'])
+                $this->equalTo(['command' => 'the command', 'status' => 1, 'stdout'  => 'stdout', 'stderr'  => 'stderr'])
             )
         ;
 
@@ -302,7 +306,6 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException(\RuntimeException::class);
 
-
         $media->generate('the_input_file', 'the_output_file', ['foo' => 'bar']);
     }
 
@@ -316,7 +319,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'createTemporaryFile',
             ],
             [
-                'the_binary'
+                'the_binary',
             ],
             '',
             false
@@ -353,7 +356,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'createTemporaryFile',
             ],
             [
-                'the_binary'
+                'the_binary',
             ],
             '',
             false
@@ -390,7 +393,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'createTemporaryFile',
                 'generate',
                 'getFileContents',
-                'unlink'
+                'unlink',
             ],
             [],
             '',
@@ -523,7 +526,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             [
                 'foo' => 'ban',
-                'baz' => 'bat'
+                'baz' => 'bat',
             ],
             $mergedOptions,
             '->mergeOptions() merges an option to the instance ones and returns the result options array'
@@ -540,13 +543,14 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             [
                 'foo' => 'ban',
-                'baz' => 'bag'
+                'baz' => 'bag',
             ],
             $mergedOptions,
             '->mergeOptions() merges many options to the instance ones and returns the result options array'
         );
 
         $message = '->mergeOptions() throws an InvalidArgumentException once there is an undefined option in the given array';
+
         try {
             $r->invokeArgs($media, [['foo' => 'ban', 'bad' => 'bah']]);
             $this->fail($message);
@@ -568,9 +572,10 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $r->invokeArgs($media, [$binary, $url, $path, $options]));
     }
 
-    private function getPHPExecutableFromPath() {
-        if (isset($_SERVER["_"])) {
-            return $_SERVER["_"];
+    private function getPHPExecutableFromPath()
+    {
+        if (isset($_SERVER['_'])) {
+            return $_SERVER['_'];
         }
 
         if (@defined(PHP_BINARY)) {
@@ -580,17 +585,17 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $paths = explode(PATH_SEPARATOR, getenv('PATH'));
         foreach ($paths as $path) {
             // we need this for XAMPP (Windows)
-            if (strstr($path, 'php.exe') && isset($_SERVER["WINDIR"]) && file_exists($path) && is_file($path)) {
+            if (strstr($path, 'php.exe') && isset($_SERVER['WINDIR']) && file_exists($path) && is_file($path)) {
                 return $path;
-            }
-            else {
-                $php_executable = $path . DIRECTORY_SEPARATOR . "php" . (isset($_SERVER["WINDIR"]) ? ".exe" : "");
+            } else {
+                $php_executable = $path . DIRECTORY_SEPARATOR . 'php' . (isset($_SERVER['WINDIR']) ? '.exe' : '');
                 if (file_exists($php_executable) && is_file($php_executable)) {
                     return $php_executable;
                 }
             }
         }
-        return FALSE; // not found
+
+        return false; // not found
     }
 
     public function dataForBuildCommand()
@@ -603,7 +608,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'http://the.url/',
                 '/the/path',
                 [],
-                $theBinary . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
+                $theBinary . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
@@ -612,9 +617,9 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 [
                     'foo'   => null,
                     'bar'   => false,
-                    'baz'   => []
+                    'baz'   => [],
                 ],
-                $theBinary . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
+                $theBinary . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
@@ -623,39 +628,39 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 [
                     'foo'   => 'foovalue',
                     'bar'   => ['barvalue1', 'barvalue2'],
-                    'baz'   => true
+                    'baz'   => true,
                 ],
-                $theBinary . ' --foo ' . escapeshellarg('foovalue') . ' --bar ' . escapeshellarg('barvalue1') . ' --bar ' . escapeshellarg('barvalue2') . ' --baz ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
+                $theBinary . ' --foo ' . escapeshellarg('foovalue') . ' --bar ' . escapeshellarg('barvalue1') . ' --bar ' . escapeshellarg('barvalue2') . ' --baz ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
                 'http://the.url/',
                 '/the/path',
                 [
-                    'cookie'   => ['session' => 'bla', 'phpsess' => 12],
+                    'cookie'          => ['session' => 'bla', 'phpsess' => 12],
                     'no-background'   => '1',
                 ],
-                $theBinary . ' --cookie ' . escapeshellarg('session') . ' ' . escapeshellarg('bla') . ' --cookie ' .  escapeshellarg('phpsess') . ' ' . escapeshellarg('12') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
+                $theBinary . ' --cookie ' . escapeshellarg('session') . ' ' . escapeshellarg('bla') . ' --cookie ' . escapeshellarg('phpsess') . ' ' . escapeshellarg('12') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
                 'http://the.url/',
                 '/the/path',
                 [
-                    'allow'   => ['/path1', '/path2'],
+                    'allow'           => ['/path1', '/path2'],
                     'no-background'   => '1',
                 ],
-                $theBinary . ' --allow ' . escapeshellarg('/path1') . ' --allow ' . escapeshellarg('/path2') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
+                $theBinary . ' --allow ' . escapeshellarg('/path1') . ' --allow ' . escapeshellarg('/path2') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
                 'http://the.url/',
                 '/the/path',
                 [
-                    'image-dpi' => 100,
+                    'image-dpi'     => 100,
                     'image-quality' => 50,
                 ],
-                $theBinary . ' ' . '--image-dpi 100 --image-quality 50 ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path')
+                $theBinary . ' ' . '--image-dpi 100 --image-quality 50 ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
             ],
         ];
     }
@@ -667,7 +672,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             [
                 'configure',
                 'fileExists',
-                'filesize'
+                'filesize',
             ],
             [],
             '',
@@ -690,6 +695,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $r->setAccessible(true);
 
         $message = '->checkOutput() checks both file existence and size';
+
         try {
             $r->invokeArgs($media, ['the_output_file', 'the command']);
             $this->anything($message);
@@ -705,7 +711,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             [
                 'configure',
                 'fileExists',
-                'filesize'
+                'filesize',
             ],
             [],
             '',
@@ -722,6 +728,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $r->setAccessible(true);
 
         $message = '->checkOutput() throws an InvalidArgumentException when the file does not exist';
+
         try {
             $r->invokeArgs($media, ['the_output_file', 'the command']);
             $this->fail($message);
@@ -737,7 +744,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             [
                 'configure',
                 'fileExists',
-                'filesize'
+                'filesize',
             ],
             [],
             '',
@@ -760,6 +767,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         $r->setAccessible(true);
 
         $message = '->checkOutput() throws an InvalidArgumentException when the file is empty';
+
         try {
             $r->invokeArgs($media, ['the_output_file', 'the command']);
             $this->fail($message);
@@ -827,7 +835,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
             [
                 'configure',
                 'fileExists',
-                'isFile'
+                'isFile',
             ],
             [],
             '',
@@ -854,35 +862,35 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         return [
             [
                 ['key' => 'value'],
-                true
+                true,
             ],
             [
                 ['key' => 2],
-                true
+                true,
             ],
             [
                 ['key' => 'value', 'key2' => 'value2'],
-                true
+                true,
             ],
             [
                 [0 => 'value', 1 => 'value2', 'deux' => 'value3'],
-                true
+                true,
             ],
             [
                 [0 => 'value'],
-                false
+                false,
             ],
             [
                 [0 => 'value', 1 => 'value2', 3 => 'value3'],
-                false
+                false,
             ],
             [
                 ['0' => 'value', '1' => 'value2', '3' => 'value3'],
-                false
+                false,
             ],
             [
                 [],
-                false
+                false,
             ],
         ];
     }
@@ -896,7 +904,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'unlink',
             ],
             [
-                'the_binary'
+                'the_binary',
             ]
         );
         $generator
@@ -925,7 +933,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
                 'unlink',
             ],
             [
-                'the_binary'
+                'the_binary',
             ]
         );
         $generator
