@@ -25,7 +25,9 @@ class PdfTest extends \PHPUnit_Framework_TestCase
 
         $htmlFiles = new \CallbackFilterIterator(
             new \DirectoryIterator(__DIR__),
-            function ($filename) { return preg_match('/\.html$/', $filename) === 1; }
+            function ($filename) {
+                return preg_match('/\.html$/', $filename) === 1;
+            }
         );
 
         foreach ($htmlFiles as $file) {
@@ -46,7 +48,7 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $testObject->setTemporaryFolder(__DIR__);
 
         $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
-        $this->assertRegExp('/emptyBinary --lowquality --footer-html '.$q.'.*'.$q.' '.$q.'.*'.$q.' '.$q.'.*'.$q.'/', $testObject->getLastCommand());
+        $this->assertRegExp('/emptyBinary --lowquality --footer-html ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . '/', $testObject->getLastCommand());
     }
 
     public function testThatSomethingUsingNonexistentTmpFolder()
@@ -67,34 +69,35 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $this->assertRegExp($expectedRegex, $testObject->getLastCommand());
     }
 
-    public function dataOptions() {
+    public function dataOptions()
+    {
         $q = self::SHELL_ARG_QUOTE_REGEX;
 
         return [
             // no options
             [
                 [],
-                '/emptyBinary --lowquality '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
+                '/emptyBinary --lowquality ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
             ],
             // just pass the given footer URL
             [
                 ['footer-html' => 'http://google.com'],
-                '/emptyBinary --lowquality --footer-html '.$q.'http:\/\/google\.com'.$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
+                '/emptyBinary --lowquality --footer-html ' . $q . 'http:\/\/google\.com' . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
             ],
             // just pass the given footer file
             [
                 ['footer-html' => __FILE__],
-                '/emptyBinary --lowquality --footer-html '.$q.preg_quote(__FILE__, '/').$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
+                '/emptyBinary --lowquality --footer-html ' . $q . preg_quote(__FILE__, '/') . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
             ],
             // save the given footer HTML string into a temporary file and pass that filename
             [
                 ['footer-html' => 'footer'],
-                '/emptyBinary --lowquality --footer-html '.$q.'.*\.html'.$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
+                '/emptyBinary --lowquality --footer-html ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
             ],
             // save the content of the given XSL URL to a file and pass that filename
             [
                 ['xsl-style-sheet' => 'http://google.com'],
-                '/emptyBinary --lowquality --xsl-style-sheet '.$q.'.*\.xsl'.$q.' '.$q.'.*\.html'.$q.' '.$q.'.*\.pdf'.$q.'/',
+                '/emptyBinary --lowquality --xsl-style-sheet ' . $q . '.*\.xsl' . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
             ],
         ];
     }
@@ -143,6 +146,7 @@ class PdfSpy extends Pdf
     protected function executeCommand($command)
     {
         $this->lastCommand = $command;
+
         return [0, 'output', 'errorOutput'];
     }
 
@@ -156,6 +160,6 @@ class PdfSpy extends Pdf
         $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
         $this->generate($input, $filename, $options, true);
 
-        return "output";
+        return 'output';
     }
 }

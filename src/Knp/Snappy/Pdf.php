@@ -3,9 +3,8 @@
 namespace Knp\Snappy;
 
 /**
- * Use this class to transform a html/a url to a pdf
+ * Use this class to transform a html/a url to a pdf.
  *
- * @package Snappy
  *
  * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
  * @author  Antoine Hérault <antoine.herault@knplabs.com>
@@ -15,7 +14,7 @@ class Pdf extends AbstractGenerator
     protected $optionsWithContentCheck = [];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function __construct($binary = null, array $options = [], array $env = null)
     {
@@ -26,8 +25,10 @@ class Pdf extends AbstractGenerator
     }
 
     /**
-     * Handle options to transform HTML strings into temporary files containing HTML
+     * Handle options to transform HTML strings into temporary files containing HTML.
+     *
      * @param array $options
+     *
      * @return array $options Transformed options
      */
     protected function handleOptions(array $options = [])
@@ -53,7 +54,7 @@ class Pdf extends AbstractGenerator
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function generate($input, $output, array $options = [], $overwrite = false)
     {
@@ -63,17 +64,19 @@ class Pdf extends AbstractGenerator
     }
 
     /**
-     * Convert option content or url to file if it is needed
+     * Convert option content or url to file if it is needed.
+     *
      * @param $option
+     *
      * @return bool
      */
     protected function isOptionUrl($option)
     {
-        return (bool)filter_var($option, FILTER_VALIDATE_URL);
+        return (bool) filter_var($option, FILTER_VALIDATE_URL);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -206,7 +209,7 @@ class Pdf extends AbstractGenerator
     }
 
     /**
-     * Array with options which require to store the content of the option before passing it to wkhtmltopdf
+     * Array with options which require to store the content of the option before passing it to wkhtmltopdf.
      */
     protected function setOptionsWithContentCheck()
     {
