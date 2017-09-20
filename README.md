@@ -1,5 +1,9 @@
 # Snappy
 
+[![Build Status](https://travis-ci.org/KnpLabs/snappy.svg?branch=master)](https://travis-ci.org/KnpLabs/snappy)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KnpLabs/Gaufrette/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/KnpLabs/Gaufrette/?branch=master)
+[![StyleCI](https://styleci.io/repos/723980/shield?branch=master)](https://styleci.io/repos/723980)
+
 Snappy is a PHP library allowing thumbnail, snapshot or PDF generation from a url or a html page.
 It uses the excellent webkit-based [wkhtmltopdf and wkhtmltoimage](http://wkhtmltopdf.org/)
 available on OSX, linux, windows.
@@ -9,6 +13,14 @@ You will have to download wkhtmltopdf `0.12.x` in order to use Snappy.
 Please, check [FAQ](doc/faq.md) before opening a new issue. Snappy is a tiny wrapper around wkhtmltox, so lots of issues are already answered, resolved or wkhtmltox ones.
 
 [![Build Status](https://secure.travis-ci.org/KnpLabs/snappy.png?branch=master)](http://travis-ci.org/KnpLabs/snappy)
+
+Following integrations are available:
+* [`knplabs/knp-snappy-bundle`](https://github.com/KnpLabs/KnpSnappyBundle), for Symfony
+* [`barryvdh/laravel-snappy`](barryvdh/laravel-snappy), for Laravel
+
+## Current maintainer(s)
+
+* [NiR-](https://github.com/NiR-)
 
 ## Installation using [Composer](http://getcomposer.org/)
 
