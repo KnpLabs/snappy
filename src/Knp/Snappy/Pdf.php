@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Knp\Snappy;
 
 /**
@@ -56,7 +58,7 @@ class Pdf extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    public function generate($input, $output, array $options = [], $overwrite = false)
+    public function generate($input, string $output, array $options = [], bool $overwrite = false)
     {
         $options = $this->handleOptions($this->mergeOptions($options));
 

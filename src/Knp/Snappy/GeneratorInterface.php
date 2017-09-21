@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Knp\Snappy;
 
 /**
@@ -19,7 +21,7 @@ interface GeneratorInterface
      * @param array        $options   An array of options for this generation only
      * @param bool         $overwrite Overwrite the file if it exists. If not, throw a FileAlreadyExistsException
      */
-    public function generate($input, $output, array $options = [], $overwrite = false);
+    public function generate($input, string $output, array $options = [], bool $overwrite = false);
 
     /**
      * Generates the output media file from the given HTML.
@@ -29,7 +31,7 @@ interface GeneratorInterface
      * @param array        $options   An array of options for this generation only
      * @param bool         $overwrite Overwrite the file if it exists. If not, throw a FileAlreadyExistsException
      */
-    public function generateFromHtml($html, $output, array $options = [], $overwrite = false);
+    public function generateFromHtml($html, string $output, array $options = [], bool $overwrite = false);
 
     /**
      * Returns the output of the media generated from the specified input HTML

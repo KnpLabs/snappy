@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Knp\Snappy;
 
 use Knp\Snappy\Exception as Exceptions;
@@ -152,7 +154,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate($input, $output, array $options = [], $overwrite = false)
+    public function generate($input, string $output, array $options = [], bool $overwrite = false)
     {
         if (null === $this->binary) {
             throw new \LogicException(
@@ -176,7 +178,7 @@ abstract class AbstractGenerator implements GeneratorInterface
             list($status, $stdout, $stderr) = $this->executeCommand($command);
             $this->checkProcessStatus($status, $stdout, $stderr, $command);
             $this->checkOutput($output, $command);
-        } catch (\Exception $e) { // @TODO: should be replaced by \Throwable when support for php5.6 is dropped
+        } catch (\Throwable $e) {
             $this->logger->error(sprintf('An error happened while generating "%s".', $output), [
                 'command' => $command,
                 'status'  => isset($status) ? $status : null,
@@ -197,7 +199,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generateFromHtml($html, $output, array $options = [], $overwrite = false)
+    public function generateFromHtml($html, string $output, array $options = [], bool $overwrite = false)
     {
         $fileNames = [];
         if (is_array($html)) {
@@ -461,21 +463,21 @@ abstract class AbstractGenerator implements GeneratorInterface
                 } elseif (is_array($option)) {
                     if ($this->isAssociativeArray($option)) {
                         foreach ($option as $k => $v) {
-                            $command .= ' --' . $key . ' ' . escapeshellarg($k) . ' ' . escapeshellarg($v);
+                            $command .= ' --' . $key . ' ' . escapeshellarg(strval($k)) . ' ' . escapeshellarg(strval($v));
                         }
                     } else {
                         foreach ($option as $v) {
-                            $command .= ' --' . $key . ' ' . escapeshellarg($v);
+                            $command .= ' --' . $key . ' ' . escapeshellarg(strval($v));
                         }
                     }
                 } else {
                     // Dont't add '--' if option is "cover"  or "toc".
                     if (in_array($key, ['toc', 'cover'])) {
-                        $command .= ' ' . $key . ' ' . escapeshellarg($option);
+                        $command .= ' ' . $key . ' ' . escapeshellarg(strval($option));
                     } elseif (in_array($key, ['image-dpi', 'image-quality'])) {
                         $command .= ' --' . $key . ' ' . (int) $option;
                     } else {
-                        $command .= ' --' . $key . ' ' . escapeshellarg($option);
+                        $command .= ' --' . $key . ' ' . escapeshellarg(strval($option));
                     }
                 }
             }
@@ -483,11 +485,11 @@ abstract class AbstractGenerator implements GeneratorInterface
 
         if (is_array($input)) {
             foreach ($input as $i) {
-                $command .= ' ' . escapeshellarg($i) . ' ';
+                $command .= ' ' . escapeshellarg(strval($i)) . ' ';
             }
-            $command .= escapeshellarg($output);
+            $command .= escapeshellarg(strval($output));
         } else {
-            $command .= ' ' . escapeshellarg($input) . ' ' . escapeshellarg($output);
+            $command .= ' ' . escapeshellarg(strval($input)) . ' ' . escapeshellarg(strval($output));
         }
 
         return $command;
