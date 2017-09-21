@@ -1,3 +1,7 @@
+## 1.0.1
+
+* Fix `Call to a member function debug() on null` logger (see #270)
+
 ## 1.0
 
 * Don't check if it's a file when the path is bigger than `PHP_MAXPATHLEN` (see #224)
