@@ -46,10 +46,10 @@ abstract class AbstractGenerator implements GeneratorInterface
     {
         $this->configure();
 
+        $this->logger = new NullLogger();
         $this->setBinary($binary);
         $this->setOptions($options);
         $this->env = empty($env) ? null : $env;
-        $this->logger = new NullLogger();
 
         register_shutdown_function([$this, 'removeTemporaryFiles']);
     }
