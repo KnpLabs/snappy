@@ -1,4 +1,5 @@
 language: php
+
 dist: trusty
 
 sudo: false
@@ -6,25 +7,21 @@ sudo: false
 cache:
   directories:
     - $HOME/.composer/cache
-php:
-  - 5.6
-  - 7.0
-  - 7.1
-  - hhvm
 
 matrix:
   include:
-    - php: 5.6
-      env: SYMFONY_VERSION="2.3.*"
-    - php: 5.6
+    - php: 7.0
+    - php: 7.1
+      env: SYMFONY_VERSION="2.7.*"
+    - php: 7.1
       env: SYMFONY_VERSION="2.8.*@dev symfony/phpunit-bridge:~2.7"
-    - php: 5.6
-      env: SYMFONY_VERSION="3.0.*@dev"
+    - php: 7.0
+      env: SYMFONY_VERSION="3.*@dev"
   fast_finish: true
 
-before_install: if [[ "$SYMFONY_VERSION" != "" ]]; then composer require --no-update symfony/symfony:${SYMFONY_VERSION}; fi
+before_install: if [[ "$SYMFONY_VERSION" != "" ]]; then composer require ${COMPOSER_FLAGS} --no-update symfony/symfony:${SYMFONY_VERSION}; fi
 
-install: composer update --prefer-dist
+install: composer update ${COMPOSER_FLAGS} --prefer-dist
 
 script:
     - vendor/bin/phpunit
