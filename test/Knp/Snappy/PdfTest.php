@@ -2,7 +2,10 @@
 
 namespace Knp\Snappy;
 
-class PdfTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\Error\Error;
+use PHPUnit\Framework\TestCase;
+
+class PdfTest extends TestCase
 {
     const SHELL_ARG_QUOTE_REGEX = '(?:"|\')'; // escapeshellarg produces double quotes on Windows, single quotes otherwise
 
@@ -49,14 +52,6 @@ class PdfTest extends \PHPUnit_Framework_TestCase
 
         $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
         $this->assertRegExp('/emptyBinary --lowquality --footer-html ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . '/', $testObject->getLastCommand());
-    }
-
-    public function testThatSomethingUsingNonexistentTmpFolder()
-    {
-        $testObject = new PdfSpy();
-        $testObject->setTemporaryFolder(__DIR__ . '/i-dont-exist');
-
-        $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
     }
 
     /**
@@ -122,7 +117,7 @@ class PdfTest extends \PHPUnit_Framework_TestCase
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
         $this->assertEquals(1, count($pdf->temporaryFiles));
 
-        $this->setExpectedException('PHPUnit_Framework_Error');
+        $this->expectException(Error::class);
         trigger_error('test error', E_USER_ERROR);
 
         $this->assertFalse(file_exists(reset($pdf->temporaryFiles)));
