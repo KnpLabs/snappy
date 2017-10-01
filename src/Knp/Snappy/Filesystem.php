@@ -84,9 +84,9 @@ class Filesystem
      *
      * @param string $path
      *
-     * @return string
-     *
      * @throws FileNotFound
+     *
+     * @return string
      */
     public function getFileContents(string $path): string
     {
@@ -102,9 +102,9 @@ class Filesystem
      *
      * @param string $path
      *
-     * @return int Size of the file in bytes
-     *
      * @throws FileNotFound
+     *
+     * @return int Size of the file in bytes
      */
     public function getFileSize(string $path): int
     {

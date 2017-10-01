@@ -16,7 +16,7 @@ use Symfony\Component\Process\Process;
  * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
  * @author  Antoine Hérault <antoine.herault@knplabs.com>
  */
-abstract class AbstractGenerator implements Generator
+abstract class AbstractGenerator implements LocalGenerator
 {
     private $binary;
     private $options = [];
@@ -25,19 +25,12 @@ abstract class AbstractGenerator implements Generator
     private $defaultExtension;
 
     /**
-     * @var string
-     */
-    protected $temporaryFolder;
-
-    /**
-     * @var array
-     */
-    public $temporaryFiles = [];
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
+
+    /** @var Filesystem */
+    private $filesystem;
 
     /**
      * @param string $binary
@@ -52,13 +45,7 @@ abstract class AbstractGenerator implements Generator
         $this->setOptions($options);
         $this->env = empty($env) ? null : $env;
         $this->logger = new NullLogger();
-
-        register_shutdown_function([$this, 'removeTemporaryFiles']);
-    }
-
-    public function __destruct()
-    {
-        $this->removeTemporaryFiles();
+        $this->filesystem = new Filesystem();
     }
 
     /**
@@ -69,6 +56,22 @@ abstract class AbstractGenerator implements Generator
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFilesystem(Filesystem $filesystem)
+    {
+        $this->filesystem = $filesystem;
+    }
+
+    /**
+     * @return Filesystem
+     */
+    protected function getFilesystem(): Filesystem
+    {
+        return $this->filesystem;
     }
 
     /**
@@ -204,10 +207,10 @@ abstract class AbstractGenerator implements Generator
         $fileNames = [];
         if (is_array($html)) {
             foreach ($html as $htmlInput) {
-                $fileNames[] = $this->createTemporaryFile($htmlInput, 'html');
+                $fileNames[] = $this->filesystem->createTemporaryFile($htmlInput, 'html');
             }
         } else {
-            $fileNames[] = $this->createTemporaryFile($html, 'html');
+            $fileNames[] = $this->filesystem->createTemporaryFile($html, 'html');
         }
 
         $this->generate($fileNames, $output, $options, $overwrite);
@@ -218,11 +221,11 @@ abstract class AbstractGenerator implements Generator
      */
     public function getOutput($input, array $options = [])
     {
-        $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
+        $filename = $this->filesystem->createTemporaryFile(null, $this->getDefaultExtension());
 
         $this->generate($input, $filename, $options);
 
-        $result = $this->getFileContents($filename);
+        $result = $this->filesystem->getFileContents($filename);
 
         return $result;
     }
@@ -235,10 +238,10 @@ abstract class AbstractGenerator implements Generator
         $fileNames = [];
         if (is_array($html)) {
             foreach ($html as $htmlInput) {
-                $fileNames[] = $this->createTemporaryFile($htmlInput, 'html');
+                $fileNames[] = $this->filesystem->createTemporaryFile($htmlInput, 'html');
             }
         } else {
-            $fileNames[] = $this->createTemporaryFile($html, 'html');
+            $fileNames[] = $this->filesystem->createTemporaryFile($html, 'html');
         }
 
         $result = $this->getOutput($fileNames, $options);
@@ -348,7 +351,7 @@ abstract class AbstractGenerator implements Generator
     protected function checkOutput($output, $command)
     {
         // the output file must exist
-        if (!$this->fileExists($output)) {
+        if (!$this->filesystem->exists($output)) {
             throw new \RuntimeException(sprintf(
                 'The file \'%s\' was not created (command: %s).',
                 $output, $command
@@ -356,7 +359,7 @@ abstract class AbstractGenerator implements Generator
         }
 
         // the output file must not be empty
-        if (0 === $this->filesize($output)) {
+        if (0 === $this->filesystem->getFileSize($output)) {
             throw new \RuntimeException(sprintf(
                 'The file \'%s\' was created but is empty (command: %s).',
                 $output, $command
@@ -384,52 +387,6 @@ abstract class AbstractGenerator implements Generator
                 . 'command: %s.',
                 $status, $stderr, $stdout, $command
             ));
-        }
-    }
-
-    /**
-     * Creates a temporary file.
-     * The file is not created if the $content argument is null.
-     *
-     * @param string $content   Optional content for the temporary file
-     * @param string $extension An optional extension for the filename
-     *
-     * @return string The filename
-     */
-    protected function createTemporaryFile($content = null, $extension = null)
-    {
-        $dir = rtrim($this->getTemporaryFolder(), DIRECTORY_SEPARATOR);
-
-        if (!is_dir($dir)) {
-            if (false === @mkdir($dir, 0777, true) && !is_dir($dir)) {
-                throw new \RuntimeException(sprintf("Unable to create directory: %s\n", $dir));
-            }
-        } elseif (!is_writable($dir)) {
-            throw new \RuntimeException(sprintf("Unable to write in directory: %s\n", $dir));
-        }
-
-        $filename = $dir . DIRECTORY_SEPARATOR . uniqid('knp_snappy', true);
-
-        if (null !== $extension) {
-            $filename .= '.' . $extension;
-        }
-
-        if (null !== $content) {
-            file_put_contents($filename, $content);
-        }
-
-        $this->temporaryFiles[] = $filename;
-
-        return $filename;
-    }
-
-    /**
-     * Removes all temporary files.
-     */
-    public function removeTemporaryFiles()
-    {
-        foreach ($this->temporaryFiles as $file) {
-            $this->unlink($file);
         }
     }
 
@@ -548,140 +505,22 @@ abstract class AbstractGenerator implements Generator
     {
         $directory = dirname($filename);
 
-        if ($this->fileExists($filename)) {
-            if (!$this->isFile($filename)) {
+        if ($this->filesystem->exists($filename)) {
+            if (!$this->filesystem->isFile($filename)) {
                 throw new \InvalidArgumentException(sprintf(
                     'The output file \'%s\' already exists and it is a %s.',
-                    $filename, $this->isDir($filename) ? 'directory' : 'link'
+                    $filename, $this->filesystem->isDir($filename) ? 'directory' : 'link'
                 ));
             } elseif (false === $overwrite) {
                 throw new Exceptions\FileAlreadyExistsException(sprintf(
                     'The output file \'%s\' already exists.',
                     $filename
                 ));
-            } elseif (!$this->unlink($filename)) {
-                throw new \RuntimeException(sprintf(
-                    'Could not delete already existing output file \'%s\'.',
-                    $filename
-                ));
             }
-        } elseif (!$this->isDir($directory) && !$this->mkdir($directory)) {
-            throw new \RuntimeException(sprintf(
-                'The output file\'s directory \'%s\' could not be created.',
-                $directory
-            ));
+
+            $this->filesystem->unlink($filename);
+        } elseif (!$this->filesystem->isDir($directory)) {
+            $this->filesystem->mkdir($directory);
         }
-    }
-
-    /**
-     * Get TemporaryFolder.
-     *
-     * @return string
-     */
-    public function getTemporaryFolder()
-    {
-        if ($this->temporaryFolder === null) {
-            return sys_get_temp_dir();
-        }
-
-        return $this->temporaryFolder;
-    }
-
-    /**
-     * Set temporaryFolder.
-     *
-     * @param string $temporaryFolder
-     *
-     * @return $this
-     */
-    public function setTemporaryFolder($temporaryFolder)
-    {
-        $this->temporaryFolder = $temporaryFolder;
-
-        return $this;
-    }
-
-    /**
-     * Wrapper for the "file_get_contents" function.
-     *
-     * @param string $filename
-     *
-     * @return string
-     */
-    protected function getFileContents($filename)
-    {
-        return file_get_contents($filename);
-    }
-
-    /**
-     * Wrapper for the "file_exists" function.
-     *
-     * @param string $filename
-     *
-     * @return bool
-     */
-    protected function fileExists($filename)
-    {
-        return file_exists($filename);
-    }
-
-    /**
-     * Wrapper for the "is_file" method.
-     *
-     * @param string $filename
-     *
-     * @return bool
-     */
-    protected function isFile($filename)
-    {
-        return strlen($filename) <= PHP_MAXPATHLEN && is_file($filename);
-    }
-
-    /**
-     * Wrapper for the "filesize" function.
-     *
-     * @param string $filename
-     *
-     * @return int or FALSE on failure
-     */
-    protected function filesize($filename)
-    {
-        return filesize($filename);
-    }
-
-    /**
-     * Wrapper for the "unlink" function.
-     *
-     * @param string $filename
-     *
-     * @return bool
-     */
-    protected function unlink($filename)
-    {
-        return $this->fileExists($filename) ? unlink($filename) : false;
-    }
-
-    /**
-     * Wrapper for the "is_dir" function.
-     *
-     * @param string $filename
-     *
-     * @return bool
-     */
-    protected function isDir($filename)
-    {
-        return is_dir($filename);
-    }
-
-    /**
-     * Wrapper for the mkdir function.
-     *
-     * @param string $pathname
-     *
-     * @return bool
-     */
-    protected function mkdir($pathname)
-    {
-        return mkdir($pathname, 0777, true);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Knp\Snappy;
 
 use Knp\Snappy\Exception\FileNotFound;
+use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\TestCase;
 
 class FilesystemTest extends TestCase
@@ -131,5 +132,36 @@ class FilesystemTest extends TestCase
         file_put_contents($path = $this->directory . '/get-file-contents', 'foo');
 
         $this->assertSame(3, $this->filesystem->getFileSize($path));
+    }
+
+    public function testRemovesLocalFilesOnDestruct()
+    {
+        $this->filesystem->createTemporaryFile('foo');
+
+        $temporaryFilesRefl = new \ReflectionProperty(Filesystem::class, 'temporaryFiles');
+        $temporaryFilesRefl->setAccessible(true);
+        $temporaryFiles = $temporaryFilesRefl->getValue($this->filesystem);
+
+        $this->assertEquals(1, count($temporaryFiles));
+        $this->assertTrue(file_exists($temporaryFiles[0]));
+
+        $this->filesystem->__destruct();
+        $this->assertFalse(file_exists($temporaryFiles[0]));
+    }
+
+    public function testRemovesLocalFilesOnError()
+    {
+        $this->filesystem->createTemporaryFile('foo');
+
+        $temporaryFilesRefl = new \ReflectionProperty(Filesystem::class, 'temporaryFiles');
+        $temporaryFilesRefl->setAccessible(true);
+        $temporaryFiles = $temporaryFilesRefl->getValue($this->filesystem);
+
+        $this->assertEquals(1, count($temporaryFiles));
+
+        $this->expectException(Error::class);
+        trigger_error('test error', E_USER_ERROR);
+
+        $this->assertFalse(file_exists($temporaryFiles));
     }
 }
