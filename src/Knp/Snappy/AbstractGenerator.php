@@ -16,7 +16,7 @@ use Symfony\Component\Process\Process;
  * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
  * @author  Antoine Hérault <antoine.herault@knplabs.com>
  */
-abstract class AbstractGenerator implements GeneratorInterface
+abstract class AbstractGenerator implements Generator
 {
     private $binary;
     private $options = [];
