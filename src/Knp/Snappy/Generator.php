@@ -20,6 +20,9 @@ interface Generator
      * @param string       $output    The output media filename
      * @param array        $options   An array of options for this generation only
      * @param bool         $overwrite Overwrite the file if it exists. If not, throw a FileAlreadyExistsException
+     *
+     * @throws Exception\GenerationFailed When the generation failed
+     * @throws Exception                  When any other error happens
      */
     public function generate($input, string $output, array $options = [], bool $overwrite = false);
 
@@ -30,6 +33,9 @@ interface Generator
      * @param string       $output    The output media filename
      * @param array        $options   An array of options for this generation only
      * @param bool         $overwrite Overwrite the file if it exists. If not, throw a FileAlreadyExistsException
+     *
+     * @throws Exception\GenerationFailed When the generation failed
+     * @throws Exception                  When any other error happens
      */
     public function generateFromHtml($html, string $output, array $options = [], bool $overwrite = false);
 
@@ -40,6 +46,9 @@ interface Generator
      * @param array|string $input   The input HTML filename or URL
      * @param array        $options An array of options for this output only
      *
+     * @throws Exception\GenerationFailed When the generation failed
+     * @throws Exception                  When any other error happens
+     *
      * @return string
      */
     public function getOutput($input, array $options = []);
@@ -49,6 +58,9 @@ interface Generator
      *
      * @param array|string $html    The HTML to be converted
      * @param array        $options An array of options for this output only
+     *
+     * @throws Exception\GenerationFailed When the generation failed
+     * @throws Exception                  When any other error happens
      *
      * @return string
      */

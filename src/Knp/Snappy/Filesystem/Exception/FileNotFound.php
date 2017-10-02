@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Knp\Snappy\Exception;
+namespace Knp\Snappy\Filesystem\Exception;
 
 use Knp\Snappy\Exception;
 
@@ -20,7 +20,7 @@ class FileNotFound extends \RuntimeException implements Exception
      *
      * @return FileNotFound
      */
-    public static function notFound(string $path): self
+    public static function file(string $path): self
     {
         return new self(sprintf('File "%s" not found.', $path));
     }

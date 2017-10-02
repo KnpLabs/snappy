@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Knp\Snappy;
 
-use Knp\Snappy\Exception\FileNotFound;
+use Knp\Snappy\Filesystem\Exception\FileNotFound;
 use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\TestCase;
 

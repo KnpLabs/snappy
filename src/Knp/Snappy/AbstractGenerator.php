@@ -344,7 +344,7 @@ abstract class AbstractGenerator implements LocalGenerator
      * @param string $output  The output filename
      * @param string $command The generation command
      *
-     * @throws \RuntimeException if the output file generation failed
+     * @throws Exceptions\GenerationFailed When the output file does not exist or is empty.
      */
     protected function checkOutput($output, $command)
     {
@@ -373,7 +373,7 @@ abstract class AbstractGenerator implements LocalGenerator
      * @param string $stderr  The stderr content
      * @param string $command The run command
      *
-     * @throws \RuntimeException if the output file generation failed
+     * @throws Exceptions\GenerationFailed When the process failed with an error message
      */
     protected function checkProcessStatus($status, $stdout, $stderr, $command)
     {
@@ -495,9 +495,9 @@ abstract class AbstractGenerator implements LocalGenerator
      * @param bool   $overwrite Whether to overwrite the file if it already
      *                          exist
      *
-     * @throws Exception\FileAlreadyExistsException
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @throws Exceptions\FileAlreadyExistsException        If the file already exists and should not be overwritten.
+     * @throws Filesystem\Exception\CouldNotDeleteFile      If the file should be overwritten but could not be deleted.
+     * @throws Filesystem\Exception\CouldNotCreateDirectory If the parent directory does not exist and could not be created.
      */
     protected function prepareOutput($filename, $overwrite)
     {

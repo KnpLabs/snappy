@@ -3,6 +3,7 @@
 namespace Knp\Snappy;
 
 use Knp\Snappy\Exception\FileAlreadyExistsException;
+use Knp\Snappy\Exception\GenerationFailed;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -284,10 +285,10 @@ class AbstractGeneratorTest extends TestCase
             ->expects($this->once())
             ->method('checkProcessStatus')
             ->with(1, 'stdout', 'stderr', 'the command')
-            ->willThrowException(new \RuntimeException())
+            ->willThrowException(new GenerationFailed())
         ;
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(GenerationFailed::class);
 
         $media->generate('the_input_file', 'the_output_file', ['foo' => 'bar']);
     }
@@ -691,7 +692,7 @@ class AbstractGeneratorTest extends TestCase
         $r = new \ReflectionMethod($media, 'checkOutput');
         $r->setAccessible(true);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(GenerationFailed::class);
 
         $this->assertNull($r->invokeArgs($media, ['the_output_file', 'the command']));
     }
