@@ -1,6 +1,6 @@
 <?php
 
-namespace Knp\Snappy;
+namespace Knp\Snappy\Wkhtmltox;
 
 use PHPUnit\Framework\TestCase;
 
@@ -39,8 +39,8 @@ class PdfTest extends TestCase
 
     public function testCreateInstance()
     {
-        $testObject = new \Knp\Snappy\Pdf();
-        $this->assertInstanceOf('\Knp\Snappy\Pdf', $testObject);
+        $testObject = new Pdf();
+        $this->assertInstanceOf(Pdf::class, $testObject);
     }
 
     public function testThatSomethingUsingTmpFolder()

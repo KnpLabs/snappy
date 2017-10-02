@@ -1,9 +1,10 @@
 <?php
 
-namespace Knp\Snappy;
+namespace Knp\Snappy\Wkhtmltox;
 
 use Knp\Snappy\Exception\FileAlreadyExistsException;
 use Knp\Snappy\Exception\GenerationFailed;
+use Knp\Snappy\Filesystem;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -11,7 +12,7 @@ class AbstractGeneratorTest extends TestCase
 {
     public function testAddOption()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $this->assertEquals([], $media->getOptions());
 
@@ -44,7 +45,7 @@ class AbstractGeneratorTest extends TestCase
 
     public function testAddOptions()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $this->assertEquals([], $media->getOptions());
 
@@ -452,7 +453,7 @@ class AbstractGeneratorTest extends TestCase
 
     public function testMergeOptions()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $originalOptions = ['foo' => 'bar', 'baz' => 'bat'];
 
@@ -506,7 +507,7 @@ class AbstractGeneratorTest extends TestCase
      */
     public function testBuildCommand($binary, $url, $path, $options, $expected)
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $r = new \ReflectionMethod($media, 'buildCommand');
         $r->setAccessible(true);
@@ -702,7 +703,7 @@ class AbstractGeneratorTest extends TestCase
      */
     public function testIsAssociativeArray($array, $isAssociativeArray)
     {
-        $generator = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $generator = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $r = new \ReflectionMethod($generator, 'isAssociativeArray');
         $r->setAccessible(true);

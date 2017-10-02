@@ -81,7 +81,7 @@ tfoot { display:table-footer-group; }
 ```php
 <?php
 
-$pdf = new \Knp\Snappy\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
+$pdf = new \Knp\Snappy\Wkhtmltox\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
 $pdf->generate(['https://google.com', 'https://google.jp'], '/tmp/out/test.pdf');
 // or
 $pdf->generateFromHtml(['<html><body>Doc 1</body></html>', '<html><body>Doc 2</body></html>'], '/tmp/out/test.pdf');
@@ -132,7 +132,7 @@ HTML;
 $footerPath = tempnam('/tmp', 'footer') . '.html';
 file_put_contents($footerPath, $footer);
 
-$pdf = new \Knp\Snappy\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
+$pdf = new \Knp\Snappy\Wkhtmltox\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
 $pdf->generateFromHtml('', '/tmp/out/test.pdf', ['header-html' => $header, 'footer-html' => $footerPath], true);
 ```
 

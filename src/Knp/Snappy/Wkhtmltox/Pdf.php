@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Knp\Snappy;
+namespace Knp\Snappy\Wkhtmltox;
 
 /**
  * Use this class to transform a html/a url to a pdf.
