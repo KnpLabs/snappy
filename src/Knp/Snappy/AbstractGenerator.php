@@ -350,7 +350,7 @@ abstract class AbstractGenerator implements LocalGenerator
     {
         // the output file must exist
         if (!$this->filesystem->exists($output)) {
-            throw new \RuntimeException(sprintf(
+            throw new Exceptions\GenerationFailed(sprintf(
                 'The file \'%s\' was not created (command: %s).',
                 $output, $command
             ));
@@ -358,7 +358,7 @@ abstract class AbstractGenerator implements LocalGenerator
 
         // the output file must not be empty
         if (0 === $this->filesystem->getFileSize($output)) {
-            throw new \RuntimeException(sprintf(
+            throw new Exceptions\GenerationFailed(sprintf(
                 'The file \'%s\' was created but is empty (command: %s).',
                 $output, $command
             ));
@@ -378,7 +378,7 @@ abstract class AbstractGenerator implements LocalGenerator
     protected function checkProcessStatus($status, $stdout, $stderr, $command)
     {
         if (0 !== $status and '' !== $stderr) {
-            throw new \RuntimeException(sprintf(
+            throw new Exceptions\GenerationFailed(sprintf(
                 'The exit status code \'%s\' says something went wrong:' . "\n"
                 . 'stderr: "%s"' . "\n"
                 . 'stdout: "%s"' . "\n"
@@ -505,7 +505,7 @@ abstract class AbstractGenerator implements LocalGenerator
 
         if ($this->filesystem->exists($filename)) {
             if (!$this->filesystem->isFile($filename)) {
-                throw new \InvalidArgumentException(sprintf(
+                throw new Exceptions\FileAlreadyExistsException(sprintf(
                     'The output file \'%s\' already exists and it is a %s.',
                     $filename, $this->filesystem->isDir($filename) ? 'directory' : 'link'
                 ));
