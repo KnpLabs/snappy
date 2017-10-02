@@ -160,9 +160,7 @@ abstract class AbstractGenerator implements LocalGenerator
     public function generate($input, string $output, array $options = [], bool $overwrite = false)
     {
         if (null === $this->binary) {
-            throw new \LogicException(
-                'You must define a binary prior to conversion.'
-            );
+            throw new Exceptions\MissingBinary();
         }
 
         $this->prepareOutput($output, $overwrite);
