@@ -341,13 +341,14 @@ abstract class AbstractGenerator implements GeneratorInterface
      * @param string $output  The output filename
      * @param string $command The generation command
      *
-     * @throws \RuntimeException if the output file generation failed
+     * @throws Exceptions\FileDoesNotExistsException if the output file generation failed
+     * @throws Exceptions\FileEmptyException         if the output file is empty
      */
     protected function checkOutput($output, $command)
     {
         // the output file must exist
         if (!$this->fileExists($output)) {
-            throw new \RuntimeException(sprintf(
+            throw new Exceptions\FileDoesNotExistsException(sprintf(
                 'The file \'%s\' was not created (command: %s).',
                 $output, $command
             ));
@@ -355,7 +356,7 @@ abstract class AbstractGenerator implements GeneratorInterface
 
         // the output file must not be empty
         if (0 === $this->filesize($output)) {
-            throw new \RuntimeException(sprintf(
+            throw new Exceptions\FileEmptyException(sprintf(
                 'The file \'%s\' was created but is empty (command: %s).',
                 $output, $command
             ));
@@ -539,7 +540,8 @@ abstract class AbstractGenerator implements GeneratorInterface
      *                          exist
      *
      * @throws Exception\FileAlreadyExistsException
-     * @throws \RuntimeException
+     * @throws Exception\FileNotDeletedException
+     * @throws Exception\DirectoryNotCreatedException
      * @throws \InvalidArgumentException
      */
     protected function prepareOutput($filename, $overwrite)
@@ -558,13 +560,13 @@ abstract class AbstractGenerator implements GeneratorInterface
                     $filename
                 ));
             } elseif (!$this->unlink($filename)) {
-                throw new \RuntimeException(sprintf(
+                throw new Exception\FileNotDeletedException(sprintf(
                     'Could not delete already existing output file \'%s\'.',
                     $filename
                 ));
             }
         } elseif (!$this->isDir($directory) && !$this->mkdir($directory)) {
-            throw new \RuntimeException(sprintf(
+            throw new Exception\DirectoryNotCreatedException(sprintf(
                 'The output file\'s directory \'%s\' could not be created.',
                 $directory
             ));
