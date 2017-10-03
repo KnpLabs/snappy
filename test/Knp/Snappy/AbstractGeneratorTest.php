@@ -2,6 +2,7 @@
 
 namespace Knp\Snappy;
 
+use Knp\Snappy\Exception\FileAlreadyExistsException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -293,19 +294,21 @@ class AbstractGeneratorTest extends TestCase
 
     public function testGenerateFromHtml()
     {
+        $filesystem = $this->getMockBuilder(Filesystem::class)
+            ->setMethods(['createTemporaryFile'])
+            ->getMock();
+        $filesystem
+            ->expects($this->any())
+            ->method('createTemporaryFile')
+            ->with('<html>foo</html>', 'html')
+            ->willReturn('the_temporary_file');
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods(['configure', 'generate', 'createTemporaryFile'])
+            ->setMethods(['configure', 'generate'])
             ->disableOriginalConstructor()
             ->getMock();
-        $media
-            ->expects($this->once())
-            ->method('createTemporaryFile')
-            ->with(
-                $this->equalTo('<html>foo</html>'),
-                $this->equalTo('html')
-            )
-            ->willReturn('the_temporary_file')
-        ;
+        $media->setFilesystem($filesystem);
+
         $media
             ->expects($this->once())
             ->method('generate')
@@ -313,27 +316,28 @@ class AbstractGeneratorTest extends TestCase
                 $this->equalTo(['the_temporary_file']),
                 $this->equalTo('the_output_file'),
                 $this->equalTo(['foo' => 'bar'])
-            )
-        ;
+            );
 
         $media->generateFromHtml('<html>foo</html>', 'the_output_file', ['foo' => 'bar']);
     }
 
     public function testGenerateFromHtmlWithHtmlArray()
     {
+        $filesystem = $this->getMockBuilder(Filesystem::class)
+            ->setMethods(['createTemporaryFile'])
+            ->getMock();
+        $filesystem
+            ->expects($this->any())
+            ->method('createTemporaryFile')
+            ->with('<html>foo</html>', 'html')
+            ->willReturn('the_temporary_file');
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods(['configure', 'generate', 'createTemporaryFile'])
+            ->setMethods(['configure', 'generate'])
             ->disableOriginalConstructor()
             ->getMock();
-        $media
-            ->expects($this->once())
-            ->method('createTemporaryFile')
-            ->with(
-                $this->equalTo('<html>foo</html>'),
-                $this->equalTo('html')
-            )
-            ->willReturn('the_temporary_file')
-        ;
+        $media->setFilesystem($filesystem);
+
         $media
             ->expects($this->once())
             ->method('generate')
@@ -341,34 +345,36 @@ class AbstractGeneratorTest extends TestCase
                 $this->equalTo(['the_temporary_file']),
                 $this->equalTo('the_output_file'),
                 $this->equalTo(['foo' => 'bar'])
-            )
-        ;
+            );
 
         $media->generateFromHtml(['<html>foo</html>'], 'the_output_file', ['foo' => 'bar']);
     }
 
     public function testGetOutput()
     {
+        $filesystem = $this->getMockBuilder(Filesystem::class)
+            ->setMethods(['createTemporaryFile', 'getFileContents'])
+            ->getMock();
+        $filesystem
+            ->expects($this->any())
+            ->method('createTemporaryFile')
+            ->with(null, 'ext')
+            ->willReturn('the_temporary_file');
+        $filesystem
+            ->expects($this->once())
+            ->method('getFileContents')
+            ->willReturn('the file contents');
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods([
-                'configure', 'getDefaultExtension', 'createTemporaryFile', 'generate', 'getFileContents', 'unlink',
-            ])
+            ->setMethods(['configure', 'getDefaultExtension', 'generate', 'unlink'])
             ->disableOriginalConstructor()
             ->getMock();
+        $media->setFilesystem($filesystem);
+
         $media
             ->expects($this->any())
             ->method('getDefaultExtension')
-            ->willReturn('ext')
-        ;
-        $media
-            ->expects($this->any())
-            ->method('createTemporaryFile')
-            ->with(
-                $this->equalTo(null),
-                $this->equalTo('ext')
-            )
-            ->willReturn('the_temporary_file')
-        ;
+            ->will($this->returnValue('ext'));
         $media
             ->expects($this->once())
             ->method('generate')
@@ -376,39 +382,33 @@ class AbstractGeneratorTest extends TestCase
                 $this->equalTo('the_input_file'),
                 $this->equalTo('the_temporary_file'),
                 $this->equalTo(['foo' => 'bar'])
-            )
-        ;
-        $media
-            ->expects($this->once())
-            ->method('getFileContents')
-            ->willReturn('the file contents')
-        ;
-
+            );
         $media
             ->expects($this->any())
             ->method('unlink')
             ->with($this->equalTo('the_temporary_file'))
-            ->willReturn(true)
-        ;
+            ->willReturn(true);
 
         $this->assertEquals('the file contents', $media->getOutput('the_input_file', ['foo' => 'bar']));
     }
 
     public function testGetOutputFromHtml()
     {
+        $filesystem = $this->getMockBuilder(Filesystem::class)
+            ->setMethods(['createTemporaryFile'])
+            ->getMock();
+        $filesystem
+            ->expects($this->any())
+            ->method('createTemporaryFile')
+            ->with('<html>foo</html>', 'html')
+            ->willReturn('the_temporary_file');
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods(['configure', 'getOutput', 'createTemporaryFile'])
+            ->setMethods(['configure', 'getOutput'])
             ->disableOriginalConstructor()
             ->getMock();
-        $media
-            ->expects($this->once())
-            ->method('createTemporaryFile')
-            ->with(
-                $this->equalTo('<html>foo</html>'),
-                $this->equalTo('html')
-            )
-            ->willReturn('the_temporary_file')
-        ;
+        $media->setFilesystem($filesystem);
+
         $media
             ->expects($this->once())
             ->method('getOutput')
@@ -416,27 +416,27 @@ class AbstractGeneratorTest extends TestCase
                 $this->equalTo(['the_temporary_file']),
                 $this->equalTo(['foo' => 'bar'])
             )
-            ->willReturn('the output')
-        ;
+            ->willReturn('the output');
 
         $this->assertEquals('the output', $media->getOutputFromHtml('<html>foo</html>', ['foo' => 'bar']));
     }
 
     public function testGetOutputFromHtmlWithHtmlArray()
     {
+        $filesystem = $this->getMockBuilder(Filesystem::class)
+            ->setMethods(['createTemporaryFile'])
+            ->getMock();
+        $filesystem
+            ->expects($this->any())
+            ->method('createTemporaryFile')
+            ->with('<html>foo</html>', 'html')
+            ->willReturn('the_temporary_file');
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods(['configure', 'getOutput', 'createTemporaryFile'])
+            ->setMethods(['configure', 'getOutput'])
             ->disableOriginalConstructor()
             ->getMock();
-        $media
-            ->expects($this->once())
-            ->method('createTemporaryFile')
-            ->with(
-                $this->equalTo('<html>foo</html>'),
-                $this->equalTo('html')
-            )
-            ->willReturn('the_temporary_file')
-        ;
+        $media->setFilesystem($filesystem);
         $media
             ->expects($this->once())
             ->method('getOutput')
@@ -444,8 +444,7 @@ class AbstractGeneratorTest extends TestCase
                 $this->equalTo(['the_temporary_file']),
                 $this->equalTo(['foo' => 'bar'])
             )
-            ->willReturn('the output')
-        ;
+            ->willReturn('the output');
 
         $this->assertEquals('the output', $media->getOutputFromHtml(['<html>foo</html>'], ['foo' => 'bar']));
     }
@@ -609,48 +608,50 @@ class AbstractGeneratorTest extends TestCase
 
     public function testCheckOutput()
     {
+        $filesystem = $this->getMockBuilder(Filesystem::class)
+            ->setMethods(['exists', 'getFileSize'])
+            ->getMock();
+        $filesystem
+            ->expects($this->once())
+            ->method('exists')
+            ->with($this->equalTo('the_output_file'))
+            ->willReturn(true);
+        $filesystem
+            ->expects($this->once())
+            ->method('getFileSize')
+            ->with($this->equalTo('the_output_file'))
+            ->willReturn(123);
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods(['configure', 'fileExists', 'filesize'])
+            ->setMethods(['configure'])
             ->disableOriginalConstructor()
             ->getMock();
-        $media
-            ->expects($this->once())
-            ->method('fileExists')
-            ->with($this->equalTo('the_output_file'))
-            ->willReturn(true)
-        ;
-        $media
-            ->expects($this->once())
-            ->method('filesize')
-            ->with($this->equalTo('the_output_file'))
-            ->willReturn(123)
-        ;
+        $media->setFilesystem($filesystem);
 
         $r = new \ReflectionMethod($media, 'checkOutput');
         $r->setAccessible(true);
 
         $message = '->checkOutput() checks both file existence and size';
 
-        try {
-            $r->invokeArgs($media, ['the_output_file', 'the command']);
-            $this->anything();
-        } catch (\RuntimeException $e) {
-            $this->fail($message);
-        }
+        $this->assertNull($r->invokeArgs($media, ['the_output_file', 'the command']));
     }
 
     public function testCheckOutputWhenTheFileDoesNotExist()
     {
+        $filesystem = $this->getMockBuilder(Filesystem::class)
+            ->setMethods(['exists'])
+            ->getMock();
+        $filesystem
+            ->expects($this->once())
+            ->method('exists')
+            ->with($this->equalTo('the_output_file'))
+            ->willReturn(false);
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods(['configure', 'fileExists', 'filesize'])
+            ->setMethods(['configure'])
             ->disableOriginalConstructor()
             ->getMock();
-        $media
-            ->expects($this->once())
-            ->method('fileExists')
-            ->with($this->equalTo('the_output_file'))
-            ->willReturn(false)
-        ;
+        $media->setFilesystem($filesystem);
 
         $r = new \ReflectionMethod($media, 'checkOutput');
         $r->setAccessible(true);
@@ -667,34 +668,32 @@ class AbstractGeneratorTest extends TestCase
 
     public function testCheckOutputWhenTheFileIsEmpty()
     {
+        $filesystem = $this->getMockBuilder(Filesystem::class)
+            ->setMethods(['exists', 'getFileSize'])
+            ->getMock();
+        $filesystem
+            ->expects($this->once())
+            ->method('exists')
+            ->with($this->equalTo('the_output_file'))
+            ->willReturn(true);
+        $filesystem
+            ->expects($this->once())
+            ->method('getFileSize')
+            ->with($this->equalTo('the_output_file'))
+            ->willReturn(0);
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods(['configure', 'fileExists', 'filesize'])
+            ->setMethods(['configure'])
             ->disableOriginalConstructor()
             ->getMock();
-        $media
-            ->expects($this->once())
-            ->method('fileExists')
-            ->with($this->equalTo('the_output_file'))
-            ->willReturn(true)
-        ;
-        $media
-            ->expects($this->once())
-            ->method('filesize')
-            ->with($this->equalTo('the_output_file'))
-            ->willReturn(0)
-        ;
+        $media->setFilesystem($filesystem);
 
         $r = new \ReflectionMethod($media, 'checkOutput');
         $r->setAccessible(true);
 
-        $message = '->checkOutput() throws an InvalidArgumentException when the file is empty';
+        $this->expectException(\RuntimeException::class);
 
-        try {
-            $r->invokeArgs($media, ['the_output_file', 'the command']);
-            $this->fail($message);
-        } catch (\RuntimeException $e) {
-            $this->anything();
-        }
+        $this->assertNull($r->invokeArgs($media, ['the_output_file', 'the command']));
     }
 
     /**
@@ -709,29 +708,32 @@ class AbstractGeneratorTest extends TestCase
         $this->assertEquals($isAssociativeArray, $r->invokeArgs($generator, [$array]));
     }
 
-    /**
-     * @expectedException Knp\Snappy\Exception\FileAlreadyExistsException
-     */
     public function testItThrowsTheProperExceptionWhenFileExistsAndNotOverwritting()
     {
+        $filesystem = $this->getMockBuilder(Filesystem::class)
+            ->setMethods(['exists', 'isFile'])
+            ->getMock();
+        $filesystem
+            ->expects($this->once())
+            ->method('exists')
+            ->willReturn(true);
+        $filesystem
+            ->expects($this->once())
+            ->method('isFile')
+            ->willReturn(true);
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods(['configure', 'fileExists', 'isFile'])
+            ->setMethods(['configure'])
             ->disableOriginalConstructor()
             ->getMock();
-        $media
-            ->expects($this->any())
-            ->method('fileExists')
-            ->willReturn(true)
-        ;
-        $media
-            ->expects($this->any())
-            ->method('isFile')
-            ->willReturn(true)
-        ;
+        $media->setFilesystem($filesystem);
+
         $r = new \ReflectionMethod($media, 'prepareOutput');
         $r->setAccessible(true);
 
-        $r->invokeArgs($media, ['', false]);
+        $this->expectException(FileAlreadyExistsException::class);
+
+        $this->assertNull($r->invokeArgs($media, ['', false]));
     }
 
     public function dataForIsAssociativeArray()
@@ -770,51 +772,5 @@ class AbstractGeneratorTest extends TestCase
                 false,
             ],
         ];
-    }
-
-    public function testCleanupEmptyTemporaryFiles()
-    {
-        $generator = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods(['configure', 'unlink'])
-            ->setConstructorArgs(['the_binary'])
-            ->getMock();
-        $generator
-            ->expects($this->once())
-            ->method('unlink');
-
-        $create = new \ReflectionMethod($generator, 'createTemporaryFile');
-        $create->setAccessible(true);
-        $create->invoke($generator, null, null);
-
-        $files = new \ReflectionProperty($generator, 'temporaryFiles');
-        $files->setAccessible(true);
-        $this->assertCount(1, $files->getValue($generator));
-
-        $remove = new \ReflectionMethod($generator, 'removeTemporaryFiles');
-        $remove->setAccessible(true);
-        $remove->invoke($generator);
-    }
-
-    public function testleanupTemporaryFiles()
-    {
-        $generator = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods(['configure', 'unlink'])
-            ->setConstructorArgs(['the_binary'])
-            ->getMock();
-        $generator
-            ->expects($this->once())
-            ->method('unlink');
-
-        $create = new \ReflectionMethod($generator, 'createTemporaryFile');
-        $create->setAccessible(true);
-        $create->invoke($generator, '<html/>', 'html');
-
-        $files = new \ReflectionProperty($generator, 'temporaryFiles');
-        $files->setAccessible(true);
-        $this->assertCount(1, $files->getValue($generator));
-
-        $remove = new \ReflectionMethod($generator, 'removeTemporaryFiles');
-        $remove->setAccessible(true);
-        $remove->invoke($generator);
     }
 }

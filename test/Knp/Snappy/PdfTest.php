@@ -2,7 +2,6 @@
 
 namespace Knp\Snappy;
 
-use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\TestCase;
 
 class PdfTest extends TestCase
@@ -48,7 +47,6 @@ class PdfTest extends TestCase
     {
         $q = self::SHELL_ARG_QUOTE_REGEX;
         $testObject = new PdfSpy();
-        $testObject->setTemporaryFolder(__DIR__);
 
         $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
         $this->assertRegExp('/emptyBinary --lowquality --footer-html ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . '/', $testObject->getLastCommand());
@@ -96,32 +94,6 @@ class PdfTest extends TestCase
             ],
         ];
     }
-
-    public function testRemovesLocalFilesOnDestruct()
-    {
-        $pdf = new PdfSpy();
-        $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
-        $method->setAccessible(true);
-        $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, count($pdf->temporaryFiles));
-        $this->assertTrue(file_exists(reset($pdf->temporaryFiles)));
-        $pdf->__destruct();
-        $this->assertFalse(file_exists(reset($pdf->temporaryFiles)));
-    }
-
-    public function testRemovesLocalFilesOnError()
-    {
-        $pdf = new PdfSpy();
-        $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
-        $method->setAccessible(true);
-        $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, count($pdf->temporaryFiles));
-
-        $this->expectException(Error::class);
-        trigger_error('test error', E_USER_ERROR);
-
-        $this->assertFalse(file_exists(reset($pdf->temporaryFiles)));
-    }
 }
 
 class PdfSpy extends Pdf
@@ -152,8 +124,7 @@ class PdfSpy extends Pdf
 
     public function getOutput($input, array $options = [])
     {
-        $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
-        $this->generate($input, $filename, $options, true);
+        $this->generate($input, 'foo.pdf', $options, true);
 
         return 'output';
     }

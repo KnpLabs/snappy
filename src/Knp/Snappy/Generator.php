@@ -11,7 +11,7 @@ namespace Knp\Snappy;
  * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
  * @author  Antoine Hérault <antoine.herault@knplabs.com>*
  */
-interface GeneratorInterface
+interface Generator
 {
     /**
      * Generates the output media file from the specified input HTML file.
