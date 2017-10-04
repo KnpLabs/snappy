@@ -165,7 +165,7 @@ abstract class AbstractGenerator implements LocalGenerator
             throw new Exception\MissingBinary();
         }
 
-        $this->prepareOutput($output, $overwrite);
+        $this->filesystem->prepareOutput($output, $overwrite);
 
         $command = $this->getCommand($input, $output, $options);
 
@@ -488,39 +488,5 @@ abstract class AbstractGenerator implements LocalGenerator
             $process->getOutput(),
             $process->getErrorOutput(),
         ];
-    }
-
-    /**
-     * Prepares the specified output.
-     *
-     * @param string $filename  The output filename
-     * @param bool   $overwrite Whether to overwrite the file if it already
-     *                          exist
-     *
-     * @throws Exception\FileAlreadyExistsException         If the file already exists and should not be overwritten.
-     * @throws Filesystem\Exception\CouldNotDeleteFile      If the file should be overwritten but could not be deleted.
-     * @throws Filesystem\Exception\CouldNotCreateDirectory If the parent directory does not exist and could not be created.
-     */
-    protected function prepareOutput($filename, $overwrite)
-    {
-        $directory = dirname($filename);
-
-        if ($this->filesystem->exists($filename)) {
-            if (!$this->filesystem->isFile($filename)) {
-                throw new Exception\FileAlreadyExistsException(sprintf(
-                    'The output file \'%s\' already exists and it is a %s.',
-                    $filename, $this->filesystem->isDir($filename) ? 'directory' : 'link'
-                ));
-            } elseif (false === $overwrite) {
-                throw new Exception\FileAlreadyExistsException(sprintf(
-                    'The output file \'%s\' already exists.',
-                    $filename
-                ));
-            }
-
-            $this->filesystem->unlink($filename);
-        } elseif (!$this->filesystem->isDir($directory)) {
-            $this->filesystem->mkdir($directory);
-        }
     }
 }

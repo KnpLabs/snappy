@@ -8,6 +8,7 @@ use Knp\Snappy\Filesystem\Exception\CouldNotCreateDirectory;
 use Knp\Snappy\Filesystem\Exception\CouldNotDeleteFile;
 use Knp\Snappy\Filesystem\Exception\DirectoryNotWritable;
 use Knp\Snappy\Filesystem\Exception\FileNotFound;
+use Knp\Snappy\Filesystem\Exception\FileAlreadyExistsException;
 
 class Filesystem
 {
@@ -186,5 +187,39 @@ class Filesystem
         $this->temporaryFiles[] = $filename;
 
         return $filename;
+    }
+
+    /**
+     * Prepares the specified output.
+     *
+     * @param string $filename  The output filename
+     * @param bool   $overwrite Whether to overwrite the file if it already
+     *                          exist
+     *
+     * @throws \Knp\Snappy\Filesystem\Exception\FileAlreadyExistsException If the file already exists and should not be overwritten.
+     * @throws Filesystem\Exception\CouldNotDeleteFile                     If the file should be overwritten but could not be deleted.
+     * @throws Filesystem\Exception\CouldNotCreateDirectory                If the parent directory does not exist and could not be created.
+     */
+    public function prepareOutput(string $filename, bool $overwrite)
+    {
+        $directory = dirname($filename);
+
+        if ($this->exists($filename)) {
+            if (!$this->isFile($filename)) {
+                throw new \InvalidArgumentException(sprintf(
+                    'The output file \'%s\' already exists and it is a %s.',
+                    $filename, $this->isDir($filename) ? 'directory' : 'link'
+                ));
+            } elseif (false === $overwrite) {
+                throw new FileAlreadyExistsException(sprintf(
+                    'The output file \'%s\' already exists.',
+                    $filename
+                ));
+            }
+
+            $this->unlink($filename);
+        } elseif (!$this->isDir($directory)) {
+            $this->mkdir($directory);
+        }
     }
 }
