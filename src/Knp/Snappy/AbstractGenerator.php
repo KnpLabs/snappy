@@ -114,7 +114,7 @@ abstract class AbstractGenerator implements GeneratorInterface
 
         $this->options[$name] = $value;
 
-        $this->logger->debug(sprintf('Set option "%s" to "%s".', $name, var_export($value, true)));
+        $this->logger->debug(sprintf('Set option "%s".', $name), ['value' => $value]);
     }
 
     /**
