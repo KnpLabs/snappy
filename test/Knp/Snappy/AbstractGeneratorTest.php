@@ -704,6 +704,9 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @expectedException Knp\Snappy\Exception\FileDoesNotExistsException
+     */
     public function testCheckOutputWhenTheFileDoesNotExist()
     {
         $media = $this->getMock(
@@ -726,17 +729,12 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $r = new \ReflectionMethod($media, 'checkOutput');
         $r->setAccessible(true);
-
-        $message = '->checkOutput() throws an InvalidArgumentException when the file does not exist';
-
-        try {
-            $r->invokeArgs($media, ['the_output_file', 'the command']);
-            $this->fail($message);
-        } catch (\RuntimeException $e) {
-            $this->anything($message);
-        }
+        $r->invokeArgs($media, ['the_output_file', 'the command']);
     }
 
+    /**
+     * @expectedException Knp\Snappy\Exception\FileEmptyException
+     */
     public function testCheckOutputWhenTheFileIsEmpty()
     {
         $media = $this->getMock(
@@ -765,15 +763,7 @@ class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $r = new \ReflectionMethod($media, 'checkOutput');
         $r->setAccessible(true);
-
-        $message = '->checkOutput() throws an InvalidArgumentException when the file is empty';
-
-        try {
-            $r->invokeArgs($media, ['the_output_file', 'the command']);
-            $this->fail($message);
-        } catch (\RuntimeException $e) {
-            $this->anything($message);
-        }
+        $r->invokeArgs($media, ['the_output_file', 'the command']);
     }
 
     public function testCheckProcessStatus()
