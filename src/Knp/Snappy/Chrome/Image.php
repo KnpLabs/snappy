@@ -7,7 +7,7 @@ namespace Knp\Snappy\Chrome;
 /**
  * Image generator based on chrome.
  *
- * @author Albin Kerouanton <albin.kerouanton@knplabs.com<
+ * @author Albin Kerouanton <albin.kerouanton@knplabs.com>
  */
 final class Image extends AbstractGenerator
 {

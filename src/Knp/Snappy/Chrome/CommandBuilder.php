@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Knp\Snappy\Chrome;
 
 /**
- * Build the commands used by the backend to run chrome
+ * Build the commands used by the backend to run chrome.
  *
  * @author Albin Kerouanton <albin.kerouanton@knplabs.com>
  */

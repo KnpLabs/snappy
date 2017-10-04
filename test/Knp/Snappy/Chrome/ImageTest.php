@@ -18,7 +18,7 @@ class ImageTest extends TestCase
             ->method('run')
             ->with($this->anything(), [
                 'incognito' => true, 'hide-scrollbars' => true, 'disable-gpu' => true, 'enable-viewport' => true,
-                'headless' => true, 'screenshot' => '/tmp/output.jpg'
+                'headless'  => true, 'screenshot' => '/tmp/output.jpg',
             ]);
 
         $image = new Image($backend, []);

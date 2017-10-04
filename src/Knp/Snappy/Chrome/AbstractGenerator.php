@@ -11,7 +11,7 @@ use Knp\Snappy\LocalGenerator;
 /**
  * Abstract chrome generator.
  *
- * @author Albin Kerouanton <albin.kerouanton@knplabs.com<
+ * @author Albin Kerouanton <albin.kerouanton@knplabs.com>
  */
 abstract class AbstractGenerator implements Generator, LocalGenerator
 {
@@ -33,13 +33,13 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     {
         $this->backend = $backend;
         $this->options = $options ?? [
-            'disable-gpu' => true, 'incognito' => true, 'enable-viewport' => true, 'window-size' => [1280, 1696]
+            'disable-gpu' => true, 'incognito' => true, 'enable-viewport' => true, 'window-size' => [1280, 1696],
         ];
         $this->filesystem = new Filesystem();
     }
 
     /**
-     * Run chrome to generate the output file
+     * Run chrome to generate the output file.
      *
      * @param string $inputUri   URI of the input document
      *                           (e.g "file://<filename>" or "data:text/html,<urlencoded-html>").
@@ -94,7 +94,7 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     }
 
     /**
-     * Set the default value for a specific option
+     * Set the default value for a specific option.
      *
      * @param string $name    Option name
      * @param mixed  $default Default value
@@ -105,7 +105,7 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     }
 
     /**
-     * Set default values for some options
+     * Set default values for some options.
      *
      * @param array $options
      */

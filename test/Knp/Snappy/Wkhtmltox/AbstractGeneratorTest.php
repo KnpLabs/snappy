@@ -2,7 +2,6 @@
 
 namespace Knp\Snappy\Wkhtmltox;
 
-use Knp\Snappy\Filesystem\Exception\FileAlreadyExistsException;
 use Knp\Snappy\Exception\GenerationFailed;
 use Knp\Snappy\Filesystem;
 use PHPUnit\Framework\TestCase;

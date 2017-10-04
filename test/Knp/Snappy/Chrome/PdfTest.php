@@ -18,7 +18,7 @@ class PdfTest extends TestCase
             ->method('run')
             ->with($this->anything(), [
                 'incognito' => true, 'hide-scrollbars' => true, 'disable-gpu' => true, 'enable-viewport' => true,
-                'headless' => true, 'print-to-pdf' => '/tmp/output.pdf'
+                'headless'  => true, 'print-to-pdf' => '/tmp/output.pdf',
             ]);
 
         $pdf = new Pdf($backend, []);

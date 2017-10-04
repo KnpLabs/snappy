@@ -7,7 +7,7 @@ namespace Knp\Snappy\Chrome;
 /**
  * PDF generator based on chrome.
  *
- * @author Albin Kerouanton <albin.kerouanton@knplabs.com<
+ * @author Albin Kerouanton <albin.kerouanton@knplabs.com>
  */
 final class Pdf extends AbstractGenerator
 {

@@ -7,8 +7,8 @@ namespace Knp\Snappy;
 use Knp\Snappy\Filesystem\Exception\CouldNotCreateDirectory;
 use Knp\Snappy\Filesystem\Exception\CouldNotDeleteFile;
 use Knp\Snappy\Filesystem\Exception\DirectoryNotWritable;
-use Knp\Snappy\Filesystem\Exception\FileNotFound;
 use Knp\Snappy\Filesystem\Exception\FileAlreadyExistsException;
+use Knp\Snappy\Filesystem\Exception\FileNotFound;
 
 class Filesystem
 {

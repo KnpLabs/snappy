@@ -36,8 +36,8 @@ class CommandBuilderTest extends TestCase
             ],
             [
                 ['./binary', 'file:///input', ['window-size' => [1024, 768]]],
-                "./binary --window-size='1024,768' 'file:///input'"
-            ]
+                "./binary --window-size='1024,768' 'file:///input'",
+            ],
         ];
     }
 }

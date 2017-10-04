@@ -11,7 +11,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 /**
- * Chrome backend used by Chrome-based generators
+ * Chrome backend used by Chrome-based generators.
  *
  * @author Albin Kerouanton <albin.kerouanton@knplabs.com>
  */
@@ -70,7 +70,7 @@ class Backend
      * @param string $inputUri Input URI
      * @param array  $options  Array of arguments and options passed to chrome.
      *
-     * @throws \RuntimeException If generation failed.
+     * @throws GenerationFailed If generation failed.
      */
     public function run(string $inputUri, array $options)
     {
@@ -79,7 +79,7 @@ class Backend
 
         $this->logger->info(sprintf('Run chrome backend: "%s".', $command), [
             'command' => $command,
-            'env' => $this->env,
+            'env'     => $this->env,
             'timeout' => $this->timeout,
         ]);
 
@@ -87,15 +87,15 @@ class Backend
             $process->mustRun();
         } catch (ProcessFailedException $e) {
             $this->logger->error(sprintf('Chrome backend failed during execution.'), [
-                'command' => $command,
-                'env' => $this->env,
-                'timeout' => $this->timeout,
+                'command'  => $command,
+                'env'      => $this->env,
+                'timeout'  => $this->timeout,
                 'exitCode' => $process->getExitCode(),
-                'stdout' => $process->getOutput(),
-                'stderr' => $process->getErrorOutput(),
+                'stdout'   => $process->getOutput(),
+                'stderr'   => $process->getErrorOutput(),
             ]);
 
-            throw new GenerationFailed("Generation failed", 0, $e);
+            throw new GenerationFailed('Generation failed', 0, $e);
         }
     }
 }
