@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Knp\Snappy;
 
-use Knp\Snappy\Exception\FileNotFound;
+use Knp\Snappy\Filesystem\Exception\CouldNotCreateDirectory;
+use Knp\Snappy\Filesystem\Exception\CouldNotDeleteFile;
+use Knp\Snappy\Filesystem\Exception\DirectoryNotWritable;
+use Knp\Snappy\Filesystem\Exception\FileNotFound;
 
 class Filesystem
 {
@@ -91,7 +94,7 @@ class Filesystem
     public function getFileContents(string $path): string
     {
         if (!$this->exists($path)) {
-            throw FileNotFound::notFound($path);
+            throw FileNotFound::file($path);
         }
 
         return file_get_contents($path);
@@ -109,7 +112,7 @@ class Filesystem
     public function getFileSize(string $path): int
     {
         if (!$this->exists($path)) {
-            throw FileNotFound::notFound($path);
+            throw FileNotFound::file($path);
         }
 
         return filesize($path);
@@ -119,6 +122,8 @@ class Filesystem
      * Deletes a file.
      *
      * @param string $filename
+     *
+     * @throws CouldNotDeleteFile If the file $filename exist but could not be deleted
      */
     public function unlink(string $filename)
     {
@@ -129,7 +134,7 @@ class Filesystem
         unlink($filename);
 
         if ($this->exists($filename)) {
-            throw new \RuntimeException(sprintf('Could not delete file "%s".', $filename));
+            throw CouldNotDeleteFile::file($filename);
         }
     }
 
@@ -137,19 +142,24 @@ class Filesystem
      * Creates a directory.
      *
      * @param string $pathname
+     *
+     * @throws CouldNotCreateDirectory If the directory could not be created
      */
     public function mkdir(string $pathname)
     {
         @mkdir($pathname, 0777, true);
 
         if (!$this->isDir($pathname)) {
-            throw new \RuntimeException(sprintf('Unable to create directory "%s".', $pathname));
+            throw CouldNotCreateDirectory::directory($pathname);
         }
     }
 
     /**
      * @param string|null $content
      * @param string|null $extension
+     *
+     * @throws DirectoryNotWritable    If the temporary directory is not writable
+     * @throws CouldNotCreateDirectory If the temporary directory does not exist and it could not be created
      *
      * @return string The filename of the temporary file
      */
@@ -160,7 +170,7 @@ class Filesystem
         if (!is_dir($dir)) {
             $this->mkdir($dir);
         } elseif (!is_writable($dir)) {
-            throw new \RuntimeException(sprintf("Unable to write in directory: %s\n", $dir));
+            throw DirectoryNotWritable::directory($dir);
         }
 
         $filename = $dir . DIRECTORY_SEPARATOR . uniqid('knp_snappy', true);

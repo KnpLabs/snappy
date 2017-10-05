@@ -160,9 +160,7 @@ abstract class AbstractGenerator implements LocalGenerator
     public function generate($input, string $output, array $options = [], bool $overwrite = false)
     {
         if (null === $this->binary) {
-            throw new \LogicException(
-                'You must define a binary prior to conversion.'
-            );
+            throw new Exceptions\MissingBinary();
         }
 
         $this->prepareOutput($output, $overwrite);
@@ -346,13 +344,13 @@ abstract class AbstractGenerator implements LocalGenerator
      * @param string $output  The output filename
      * @param string $command The generation command
      *
-     * @throws \RuntimeException if the output file generation failed
+     * @throws Exceptions\GenerationFailed When the output file does not exist or is empty.
      */
     protected function checkOutput($output, $command)
     {
         // the output file must exist
         if (!$this->filesystem->exists($output)) {
-            throw new \RuntimeException(sprintf(
+            throw new Exceptions\GenerationFailed(sprintf(
                 'The file \'%s\' was not created (command: %s).',
                 $output, $command
             ));
@@ -360,7 +358,7 @@ abstract class AbstractGenerator implements LocalGenerator
 
         // the output file must not be empty
         if (0 === $this->filesystem->getFileSize($output)) {
-            throw new \RuntimeException(sprintf(
+            throw new Exceptions\GenerationFailed(sprintf(
                 'The file \'%s\' was created but is empty (command: %s).',
                 $output, $command
             ));
@@ -375,12 +373,12 @@ abstract class AbstractGenerator implements LocalGenerator
      * @param string $stderr  The stderr content
      * @param string $command The run command
      *
-     * @throws \RuntimeException if the output file generation failed
+     * @throws Exceptions\GenerationFailed When the process failed with an error message
      */
     protected function checkProcessStatus($status, $stdout, $stderr, $command)
     {
         if (0 !== $status and '' !== $stderr) {
-            throw new \RuntimeException(sprintf(
+            throw new Exceptions\GenerationFailed(sprintf(
                 'The exit status code \'%s\' says something went wrong:' . "\n"
                 . 'stderr: "%s"' . "\n"
                 . 'stdout: "%s"' . "\n"
@@ -497,9 +495,9 @@ abstract class AbstractGenerator implements LocalGenerator
      * @param bool   $overwrite Whether to overwrite the file if it already
      *                          exist
      *
-     * @throws Exception\FileAlreadyExistsException
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @throws Exceptions\FileAlreadyExistsException        If the file already exists and should not be overwritten.
+     * @throws Filesystem\Exception\CouldNotDeleteFile      If the file should be overwritten but could not be deleted.
+     * @throws Filesystem\Exception\CouldNotCreateDirectory If the parent directory does not exist and could not be created.
      */
     protected function prepareOutput($filename, $overwrite)
     {
@@ -507,7 +505,7 @@ abstract class AbstractGenerator implements LocalGenerator
 
         if ($this->filesystem->exists($filename)) {
             if (!$this->filesystem->isFile($filename)) {
-                throw new \InvalidArgumentException(sprintf(
+                throw new Exceptions\FileAlreadyExistsException(sprintf(
                     'The output file \'%s\' already exists and it is a %s.',
                     $filename, $this->filesystem->isDir($filename) ? 'directory' : 'link'
                 ));
