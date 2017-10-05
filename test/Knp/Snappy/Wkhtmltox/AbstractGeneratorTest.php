@@ -2,7 +2,6 @@
 
 namespace Knp\Snappy\Wkhtmltox;
 
-use Knp\Snappy\Exception\FileAlreadyExistsException;
 use Knp\Snappy\Exception\GenerationFailed;
 use Knp\Snappy\Filesystem;
 use PHPUnit\Framework\TestCase;
@@ -168,7 +167,7 @@ class AbstractGeneratorTest extends TestCase
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
-                'configure', 'prepareOutput', 'getCommand', 'executeCommand', 'checkOutput', 'checkProcessStatus',
+                'configure', 'getCommand', 'executeCommand', 'checkOutput', 'checkProcessStatus',
             ])
             ->setConstructorArgs(['the_binary', []])
             ->getMock();
@@ -177,7 +176,6 @@ class AbstractGeneratorTest extends TestCase
             ->getMockBuilder(LoggerInterface::class)
             ->getMock()
         ;
-        $media->setLogger($logger);
         $logger
             ->expects($this->exactly(2))
             ->method('info')
@@ -192,12 +190,16 @@ class AbstractGeneratorTest extends TestCase
                 )
             )
         ;
+        $media->setLogger($logger);
 
-        $media
-            ->expects($this->once())
+        $filesystem = $this->getMockBuilder(Filesystem::class)
+            ->setMethods(['prepareOutput'])
+            ->getMock();
+        $filesystem->expects($this->once())
             ->method('prepareOutput')
-            ->with($this->equalTo('the_output_file'))
-        ;
+            ->with('the_output_file');
+        $media->setFilesystem($filesystem);
+
         $media
             ->expects($this->any())
             ->method('getCommand')
@@ -235,7 +237,7 @@ class AbstractGeneratorTest extends TestCase
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
-                'configure', 'prepareOutput', 'getCommand', 'executeCommand', 'checkOutput', 'checkProcessStatus',
+                'configure', 'getCommand', 'executeCommand', 'checkOutput', 'checkProcessStatus',
             ])
             ->setConstructorArgs(['the_binary', [], ['PATH' => '/usr/bin']])
             ->getMock();
@@ -243,6 +245,14 @@ class AbstractGeneratorTest extends TestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $media->setLogger($logger);
         $media->setTimeout(2000);
+
+        $filesystem = $this->getMockBuilder(Filesystem::class)
+            ->setMethods(['prepareOutput'])
+            ->getMock();
+        $filesystem->expects($this->once())
+            ->method('prepareOutput')
+            ->with('the_output_file');
+        $media->setFilesystem($filesystem);
 
         $logger
             ->expects($this->once())
@@ -262,11 +272,6 @@ class AbstractGeneratorTest extends TestCase
             )
         ;
 
-        $media
-            ->expects($this->once())
-            ->method('prepareOutput')
-            ->with($this->equalTo('the_output_file'))
-        ;
         $media
             ->expects($this->any())
             ->method('getCommand')
@@ -708,34 +713,6 @@ class AbstractGeneratorTest extends TestCase
         $r = new \ReflectionMethod($generator, 'isAssociativeArray');
         $r->setAccessible(true);
         $this->assertEquals($isAssociativeArray, $r->invokeArgs($generator, [$array]));
-    }
-
-    public function testItThrowsTheProperExceptionWhenFileExistsAndNotOverwritting()
-    {
-        $filesystem = $this->getMockBuilder(Filesystem::class)
-            ->setMethods(['exists', 'isFile'])
-            ->getMock();
-        $filesystem
-            ->expects($this->once())
-            ->method('exists')
-            ->willReturn(true);
-        $filesystem
-            ->expects($this->once())
-            ->method('isFile')
-            ->willReturn(true);
-
-        $media = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods(['configure'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $media->setFilesystem($filesystem);
-
-        $r = new \ReflectionMethod($media, 'prepareOutput');
-        $r->setAccessible(true);
-
-        $this->expectException(FileAlreadyExistsException::class);
-
-        $this->assertNull($r->invokeArgs($media, ['', false]));
     }
 
     public function dataForIsAssociativeArray()

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Knp\Snappy\Exception;
+namespace Knp\Snappy\Filesystem\Exception;
 
 use Knp\Snappy\Exception;
 

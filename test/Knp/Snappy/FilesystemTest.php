@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Knp\Snappy;
 
+use Knp\Snappy\Filesystem\Exception\FileAlreadyExistsException;
 use Knp\Snappy\Filesystem\Exception\FileNotFound;
 use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\TestCase;
@@ -163,5 +164,34 @@ class FilesystemTest extends TestCase
         trigger_error('test error', E_USER_ERROR);
 
         $this->assertFalse(file_exists($temporaryFiles));
+    }
+
+    public function testPrepareOutputCreatesParentDirectory()
+    {
+        $directory = $this->directory . DIRECTORY_SEPARATOR . uniqid();
+        $path = $directory . DIRECTORY_SEPARATOR . uniqid();
+
+        $this->filesystem->prepareOutput($path, false);
+
+        $this->assertTrue(is_dir($directory));
+    }
+
+    public function testPrepareOutputDeletesFileWhenItAlreadyExistAndOverwriteIsEnabled()
+    {
+        $path = $this->directory . DIRECTORY_SEPARATOR . 'prepare-output';
+        touch($path);
+
+        $this->filesystem->prepareOutput($path, true);
+
+        $this->assertFalse(file_exists($path));
+    }
+
+    public function testPrepareOutputThrowsAnExceptionWhenFileExistsAndNotOverwritting()
+    {
+        $path = $this->directory . DIRECTORY_SEPARATOR . 'prepare-output';
+        touch($path);
+
+        $this->expectException(FileAlreadyExistsException::class);
+        $this->filesystem->prepareOutput($path, false);
     }
 }
