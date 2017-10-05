@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Knp\Snappy;
+namespace Knp\Snappy\Wkhtmltox;
 
-use Knp\Snappy\Exception as Exceptions;
+use Knp\Snappy\Exception;
+use Knp\Snappy\Filesystem;
+use Knp\Snappy\LocalGenerator;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Process\Process;
@@ -160,7 +162,7 @@ abstract class AbstractGenerator implements LocalGenerator
     public function generate($input, string $output, array $options = [], bool $overwrite = false)
     {
         if (null === $this->binary) {
-            throw new Exceptions\MissingBinary();
+            throw new Exception\MissingBinary();
         }
 
         $this->prepareOutput($output, $overwrite);
@@ -344,13 +346,13 @@ abstract class AbstractGenerator implements LocalGenerator
      * @param string $output  The output filename
      * @param string $command The generation command
      *
-     * @throws Exceptions\GenerationFailed When the output file does not exist or is empty.
+     * @throws Exception\GenerationFailed When the output file does not exist or is empty.
      */
     protected function checkOutput($output, $command)
     {
         // the output file must exist
         if (!$this->filesystem->exists($output)) {
-            throw new Exceptions\GenerationFailed(sprintf(
+            throw new Exception\GenerationFailed(sprintf(
                 'The file \'%s\' was not created (command: %s).',
                 $output, $command
             ));
@@ -358,7 +360,7 @@ abstract class AbstractGenerator implements LocalGenerator
 
         // the output file must not be empty
         if (0 === $this->filesystem->getFileSize($output)) {
-            throw new Exceptions\GenerationFailed(sprintf(
+            throw new Exception\GenerationFailed(sprintf(
                 'The file \'%s\' was created but is empty (command: %s).',
                 $output, $command
             ));
@@ -373,12 +375,12 @@ abstract class AbstractGenerator implements LocalGenerator
      * @param string $stderr  The stderr content
      * @param string $command The run command
      *
-     * @throws Exceptions\GenerationFailed When the process failed with an error message
+     * @throws Exception\GenerationFailed When the process failed with an error message
      */
     protected function checkProcessStatus($status, $stdout, $stderr, $command)
     {
         if (0 !== $status and '' !== $stderr) {
-            throw new Exceptions\GenerationFailed(sprintf(
+            throw new Exception\GenerationFailed(sprintf(
                 'The exit status code \'%s\' says something went wrong:' . "\n"
                 . 'stderr: "%s"' . "\n"
                 . 'stdout: "%s"' . "\n"
@@ -495,7 +497,7 @@ abstract class AbstractGenerator implements LocalGenerator
      * @param bool   $overwrite Whether to overwrite the file if it already
      *                          exist
      *
-     * @throws Exceptions\FileAlreadyExistsException        If the file already exists and should not be overwritten.
+     * @throws Exception\FileAlreadyExistsException         If the file already exists and should not be overwritten.
      * @throws Filesystem\Exception\CouldNotDeleteFile      If the file should be overwritten but could not be deleted.
      * @throws Filesystem\Exception\CouldNotCreateDirectory If the parent directory does not exist and could not be created.
      */
@@ -505,12 +507,12 @@ abstract class AbstractGenerator implements LocalGenerator
 
         if ($this->filesystem->exists($filename)) {
             if (!$this->filesystem->isFile($filename)) {
-                throw new Exceptions\FileAlreadyExistsException(sprintf(
+                throw new Exception\FileAlreadyExistsException(sprintf(
                     'The output file \'%s\' already exists and it is a %s.',
                     $filename, $this->filesystem->isDir($filename) ? 'directory' : 'link'
                 ));
             } elseif (false === $overwrite) {
-                throw new Exceptions\FileAlreadyExistsException(sprintf(
+                throw new Exception\FileAlreadyExistsException(sprintf(
                     'The output file \'%s\' already exists.',
                     $filename
                 ));
