@@ -22,6 +22,11 @@ let fn = _asyncToGenerator(function* () {
         page = yield browser.newPage();
 
         //Set all options
+
+        if (options.emulateMedia) {
+            page.emulateMedia(options.emulateMedia);
+        }
+
         if (options.cookies) {
             for (var i = 0, len = options.cookies.length; i < len; i++) {
                 yield page.setCookie(cookies[i]);
@@ -44,7 +49,7 @@ let fn = _asyncToGenerator(function* () {
             yield page.setViewport(options.viewport);
         }
 
-        yield page.goto(url);
+        yield page.goto(url, options);
 
         if (action === 'screenshot') {
             yield page.screenshot(options);

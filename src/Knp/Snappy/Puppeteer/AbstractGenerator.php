@@ -34,7 +34,10 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     {
         $this->backend = $backend ?? new Backend();
         $this->options = $options ?? [
-            'viewport ' => ['width ' => 1280, 'height' => 1696],
+            'viewport'          => ['width' => 1280, 'height' => 1696],
+            'fullPage'          => true,
+            'emulateMedia'      => 'screen',
+            'printBackground'   => true,
         ];
         $this->filesystem = new Filesystem();
     }
