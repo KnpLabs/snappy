@@ -177,9 +177,11 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
      */
     public function generateFromHtml($html, string $output, array $options = [], bool $overwrite = false)
     {
+        $input = $this->filesystem->createTemporaryFile($html, 'html');
+
         $this->filesystem->prepareOutput($output, $overwrite);
 
-        $this->generate(sprintf('data:text/html,%s', rawurlencode($html)), $output, $options);
+        $this->generate(sprintf('file://%s', $input), $output, $options);
     }
 
     /**
@@ -187,11 +189,11 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
      */
     public function getOutput($input, array $options = [])
     {
-        $temporaryFile = $this->filesystem->createTemporaryFile(null, $this->getDefaultExtension());
+        $output = $this->filesystem->createTemporaryFile(null, $this->getDefaultExtension());
 
-        $this->generate($input, $temporaryFile, $options);
+        $this->generate($input, $output, $options);
 
-        return $this->filesystem->getFileContents($temporaryFile);
+        return $this->filesystem->getFileContents($output);
     }
 
     /**
@@ -199,11 +201,12 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
      */
     public function getOutputFromHtml($html, array $options = [])
     {
-        $temporaryFile = $this->filesystem->createTemporaryFile(null, $this->getDefaultExtension());
+        $input = $this->filesystem->createTemporaryFile($html, 'html');
+        $output = $this->filesystem->createTemporaryFile(null, $this->getDefaultExtension());
 
-        $this->generate(sprintf('data:text/html,%s', rawurlencode($html)), $temporaryFile, $options);
+        $this->generate(sprintf('file://%s', $input), $output, $options);
 
-        return $this->filesystem->getFileContents($temporaryFile);
+        return $this->filesystem->getFileContents($output);
     }
 
     /**
