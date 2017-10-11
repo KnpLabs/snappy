@@ -42,15 +42,14 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     /**
      * Run chrome to generate the output file.
      *
-     * @param string $inputUri   URI of the input document
-     *                           (e.g "file://<filename>" or "data:text/html,<urlencoded-html>").
-     * @param array  $options    Set of options specific to this generation
+     * @param string $inputUri URI of the input document
+     *                         (e.g "file://<filename>" or "data:text/html,<urlencoded-html>").
+     * @param array  $options  Set of options specific to this generation
      *
      * @throws \InvalidArgumentException When an invalid option is used
      * @throws \RuntimeException         When backend fails to generate the output file
-     * @return string           If not saved to path
      */
-    abstract protected function doGenerate(string $inputUri,  array $options);
+    abstract protected function doGenerate(string $inputUri, array $options);
 
     abstract protected function getDefaultExtension(): string;
 

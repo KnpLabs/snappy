@@ -13,7 +13,7 @@ namespace Knp\Snappy\Puppeteer;
 class CommandBuilder
 {
     /**
-     * @param string $action    screenshot or pdf
+     * @param string $action   screenshot or pdf
      * @param string $inputUri URI of the input document used (
      * @param array  $options  Options and arguments to pass to chrome (empty/false/null options are ignored)
      *
@@ -23,7 +23,7 @@ class CommandBuilder
     {
         return implode(' ', [
             'NODE_PATH=`npm root -g`',
-            escapeshellarg(__DIR__.'/../../../../resources/puppeteer.js'),
+            escapeshellarg(__DIR__ . '/../../../../resources/puppeteer.js'),
             escapeshellarg($action),
             escapeshellarg($inputUri),
             escapeshellarg(json_encode($options)),
