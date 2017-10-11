@@ -6,8 +6,10 @@ const puppeteer = require('puppeteer');
 const args = process.argv.slice(2);
 
 const action = args[0];
-const url = args[1];
-const options = args[2] ? JSON.parse(args[2]) : {};
+const inputUrl = args[1];
+
+let options = args[3] ? JSON.parse(args[3]) : {};
+options.path = args[2];
 
 let fn = _asyncToGenerator(function* () {
     let browser, page;
@@ -49,7 +51,7 @@ let fn = _asyncToGenerator(function* () {
             yield page.setViewport(options.viewport);
         }
 
-        yield page.goto(url, options);
+        yield page.goto(inputUrl, options);
 
         if (action === 'screenshot') {
             yield page.screenshot(options);

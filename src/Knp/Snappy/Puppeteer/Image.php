@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Knp\Snappy\Puppeteer;
 
 /**
- * Image generator based on chrome.
+ * Image generator based on Puppeteer.
  *
- * @author Albin Kerouanton <albin.kerouanton@knplabs.com>
  * @author Barry vd. Heuvel <barry@fruitcake.nl>
  */
 final class Image extends AbstractGenerator
@@ -15,11 +14,9 @@ final class Image extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    protected function doGenerate(string $inputUri, array $options)
+    protected function getAction(): string
     {
-        $options = array_merge($this->getOptions(), $options);
-
-        $this->getBackend()->run('screenshot', $inputUri, $options);
+        return 'screenshot';
     }
 
     /**
@@ -27,6 +24,12 @@ final class Image extends AbstractGenerator
      */
     protected function getDefaultExtension(): string
     {
-        return 'jpg';
+        $options = $this->getOptions();
+
+        if (isset($options['type'])) {
+            return $options['type'];
+        }
+
+        return 'jpeg';
     }
 }

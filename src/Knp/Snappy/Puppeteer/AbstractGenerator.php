@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace Knp\Snappy\Puppeteer;
 
+use Knp\Snappy\Exception\GenerationFailed;
 use Knp\Snappy\Filesystem;
 use Knp\Snappy\Generator;
 use Knp\Snappy\LocalGenerator;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 /**
- * Abstract puppeteer generator.
+ * Abstract Puppeteer generator.
  *
- * @author Albin Kerouanton <albin.kerouanton@knplabs.com>
  * @author Barry vd. Heuvel <barry@fruitcake.nl>
  */
 abstract class AbstractGenerator implements Generator, LocalGenerator
@@ -19,41 +23,42 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     /** @var array */
     private $options;
 
-    /** @var Backend */
-    private $backend;
+    /** @var string */
+    private $nodePath;
 
     /** @var Filesystem */
     private $filesystem;
 
-    /**
-     * @param Backend    $backend Puppeteer backend used to generate PDF/screenshot files
-     * @param array|null $options Default options for every generation done with this instance
-     *                            If null provided: disable-gpu, incognito and window-size (1280x1696)
-     */
-    public function __construct(Backend $backend = null, array $options = null)
+    /** @var LoggerInterface */
+    private $logger;
+
+    /** @var array */
+    private $env;
+
+    /** @var int */
+    private $timeout = false;
+
+    public function __construct(array $options = [], $nodePath = null, array $env = [])
     {
-        $this->backend = $backend ?? new Backend();
-        $this->options = $options ?? [
-            'viewport'          => ['width' => 1280, 'height' => 1696],
-            'fullPage'          => true,
-            'emulateMedia'      => 'screen',
-            'printBackground'   => true,
-        ];
+        $this->options = $options;
+        $this->nodePath = $nodePath;
+        $this->env = !empty($env) ? $env : null;
         $this->filesystem = new Filesystem();
+        $this->logger = new NullLogger();
     }
 
     /**
-     * Run chrome to generate the output file.
+     * Define the action used, can be 'pdf' or 'screenshot'.
      *
-     * @param string $inputUri URI of the input document
-     *                         (e.g "file://<filename>" or "data:text/html,<urlencoded-html>").
-     * @param array  $options  Set of options specific to this generation
-     *
-     * @throws \InvalidArgumentException When an invalid option is used
-     * @throws \RuntimeException         When backend fails to generate the output file
+     * @return string
      */
-    abstract protected function doGenerate(string $inputUri, array $options);
+    abstract protected function getAction() : string;
 
+    /**
+     * Get the default extension for the temporary files.
+     *
+     * @return string
+     */
     abstract protected function getDefaultExtension(): string;
 
     /**
@@ -65,19 +70,39 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     }
 
     /**
-     * @return Backend
-     */
-    protected function getBackend(): Backend
-    {
-        return $this->backend;
-    }
-
-    /**
      * @param Filesystem $filesystem
      */
     public function setFilesystem(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * Set the Node Modules path where Puppeteer is installed.
+     *
+     * @param string $nodePath The path to the node_modules dir
+     */
+    public function setNodePath(string $nodePath)
+    {
+        $this->nodePath = $nodePath;
+    }
+
+    /**
+     * Sets the timeout.
+     *
+     * @param int $timeout The timeout to set
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
     }
 
     /**
@@ -122,11 +147,29 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
      */
     public function generate($input, string $output, array $options = [], bool $overwrite = false)
     {
-        $this->filesystem->prepareOutput($output, $overwrite);
+        $command = $this->buildCommand($input, $output, $options);
+        $process = new Process($command, null, $this->env, null, $this->timeout);
 
-        $options['path'] = $output;
+        $this->logger->info(sprintf('Run puppeteer command: "%s".', $command), [
+            'command' => $command,
+            'env'     => $this->env,
+            'timeout' => $this->timeout,
+        ]);
 
-        $this->doGenerate($input, $options);
+        try {
+            $process->mustRun();
+        } catch (ProcessFailedException $e) {
+            $this->logger->error(sprintf('Puppeteer process failed during execution.'), [
+                'command'  => $command,
+                'env'      => $this->env,
+                'timeout'  => $this->timeout,
+                'exitCode' => $process->getExitCode(),
+                'stdout'   => $process->getOutput(),
+                'stderr'   => $process->getErrorOutput(),
+            ]);
+
+            throw new GenerationFailed('Generation failed', 0, $e);
+        }
     }
 
     /**
@@ -136,9 +179,7 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     {
         $this->filesystem->prepareOutput($output, $overwrite);
 
-        $options['path'] = $output;
-
-        $this->doGenerate(sprintf('data:text/html,%s', rawurlencode($html)), $options);
+        $this->generate(sprintf('data:text/html,%s', rawurlencode($html)), $output, $options);
     }
 
     /**
@@ -148,9 +189,7 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     {
         $temporaryFile = $this->filesystem->createTemporaryFile(null, $this->getDefaultExtension());
 
-        $options['path'] = $temporaryFile;
-
-        $this->doGenerate($input, $options);
+        $this->generate($input, $temporaryFile, $options);
 
         return $this->filesystem->getFileContents($temporaryFile);
     }
@@ -162,10 +201,34 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     {
         $temporaryFile = $this->filesystem->createTemporaryFile(null, $this->getDefaultExtension());
 
-        $options['path'] = $temporaryFile;
-
-        $this->doGenerate(sprintf('data:text/html,%s', rawurlencode($html)), $options);
+        $this->generate(sprintf('data:text/html,%s', rawurlencode($html)), $temporaryFile, $options);
 
         return $this->filesystem->getFileContents($temporaryFile);
+    }
+
+    /**
+     * @param string $input   URI of the input document used
+     * @param string $output  Path to the output file
+     * @param array  $options Options and arguments to pass to chrome (empty/false/null options are ignored)
+     *
+     * @return string
+     */
+    protected function buildCommand(string $input, string $output, array $options): string
+    {
+        if ($this->nodePath && is_dir($this->nodePath)) {
+            $nodePath = escapeshellarg(realpath($this->nodePath));
+        } else {
+            $nodePath = '`npm root -g`';    // Detect root node path
+        }
+
+        return implode(' ', [
+            'NODE_PATH=' . $nodePath,
+            'node',
+            escapeshellarg(realpath(__DIR__ . '/../../../../resources/puppeteer.js')),
+            escapeshellarg($this->getAction()),
+            escapeshellarg($input),
+            escapeshellarg($output),
+            escapeshellarg(json_encode($options)),
+        ]);
     }
 }

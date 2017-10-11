@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Knp\Snappy\Puppeteer;
 
 /**
- * PDF generator based on chrome.
+ * PDF generator based on Puppeteer.
  *
- * @author Albin Kerouanton <albin.kerouanton@knplabs.com>
  * @author Barry vd. Heuvel <barry@fruitcake.nl>
  */
 final class Pdf extends AbstractGenerator
@@ -15,11 +14,9 @@ final class Pdf extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    protected function doGenerate(string $inputUri, array $options)
+    protected function getAction(): string
     {
-        $options = array_merge($this->getOptions(), $options);
-
-        $this->getBackend()->run('pdf', $inputUri, $options);
+        return 'pdf';
     }
 
     /**
