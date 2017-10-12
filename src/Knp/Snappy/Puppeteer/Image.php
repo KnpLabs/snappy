@@ -32,4 +32,18 @@ final class Image extends AbstractGenerator
 
         return 'jpeg';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->addOptions([
+            'type'           => null,
+            'quality'        => null,
+            'fullPage'       => null,
+            'clip'           => null,
+            'omitBackground' => null,
+        ]);
+    }
 }

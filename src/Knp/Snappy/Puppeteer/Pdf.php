@@ -26,4 +26,22 @@ final class Pdf extends AbstractGenerator
     {
         return 'pdf';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->addOptions([
+            'scale'               => null,
+            'displayHeaderFooter' => null,
+            'printBackground'     => null,
+            'landscape'           => null,
+            'pageRanges'          => null,
+            'format'              => null,
+            'width'               => null,
+            'height'              => null,
+            'margin'              => null,
+        ]);
+    }
 }

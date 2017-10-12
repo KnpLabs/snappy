@@ -20,9 +20,6 @@ use Symfony\Component\Process\Process;
  */
 abstract class AbstractGenerator implements Generator, LocalGenerator
 {
-    /** @var array */
-    private $options;
-
     /** @var string */
     private $nodePath;
 
@@ -38,20 +35,31 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     /** @var int */
     private $timeout = false;
 
-    public function __construct(array $options = null, $nodePath = null, array $env = [])
+    private $options = [
+        'emulateMedia'      => null,
+        'cookies'           => null,
+        'extraHTTPHeaders'  => null,
+        'javaScriptEnabled' => null,
+        'userAgent'         => null,
+        'viewport'          => null,
+    ];
+
+    public function __construct(array $options = [], $nodePath = null, array $env = [])
     {
-        $this->options = $options ?? [
-            'viewport'          => ['width' => 1280, 'height' => 1696],
-            'fullPage'          => true,
-            'emulateMedia'      => 'screen',
-            'printBackground'   => true,
-            'format'            => 'a4',
-        ];
+        $this->configure();
+        $this->setOptions($options);
         $this->nodePath = $nodePath;
         $this->env = !empty($env) ? $env : null;
         $this->filesystem = new Filesystem();
         $this->logger = new NullLogger();
     }
+
+    /**
+     * This method must configure the media options.
+     *
+     * @see AbstractGenerator::addOption()
+     */
+    abstract protected function configure();
 
     /**
      * Define the action used, can be 'pdf' or 'screenshot'.
@@ -66,14 +74,6 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
      * @return string
      */
     abstract protected function getDefaultExtension(): string;
-
-    /**
-     * @return array
-     */
-    protected function getOptions(): array
-    {
-        return $this->options;
-    }
 
     /**
      * @param Filesystem $filesystem
@@ -112,40 +112,74 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     }
 
     /**
-     * @param string $name
-     */
-    public function enableOption(string $name)
-    {
-        $this->options[$name] = true;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function removeOption(string $name)
-    {
-        unset($this->options[$name]);
-    }
-
-    /**
-     * Set the default value for a specific option.
+     * Sets an option. Be aware that option values are NOT validated and that
+     * it is your responsibility to validate user inputs.
      *
-     * @param string $name    Option name
-     * @param mixed  $default Default value
+     * @param string $name  The option to set
+     * @param mixed  $value The value (NULL to unset)
+     *
+     * @throws \InvalidArgumentException
      */
-    public function setOption(string $name, $default)
+    public function setOption($name, $value)
     {
+        if (!array_key_exists($name, $this->options)) {
+            throw new \InvalidArgumentException(sprintf('The option \'%s\' does not exist.', $name));
+        }
+
+        $this->options[$name] = $value;
+
+        $this->logger->debug(sprintf('Set option "%s" to "%s".', $name, var_export($value, true)));
+    }
+
+    /**
+     * Sets an array of options.
+     *
+     * @param array $options An associative array of options as name/value
+     */
+    public function setOptions(array $options)
+    {
+        foreach ($options as $name => $value) {
+            $this->setOption($name, $value);
+        }
+    }
+
+    /**
+     * Returns all the options.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * Adds an option.
+     *
+     * @param string $name    The name
+     * @param mixed  $default An optional default value
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function addOption($name, $default = null)
+    {
+        if (array_key_exists($name, $this->options)) {
+            throw new \InvalidArgumentException(sprintf('The option \'%s\' already exists.', $name));
+        }
+
         $this->options[$name] = $default;
     }
 
     /**
-     * Set default values for some options.
+     * Adds an array of options.
      *
      * @param array $options
      */
-    public function setOptions(array $options)
+    protected function addOptions(array $options)
     {
-        $this->options = array_merge($this->options, $options);
+        foreach ($options as $name => $default) {
+            $this->addOption($name, $default);
+        }
     }
 
     /**
@@ -153,7 +187,7 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
      */
     public function generate($input, string $output, array $options = [], bool $overwrite = false)
     {
-        $options = array_merge($this->getOptions(), $options);
+        $options = array_filter($this->mergeOptions($options));
         $command = $this->buildCommand($input, $output, $options);
         $process = new Process($command, null, $this->env, null, $this->timeout);
 
@@ -240,5 +274,30 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
             escapeshellarg($output),
             escapeshellarg(json_encode($options)),
         ]);
+    }
+
+    /**
+     * Merges the given array of options to the instance options and returns
+     * the result options array. It does NOT change the instance options.
+     *
+     * @param array $options
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return array
+     */
+    protected function mergeOptions(array $options)
+    {
+        $mergedOptions = $this->options;
+
+        foreach ($options as $name => $value) {
+            if (!array_key_exists($name, $mergedOptions)) {
+                throw new \InvalidArgumentException(sprintf('The option \'%s\' does not exist.', $name));
+            }
+
+            $mergedOptions[$name] = $value;
+        }
+
+        return $mergedOptions;
     }
 }
