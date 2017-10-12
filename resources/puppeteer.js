@@ -25,29 +25,29 @@ let fn = _asyncToGenerator(function* () {
 
         //Set all options
 
-        if (options.emulateMedia) {
+        if (typeof options.emulateMedia !== 'undefined') {
             page.emulateMedia(options.emulateMedia);
         }
 
-        if (options.cookies) {
+        if (typeof options.cookies !== 'undefined') {
             for (var i = 0, len = options.cookies.length; i < len; i++) {
                 yield page.setCookie(cookies[i]);
             }
         }
 
-        if (options.extraHTTPHeaders) {
+        if (typeof options.extraHTTPHeaders !== 'undefined') {
             yield page.setExtraHTTPHeaders(options.extraHTTPHeaders);
         }
 
-        if (options.javaScriptEnabled) {
+        if (typeof options.javaScriptEnabled !== 'undefined') {
             yield page.setJavaScriptEnabled(options.javaScriptEnabled);
         }
 
-        if (options.userAgent) {
+        if (typeof options.userAgent !== 'undefined') {
             yield page.setUserAgent(options.userAgent);
         }
 
-        if (options.viewport) {
+        if (typeof options.viewport !== 'undefined') {
             yield page.setViewport(options.viewport);
         }
 

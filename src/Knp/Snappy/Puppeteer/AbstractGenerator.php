@@ -38,9 +38,15 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     /** @var int */
     private $timeout = false;
 
-    public function __construct(array $options = [], $nodePath = null, array $env = [])
+    public function __construct(array $options = null, $nodePath = null, array $env = [])
     {
-        $this->options = $options;
+        $this->options = $options ?? [
+            'viewport'          => ['width' => 1280, 'height' => 1696],
+            'fullPage'          => true,
+            'emulateMedia'      => 'screen',
+            'printBackground'   => true,
+            'format'            => 'a4',
+        ];
         $this->nodePath = $nodePath;
         $this->env = !empty($env) ? $env : null;
         $this->filesystem = new Filesystem();
@@ -147,6 +153,7 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
      */
     public function generate($input, string $output, array $options = [], bool $overwrite = false)
     {
+        $options = array_merge($this->getOptions(), $options);
         $command = $this->buildCommand($input, $output, $options);
         $process = new Process($command, null, $this->env, null, $this->timeout);
 
@@ -219,7 +226,7 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
     protected function buildCommand(string $input, string $output, array $options): string
     {
         if ($this->nodePath && is_dir($this->nodePath)) {
-            $nodePath = escapeshellarg(realpath($this->nodePath));
+            $nodePath = escapeshellarg($this->nodePath);
         } else {
             $nodePath = '`npm root -g`';    // Detect root node path
         }
@@ -227,7 +234,7 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
         return implode(' ', [
             'NODE_PATH=' . $nodePath,
             'node',
-            escapeshellarg(realpath(__DIR__ . '/../../../../resources/puppeteer.js')),
+            escapeshellarg(dirname(dirname(dirname(dirname(__DIR__)))) . '//resources/puppeteer.js'),
             escapeshellarg($this->getAction()),
             escapeshellarg($input),
             escapeshellarg($output),
