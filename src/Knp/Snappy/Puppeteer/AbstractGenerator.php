@@ -44,14 +44,15 @@ abstract class AbstractGenerator implements Generator, LocalGenerator
         'viewport'          => null,
     ];
 
-    public function __construct(array $options = [], $nodePath = null, array $env = [])
+    public function __construct($nodePath = null, array $options = [], array $env = [])
     {
-        $this->configure();
-        $this->setOptions($options);
         $this->nodePath = $nodePath;
         $this->env = !empty($env) ? $env : null;
         $this->filesystem = new Filesystem();
         $this->logger = new NullLogger();
+        
+        $this->configure();
+        $this->setOptions($options);
     }
 
     /**
