@@ -2,7 +2,9 @@
 
 namespace Knp\Snappy;
 
-class PdfTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class PdfTest extends TestCase
 {
     const SHELL_ARG_QUOTE_REGEX = '(?:"|\')'; // escapeshellarg produces double quotes on Windows, single quotes otherwise
 

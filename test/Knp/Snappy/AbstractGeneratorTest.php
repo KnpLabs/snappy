@@ -2,9 +2,10 @@
 
 namespace Knp\Snappy;
 
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class AbstractGeneratorTest extends \PHPUnit_Framework_TestCase
+class AbstractGeneratorTest extends TestCase
 {
     public function testAddOption()
     {
