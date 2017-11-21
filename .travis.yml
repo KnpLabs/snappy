@@ -20,9 +20,14 @@ matrix:
       env: SYMFONY_VERSION="2.8.*@dev symfony/phpunit-bridge:~2.7"
     - php: 5.6
       env: SYMFONY_VERSION="3.0.*@dev"
+    # test the latest release (including beta releases)
+    - php: 7.1
+      env: DEPENDENCIES=beta
   fast_finish: true
 
-before_install: if [[ "$SYMFONY_VERSION" != "" ]]; then composer require --no-update symfony/symfony:${SYMFONY_VERSION}; fi
+before_install:
+  - if [ "$DEPENDENCIES" = "beta" ]; then composer config minimum-stability beta; fi;
+  - if [[ "$SYMFONY_VERSION" != "" ]]; then composer require --no-update symfony/symfony:${SYMFONY_VERSION}; fi
 
 install: composer update --prefer-dist
 
