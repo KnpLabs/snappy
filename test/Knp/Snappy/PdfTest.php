@@ -111,9 +111,9 @@ class PdfTest extends TestCase
         $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
         $this->assertEquals(1, count($pdf->temporaryFiles));
-        $this->assertTrue(file_exists(reset($pdf->temporaryFiles)));
+        $this->assertFileExists(reset($pdf->temporaryFiles));
         $pdf->__destruct();
-        $this->assertFalse(file_exists(reset($pdf->temporaryFiles)));
+        $this->assertFileNotExists(reset($pdf->temporaryFiles));
     }
 
     public function testRemovesLocalFilesOnError()
@@ -127,7 +127,7 @@ class PdfTest extends TestCase
         $this->setExpectedException('PHPUnit_Framework_Error');
         trigger_error('test error', E_USER_ERROR);
 
-        $this->assertFalse(file_exists(reset($pdf->temporaryFiles)));
+        $this->assertFileNotExists(reset($pdf->temporaryFiles));
     }
 }
 
