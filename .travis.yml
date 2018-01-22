@@ -1,5 +1,4 @@
 language: php
-
 dist: trusty
 
 sudo: false
@@ -19,9 +18,9 @@ matrix:
       env: SYMFONY_VERSION="3.*@dev"
   fast_finish: true
 
-before_install: if [[ "$SYMFONY_VERSION" != "" ]]; then composer require ${COMPOSER_FLAGS} --no-update symfony/symfony:${SYMFONY_VERSION}; fi
+before_install: if [[ "$SYMFONY_VERSION" != "" ]]; then composer require --no-update symfony/symfony:${SYMFONY_VERSION}; fi
 
-install: composer update ${COMPOSER_FLAGS} --prefer-dist
+install: composer update --prefer-dist
 
 script:
     - vendor/bin/phpunit

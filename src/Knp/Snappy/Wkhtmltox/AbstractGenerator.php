@@ -44,7 +44,7 @@ abstract class AbstractGenerator implements LocalGenerator
         $this->env = empty($env) ? null : $env;
         $this->logger = new NullLogger();
         $this->filesystem = new Filesystem();
-        
+
         $this->configure();
         $this->setBinary($binary);
         $this->setOptions($options);
