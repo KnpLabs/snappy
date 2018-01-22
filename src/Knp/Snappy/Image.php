@@ -28,6 +28,7 @@ class Image extends AbstractGenerator
     {
         $this->addOptions([
             'allow'                        => null,    // Allow the file or files from the specified folder to be loaded (repeatable)
+            'cache-dir'                    => null,    // Web cache directory
             'checkbox-checked-svg'         => null,    // Use this SVG file when rendering checked checkboxes
             'checked-svg'                  => null,    // Use this SVG file when rendering unchecked checkboxes
             'cookie'                       => [],      // Set an additional cookie (repeatable)
