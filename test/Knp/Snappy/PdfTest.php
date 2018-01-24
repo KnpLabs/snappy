@@ -110,7 +110,7 @@ class PdfTest extends TestCase
         $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
         $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, count($pdf->temporaryFiles));
+        $this->assertCount(1, $pdf->temporaryFiles);
         $this->assertFileExists(reset($pdf->temporaryFiles));
         $pdf->__destruct();
         $this->assertFileNotExists(reset($pdf->temporaryFiles));
@@ -122,7 +122,7 @@ class PdfTest extends TestCase
         $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
         $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, count($pdf->temporaryFiles));
+        $this->assertCount(1, $pdf->temporaryFiles);
 
         $this->setExpectedException('PHPUnit_Framework_Error');
         trigger_error('test error', E_USER_ERROR);
