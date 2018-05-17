@@ -50,8 +50,6 @@ abstract class AbstractGenerator implements GeneratorInterface
         $this->setBinary($binary);
         $this->setOptions($options);
         $this->env = empty($env) ? null : $env;
-
-        register_shutdown_function([$this, 'removeTemporaryFiles']);
     }
 
     public function __destruct()
