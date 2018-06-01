@@ -17,6 +17,7 @@ Please, check [FAQ](doc/faq.md) before opening a new issue. Snappy is a tiny wra
 Following integrations are available:
 * [`knplabs/knp-snappy-bundle`](https://github.com/KnpLabs/KnpSnappyBundle), for Symfony
 * [`barryvdh/laravel-snappy`](https://github.com/barryvdh/laravel-snappy), for Laravel
+* [`mvlabs/mvlabs-snappy`](https://github.com/mvlabs/MvlabsSnappy), for Zend Framework
 
 ## Current maintainer(s)
 
