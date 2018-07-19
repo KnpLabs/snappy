@@ -426,8 +426,10 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     public function removeTemporaryFiles()
     {
-        foreach ($this->temporaryFiles as $file) {
-            $this->unlink($file);
+        if(is_array($this->temporaryFiles)) {
+            foreach ($this->temporaryFiles as $file) {
+                $this->unlink($file);
+            }
         }
     }
 
