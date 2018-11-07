@@ -55,6 +55,8 @@ tfoot { display:table-footer-group; }
 
 *A*: Please, check your `wkhtmltopdf` version. It is recommended to use at least `0.12.2.1` and what is important - starting from `wkhtmltopdf >= 0.12.2` it doesn't require X server or emulation anymore. You can download new version from http://wkhtmltopdf.org/downloads.html or install via composer for Linux servers as stated in [README](https://github.com/KnpLabs/snappy#wkhtmltopdf-binary-as-composer-dependencies). If there is no possibility to update `wkhtmltopdf`, please check http://stackoverflow.com/questions/9604625/wkhtmltopdf-cannot-connect-to-x-server
 
+###### *Q*: PDF generation failed with wkhtmltopdf returning error code 1 due to ContentNotFoundError, how do I deal with that?
+*A*: This is a known problem with wkhtmltopdf. Several issues has been raised: [issue 1855](https://github.com/wkhtmltopdf/wkhtmltopdf/issues/1855), [issue 2051](https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2051). To catch that error, `generate` method will throw a `RuntimeException` with error code equals to the error code returned with wkhtmltopdf, catch this exception and check for the error code and then deal with this exception in appropriate ways.
 
 ###### *Q*: My PDF is always generated for a small screen resolution\I always receive a mobile version.
 
