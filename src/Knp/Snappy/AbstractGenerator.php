@@ -516,7 +516,11 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function executeCommand($command)
     {
-        $process = new Process($command, null, $this->env);
+        if (method_exists(Process::class, 'fromShellCommandline')) {
+            $process = Process::fromShellCommandline($command, null, $this->env);
+        } else {
+            $process = new Process($command, null, $this->env);
+        }
 
         if (false !== $this->timeout) {
             $process->setTimeout($this->timeout);
