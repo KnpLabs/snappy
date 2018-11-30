@@ -35,6 +35,11 @@
             "Knp\\Snappy\\": "src/Knp/Snappy"
         }
     },
+    "autoload-dev":{
+        "psr-4": {
+            "Knp\\Snappy\\": "test/Knp/Snappy"
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
