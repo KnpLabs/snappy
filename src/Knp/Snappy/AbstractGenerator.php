@@ -6,6 +6,7 @@ use Knp\Snappy\Exception as Exceptions;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Process\Process;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Base generator class for medias.
@@ -516,7 +517,11 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function executeCommand($command)
     {
-        $process = new Process($command, null, $this->env);
+        if (Kernel::VERSION_ID >= 40200) {
+            $process = Process::fromShellCommandline($command, null, $this->env);
+        } else {
+            $process = new Process($command, null, $this->env);
+        }
 
         if (false !== $this->timeout) {
             $process->setTimeout($this->timeout);
