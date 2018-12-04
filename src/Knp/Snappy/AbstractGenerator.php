@@ -5,8 +5,8 @@ namespace Knp\Snappy;
 use Knp\Snappy\Exception as Exceptions;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Symfony\Component\Process\Process;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Process\Process;
 
 /**
  * Base generator class for medias.
