@@ -413,7 +413,9 @@ abstract class AbstractGenerator implements GeneratorInterface
         }
 
         if (null !== $content) {
-            file_put_contents($filename, $content);
+            $file_handle = fopen($filename, 'w');
+            fwrite($file_handle, $content);
+            fclose($file_handle);
         }
 
         $this->temporaryFiles[] = $filename;
