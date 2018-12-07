@@ -2,6 +2,7 @@
 
 namespace Knp\Snappy;
 
+use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\TestCase;
 
 class PdfTest extends TestCase
@@ -55,10 +56,26 @@ class PdfTest extends TestCase
 
     public function testThatSomethingUsingNonexistentTmpFolder()
     {
-        $testObject = new PdfSpy();
-        $testObject->setTemporaryFolder(__DIR__ . '/i-dont-exist');
+        $temporaryFolder = sys_get_temp_dir() . '/i-dont-exist';
 
-        $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
+        $testObject = new PdfSpy();
+        $testObject->setTemporaryFolder($temporaryFolder);
+
+        $output = $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
+
+        $this->assertDirectoryExists($temporaryFolder);
+    }
+
+    public function testRemovesLocalFilesOnError()
+    {
+        $pdf = new PdfSpy();
+        $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
+        $method->setAccessible(true);
+        $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
+        $this->assertEquals(1, count($pdf->temporaryFiles));
+        $this->expectException(Error::class);
+        trigger_error('test error', E_USER_ERROR);
+        $this->assertFileNotExists(reset($pdf->temporaryFiles));
     }
 
     /**
@@ -113,20 +130,6 @@ class PdfTest extends TestCase
         $this->assertEquals(1, count($pdf->temporaryFiles));
         $this->assertFileExists(reset($pdf->temporaryFiles));
         $pdf->__destruct();
-        $this->assertFileNotExists(reset($pdf->temporaryFiles));
-    }
-
-    public function testRemovesLocalFilesOnError()
-    {
-        $pdf = new PdfSpy();
-        $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
-        $method->setAccessible(true);
-        $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, count($pdf->temporaryFiles));
-
-        $this->setExpectedException('PHPUnit_Framework_Error');
-        trigger_error('test error', E_USER_ERROR);
-
         $this->assertFileNotExists(reset($pdf->temporaryFiles));
     }
 }

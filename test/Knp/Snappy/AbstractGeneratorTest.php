@@ -163,21 +163,18 @@ class AbstractGeneratorTest extends TestCase
 
     public function testGenerate()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'prepareOutput',
                 'getCommand',
                 'executeCommand',
                 'checkOutput',
                 'checkProcessStatus',
-            ],
-            [
-                'the_binary',
-                [],
-            ]
-        );
+            ])
+            ->setConstructorArgs(['the_binary', []])
+            ->getMock()
+        ;
 
         $logger = $this
             ->getMockBuilder(LoggerInterface::class)
@@ -239,22 +236,18 @@ class AbstractGeneratorTest extends TestCase
 
     public function testFailingGenerate()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'prepareOutput',
                 'getCommand',
                 'executeCommand',
                 'checkOutput',
                 'checkProcessStatus',
-            ],
-            [
-                'the_binary',
-                [],
-                ['PATH' => '/usr/bin'],
-            ]
-        );
+            ])
+            ->setConstructorArgs(['the_binary', [], ['PATH' => '/usr/bin']])
+            ->getMock()
+        ;
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $media->setLogger($logger);
@@ -305,26 +298,24 @@ class AbstractGeneratorTest extends TestCase
             ->willThrowException(new \RuntimeException())
         ;
 
-        $this->setExpectedException(\RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
 
         $media->generate('the_input_file', 'the_output_file', ['foo' => 'bar']);
     }
 
     public function testGenerateFromHtml()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'generate',
                 'createTemporaryFile',
-            ],
-            [
-                'the_binary',
-            ],
-            '',
-            false
-        );
+            ])
+            ->setConstructorArgs(['the_binary'])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
         $media
             ->expects($this->once())
             ->method('createTemporaryFile')
@@ -349,19 +340,16 @@ class AbstractGeneratorTest extends TestCase
 
     public function testGenerateFromHtmlWithHtmlArray()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'generate',
                 'createTemporaryFile',
-            ],
-            [
-                'the_binary',
-            ],
-            '',
-            false
-        );
+            ])
+            ->setConstructorArgs(['the_binary'])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
         $media
             ->expects($this->once())
             ->method('createTemporaryFile')
@@ -386,20 +374,18 @@ class AbstractGeneratorTest extends TestCase
 
     public function testGetOutput()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'getDefaultExtension',
                 'createTemporaryFile',
                 'generate',
                 'getFileContents',
                 'unlink',
-            ],
-            [],
-            '',
-            false
-        );
+            ])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
         $media
             ->expects($this->any())
             ->method('getDefaultExtension')
@@ -441,17 +427,15 @@ class AbstractGeneratorTest extends TestCase
 
     public function testGetOutputFromHtml()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'getOutput',
                 'createTemporaryFile',
-            ],
-            [],
-            '',
-            false
-        );
+            ])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
         $media
             ->expects($this->once())
             ->method('createTemporaryFile')
@@ -476,17 +460,15 @@ class AbstractGeneratorTest extends TestCase
 
     public function testGetOutputFromHtmlWithHtmlArray()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'getOutput',
                 'createTemporaryFile',
-            ],
-            [],
-            '',
-            false
-        );
+            ])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
         $media
             ->expects($this->once())
             ->method('createTemporaryFile')
@@ -668,17 +650,15 @@ class AbstractGeneratorTest extends TestCase
 
     public function testCheckOutput()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'fileExists',
                 'filesize',
-            ],
-            [],
-            '',
-            false
-        );
+            ])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
         $media
             ->expects($this->once())
             ->method('fileExists')
@@ -707,17 +687,15 @@ class AbstractGeneratorTest extends TestCase
 
     public function testCheckOutputWhenTheFileDoesNotExist()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'fileExists',
                 'filesize',
-            ],
-            [],
-            '',
-            false
-        );
+            ])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
         $media
             ->expects($this->once())
             ->method('fileExists')
@@ -740,17 +718,16 @@ class AbstractGeneratorTest extends TestCase
 
     public function testCheckOutputWhenTheFileIsEmpty()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'fileExists',
                 'filesize',
-            ],
-            [],
-            '',
-            false
-        );
+            ])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
         $media
             ->expects($this->once())
             ->method('fileExists')
@@ -779,15 +756,11 @@ class AbstractGeneratorTest extends TestCase
 
     public function testCheckProcessStatus()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
-                'configure',
-            ],
-            [],
-            '',
-            false
-        );
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods(['configure'])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
 
         $r = new \ReflectionMethod($media, 'checkProcessStatus');
         $r->setAccessible(true);
@@ -806,12 +779,8 @@ class AbstractGeneratorTest extends TestCase
             $this->fail('1 status means failure, but no stderr content');
         }
 
-        try {
-            $r->invokeArgs($media, [1, '', 'Could not connect to X', 'the command']);
-            $this->fail('1 status means failure');
-        } catch (\RuntimeException $e) {
-            $this->anything('1 status means failure');
-        }
+        $this->expectException(\RuntimeException::class);
+        $r->invokeArgs($media, [1, '', 'Could not connect to X', 'the command']);
     }
 
     /**
@@ -831,17 +800,16 @@ class AbstractGeneratorTest extends TestCase
      */
     public function testItThrowsTheProperExceptionWhenFileExistsAndNotOverwritting()
     {
-        $media = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'fileExists',
                 'isFile',
-            ],
-            [],
-            '',
-            false
-        );
+            ])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
         $media
             ->expects($this->any())
             ->method('fileExists')
@@ -898,16 +866,15 @@ class AbstractGeneratorTest extends TestCase
 
     public function testCleanupEmptyTemporaryFiles()
     {
-        $generator = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $generator = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'unlink',
-            ],
-            [
-                'the_binary',
-            ]
-        );
+            ])
+            ->setConstructorArgs(['the_binary'])
+            ->getMock()
+        ;
+
         $generator
             ->expects($this->once())
             ->method('unlink');
@@ -927,16 +894,15 @@ class AbstractGeneratorTest extends TestCase
 
     public function testleanupTemporaryFiles()
     {
-        $generator = $this->getMock(
-            'Knp\Snappy\AbstractGenerator',
-            [
+        $generator = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
                 'configure',
                 'unlink',
-            ],
-            [
-                'the_binary',
-            ]
-        );
+            ])
+            ->setConstructorArgs(['the_binary'])
+            ->getMock()
+        ;
+
         $generator
             ->expects($this->once())
             ->method('unlink');

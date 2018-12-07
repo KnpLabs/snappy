@@ -1,6 +1,6 @@
 build: false
 platform: x64
-clone_folder:  C:\projects\snappy
+clone_folder:  c:\projects\snappy
 
 environment:
   matrix:
@@ -13,33 +13,36 @@ environment:
 
 cache:
   - composer.phar
-  - C:\ProgramData\chocolatey\bin -> appveyor.yml
-  - C:\ProgramData\chocolatey\lib -> appveyor.yml
-  - C:\php -> appveyor.yml
+  - c:\ProgramData\chocolatey\bin -> appveyor.yml
+  - c:\ProgramData\chocolatey\lib -> appveyor.yml
+  - c:\php -> appveyor.yml
 
 init:
-  - SET PATH=C:\Program Files\OpenSSL;C:\tools\php;%PATH%
+  - SET PATH=c:\Program Files\OpenSSL;c:\tools\php;%PATH%
   - SET COMPOSER_NO_INTERACTION=1
   - SET PHP=1
   - SET ANSICON=121x90 (121x90)
 
 install:
-  - IF EXIST C:\tools\php (SET PHP=0)
-  - ps: appveyor-retry cinst --params '""/InstallDir:C:\tools\php""' --ignore-checksums -y php --version ((choco search php --exact --all-versions -r | select-string -pattern $env:php_ver_target | sort { [version]($_ -split '\|' | select -last 1) } -Descending | Select-Object -first 1) -replace '[php|]','')
-  - cd C:\tools\php
+  - IF EXIST c:\tools\php (SET PHP=0)
+  - ps: choco search php --exact --all-versions -r
+  - ps: echo ((choco search php --exact --all-versions -r | select-string -pattern $env:php_ver_target | sort { [version]($_ -split '\|' | select -last 1) } -Descending | Select-Object -first 1) -replace '[php|]','')
+  - ps: appveyor-retry cinst php --params '""/InstallDir:c:\tools\php""' --ignore-checksums -y --version ((choco search php --exact --all-versions -r | select-string -pattern $env:php_ver_target | sort { [version]($_ -split '\|' | select -last 1) } -Descending | Select-Object -first 1) -replace '[php|]','')
+  - cd c:\tools\php
   - IF %PHP%==1 copy php.ini-production php.ini /Y
   - IF %PHP%==1 echo date.timezone="UTC" >> php.ini
   - IF %PHP%==1 echo extension_dir=ext >> php.ini
   - IF %PHP%==1 echo extension=php_openssl.dll >> php.ini
+  - IF %PHP%==1 echo extension=php_mbstring.dll >> php.ini
   - IF %PHP%==1 echo extension=php_fileinfo.dll >> php.ini
   - IF %PHP%==1 echo @php %%~dp0composer.phar %%* > composer.bat
   - appveyor-retry appveyor DownloadFile https://getcomposer.org/composer.phar
-  - cd C:\projects\snappy
+  - cd c:\projects\snappy
   - IF %dependencies%==lowest appveyor-retry composer update --prefer-lowest --no-progress --profile -n
   - IF %dependencies%==current appveyor-retry composer install --no-progress --profile
   - IF %dependencies%==highest appveyor-retry composer update --no-progress --profile -n
   - composer show
 
 test_script:
-  - cd C:\projects\snappy
+  - cd c:\projects\snappy
   - vendor/bin/phpunit
