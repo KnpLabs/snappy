@@ -154,6 +154,7 @@ class Pdf extends AbstractGenerator
             'post-file'                    => null,
             'print-media-type'             => null,
             'no-print-media-type'          => null,
+            'bypass-proxy-for'             => null,
             'proxy'                        => null,
             'radiobutton-checked-svg'      => null,
             'radiobutton-svg'              => null,
