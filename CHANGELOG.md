@@ -1,3 +1,13 @@
+## 1.0.5
+
+* Add bypass-proxy-for option added in 0.12.3 (see [#302](https://github.com/KnpLabs/snappy/pull/302))
+* Fix symfony/process 4.2 deprecation notice (see [#331](https://github.com/KnpLabs/snappy/pull/331))
+* Drop suppor for unmaintained PHP versions (5.6 and 7.0, see [#337](https://github.com/KnpLabs/snappy/pull/337)
+* Drop support for unmaintained symfony/process versions (see [#337](https://github.com/KnpLabs/snappy/pull/337))
+* Pass on error code in checkProcessStatus (see [#328](https://github.com/KnpLabs/snappy/pull/328))
+
+Thanks to @joshpme, @drigani, @fbourigault, @NiR- and @leimd for their work.
+
 ## 1.0.4
 
 * Support cache-dir for Image generation  (see [#297](https://github.com/KnpLabs/snappy/pull/297)).
