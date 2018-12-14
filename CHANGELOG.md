@@ -1,4 +1,4 @@
-## 1.0.5
+## 1.1.0
 
 * Add bypass-proxy-for option added in 0.12.3 (see [#302](https://github.com/KnpLabs/snappy/pull/302))
 * Fix symfony/process 4.2 deprecation notice (see [#331](https://github.com/KnpLabs/snappy/pull/331))
