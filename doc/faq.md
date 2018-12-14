@@ -163,7 +163,17 @@ at the same time: it processes the first one, send the first response and only t
 
 ###### *Q*: How to proceed when experiencing `ContentNotFound`, `ConnectionRefusedError` or timeouts?
 
-*A*: When you experience errors like `ContentNotFound`, `ConnectionRefusedError` or timeouts it is hard to know what is failing. The best you can do to narrow the scope of the bug is to slightly change your HTML code until you found the culprit. 
-Start by removing whole parts, like document body. If that's now working, re-add it but now remove one half of its content. And repeat again and again until you find which URLs is buggy.
+*A*: When you experience errors like `ContentNotFound` or `ConnectionRefusedError`, try to turn off `quiet` option and 
+look at Snappy logs (you have to set up a logger first).
 
-There's one more (better) way though: fire up tcpdump or wireshark and listen for http requests. You should see which request(s) is failing, and you can even check the content of the request/response.
+If you experience timeouts, it might be hard to know what is failing. The best you can do to narrow the scope of the bug
+is to slightly change your HTML code until you found the culprit. Start by removing whole parts, like document body to 
+know if it comes from something in the body or something in the head. If that's now working, re-add it but now remove 
+one half of its content. And repeat again and again until you find which URLs is buggy.
+
+There's one more (better) way though: fire up tcpdump or wireshark and listen for http requests. You should see which 
+request(s) is failing, and you can even check the content of the request/response.
+
+###### *Q*: My custom fonts aren't smooth
+
+According to #326, you shall prefer using SVG versions of your custom fonts to have a better font smoothing.
