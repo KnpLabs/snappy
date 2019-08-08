@@ -87,37 +87,27 @@ $snappy->setOption('cache-dir', '/path/to/cache/dir');
 
 ## wkhtmltopdf binary as composer dependencies
 
-If you want to download wkhtmltopdf and wkhtmltoimage with composer you add to `composer.json`:
+If you want to download wkhtmltopdf and wkhtmltoimage with composer, you can require the [michael-schaefer-eu/wkhtmltox](https://github.com/michael-schaefer-eu/wkhtmltox) package:
 
 ```bash
-$ composer require h4cc/wkhtmltopdf-i386 0.12.x
-$ composer require h4cc/wkhtmltoimage-i386 0.12.x
+$ composer require michael-schaefer-eu/wkhtmltox
 ```
 
-or this if you are in 64 bit based system:
-
-```bash
-$ composer require h4cc/wkhtmltopdf-amd64 0.12.x
-$ composer require h4cc/wkhtmltoimage-amd64 0.12.x
-```
-
-And then you can use it
+And then you can use it (with PSR4 Autoloader):
 
 ```php
 <?php
-
 use Knp\Snappy\Pdf;
+use Knp\Snappy\Image;
+use Wkhtmltox\Wkhtmltopdf;
+use Wkhtmltox\Wkhtmltoimage;
 
-$myProjectDirectory = '/path/to/my/project';
-
-$snappy = new Pdf($myProjectDirectory . '/vendor/h4cc/wkhtmltopdf-i386/bin/wkhtmltopdf-i386');
-
-// or
-
-$snappy = new Pdf($myProjectDirectory . '/vendor/h4cc/wkhtmltopdf-amd64/bin/wkhtmltopdf-amd64');
+$snappyPdf = new Pdf(Wkhtmltopdf::BIONICAMD64);
+$snappyImage = new Image(Wkhtmltoimage::BIONICAMD64);
 ```
 
-*N.B.* These static binaries are extracted from  [Debian7 packages](https://github.com/h4cc/wkhtmltopdf-amd64/issues/13#issuecomment-150948179), so it might not be compatible with non-debian based linux distros
+_Info:_ The michael-schaefer-eu/wkhtmltox package contains the latest wkhtmltopdf and wkhtmltoimage binaries for Ubuntu bionic 18.04, amd64 and i386 architectures. If you need binaries for any other version or OS, you can search on [packagist.org](https://packagist.org/?query=wkhtmltopdf).
+
 ## Some use cases
 
 If you want to generate table of contents and you want to use custom XSL stylesheet, do the following:
