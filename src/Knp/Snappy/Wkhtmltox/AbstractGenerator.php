@@ -7,6 +7,7 @@ namespace Knp\Snappy\Wkhtmltox;
 use Knp\Snappy\Exception;
 use Knp\Snappy\Filesystem;
 use Knp\Snappy\LocalGenerator;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Process\Process;
@@ -18,7 +19,7 @@ use Symfony\Component\Process\Process;
  * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
  * @author  Antoine Hérault <antoine.herault@knplabs.com>
  */
-abstract class AbstractGenerator implements LocalGenerator
+abstract class AbstractGenerator implements LocalGenerator, LoggerAwareInterface
 {
     private $binary;
     private $options = [];

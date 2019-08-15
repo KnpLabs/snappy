@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Knp\Snappy\Chrome;
 
 use Knp\Snappy\Exception\GenerationFailed;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -15,7 +16,7 @@ use Symfony\Component\Process\Process;
  *
  * @author Albin Kerouanton <albin.kerouanton@knplabs.com>
  */
-class Backend
+class Backend implements LoggerAwareInterface
 {
     /** @var string */
     private $binary;
