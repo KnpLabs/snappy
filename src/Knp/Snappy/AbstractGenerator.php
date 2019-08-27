@@ -461,11 +461,11 @@ abstract class AbstractGenerator implements GeneratorInterface
                 } elseif (is_array($option)) {
                     if ($this->isAssociativeArray($option)) {
                         foreach ($option as $k => $v) {
-                            $command .= ' --' . $key . ' ' . escapeshellarg($k) . ' ' . escapeshellarg($v);
+                            $command .= ' --' . $key . ' ' . escapeshellarg($this->handleCommandFloat($k)) . ' ' . escapeshellarg($this->handleCommandFloat($v));
                         }
                     } else {
                         foreach ($option as $v) {
-                            $command .= ' --' . $key . ' ' . escapeshellarg($v);
+                            $command .= ' --' . $key . ' ' . escapeshellarg($this->handleCommandFloat($v));
                         }
                     }
                 } else {
@@ -475,7 +475,7 @@ abstract class AbstractGenerator implements GeneratorInterface
                     } elseif (in_array($key, ['image-dpi', 'image-quality'])) {
                         $command .= ' --' . $key . ' ' . (int) $option;
                     } else {
-                        $command .= ' --' . $key . ' ' . escapeshellarg($option);
+                        $command .= ' --' . $key . ' ' . escapeshellarg($this->handleCommandFloat($option));
                     }
                 }
             }
@@ -491,6 +491,22 @@ abstract class AbstractGenerator implements GeneratorInterface
         }
 
         return $command;
+    }
+
+    /**
+     * Handles non-locale-aware floats.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    private function handleCommandFloat($value)
+    {
+        if (is_float($value)) {
+            return trim(sprintf('%F', $value), '0');
+        }
+
+        return $value;
     }
 
     /**

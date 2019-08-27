@@ -88,6 +88,22 @@ class PdfTest extends TestCase
         $this->assertRegExp($expectedRegex, $testObject->getLastCommand());
     }
 
+    /**
+     * @dataProvider dataOptions
+     */
+    public function testOptionsWithCsLocale(array $options, $expectedRegex)
+    {
+        putenv('LANG=en');
+        putenv('LANGUAGE=cs_CZ.utf8');
+
+        setlocale(LC_ALL, 'cs_CZ.utf8');
+        setlocale(LC_MESSAGES, 'cs_CZ.utf8');
+
+        $testObject = new PdfSpy();
+        $testObject->getOutputFromHtml('<html></html>', $options);
+        $this->assertRegExp($expectedRegex, $testObject->getLastCommand());
+    }
+
     public function dataOptions()
     {
         $q = self::SHELL_ARG_QUOTE_REGEX;
@@ -117,6 +133,11 @@ class PdfTest extends TestCase
             [
                 ['xsl-style-sheet' => 'http://google.com'],
                 '/emptyBinary --lowquality --xsl-style-sheet ' . $q . '.*\.xsl' . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
+            ],
+            // options with float values
+            [
+                ['margin-top' => 25.1, 'margin-left' => 15.6],
+                '/emptyBinary --lowquality --margin-left ' . $q . '15\.6' . $q . ' --margin-top ' . $q . '25\.1' . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
             ],
         ];
     }
