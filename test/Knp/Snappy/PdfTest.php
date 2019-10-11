@@ -118,6 +118,15 @@ class PdfTest extends TestCase
                 ['xsl-style-sheet' => 'http://google.com'],
                 '/emptyBinary --lowquality --xsl-style-sheet ' . $q . '.*\.xsl' . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
             ],
+            // set toc options after toc argument
+            [
+                [
+                    'grayscale'            => true,
+                    'toc'                  => true,
+                    'disable-dotted-lines' => true,
+                ],
+                '/emptyBinary --grayscale --lowquality toc --disable-dotted-lines ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
+            ],
         ];
     }
 

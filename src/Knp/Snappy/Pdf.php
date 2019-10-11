@@ -81,8 +81,7 @@ class Pdf extends AbstractGenerator
     protected function configure()
     {
         $this->addOptions([
-            'ignore-load-errors'           => null, // old v0.9
-            'lowquality'                   => true,
+            // Global options
             'collate'                      => null,
             'no-collate'                   => null,
             'cookie-jar'                   => null,
@@ -92,32 +91,41 @@ class Pdf extends AbstractGenerator
             'grayscale'                    => null,
             'help'                         => null,
             'htmldoc'                      => null,
+            'ignore-load-errors'           => null, // old v0.9
             'image-dpi'                    => null,
             'image-quality'                => null,
+            'license'                      => null,
+            'log-level'                    => null,
+            'lowquality'                   => true,
             'manpage'                      => null,
             'margin-bottom'                => null,
             'margin-left'                  => null,
             'margin-right'                 => null,
             'margin-top'                   => null,
             'orientation'                  => null,
-            'output-format'                => null,
             'page-height'                  => null,
             'page-size'                    => null,
             'page-width'                   => null,
             'no-pdf-compression'           => null,
             'quiet'                        => null,
             'read-args-from-stdin'         => null,
+            'readme'                       => null,
             'title'                        => null,
             'use-xserver'                  => null,
             'version'                      => null,
+            // Outline options
             'dump-default-toc-xsl'         => null,
             'dump-outline'                 => null,
             'outline'                      => null,
             'no-outline'                   => null,
             'outline-depth'                => null,
+            'output-format'                => null,
+            // Page options
             'allow'                        => null,
             'background'                   => null,
             'no-background'                => null,
+            'bypass-proxy-for'             => null,
+            'cache-dir'                    => null,
             'checkbox-checked-svg'         => null,
             'checkbox-svg'                 => null,
             'cookie'                       => null,
@@ -139,6 +147,7 @@ class Pdf extends AbstractGenerator
             'disable-javascript'           => null,
             'enable-javascript'            => null,
             'javascript-delay'             => null,
+            'keep-relative-links'          => null,
             'load-error-handling'          => null,
             'load-media-error-handling'    => null,
             'disable-local-file-access'    => null,
@@ -154,21 +163,28 @@ class Pdf extends AbstractGenerator
             'post-file'                    => null,
             'print-media-type'             => null,
             'no-print-media-type'          => null,
-            'bypass-proxy-for'             => null,
             'proxy'                        => null,
+            'proxy-hostname-lookup'        => null,
             'radiobutton-checked-svg'      => null,
             'radiobutton-svg'              => null,
+            'redirect-delay'               => null, // old v0.9
+            'resolve-relative-links'       => null,
             'run-script'                   => null,
             'disable-smart-shrinking'      => null,
             'enable-smart-shrinking'       => null,
+            'ssl-crt-path'                 => null,
+            'ssl-key-password'             => null,
+            'ssl-key-path'                 => null,
             'stop-slow-scripts'            => null,
             'no-stop-slow-scripts'         => null,
             'disable-toc-back-links'       => null,
             'enable-toc-back-links'        => null,
             'user-style-sheet'             => null,
             'username'                     => null,
+            'viewport-size'                => null,
             'window-status'                => null,
             'zoom'                         => null,
+            // Headers and footer options
             'footer-center'                => null,
             'footer-font-name'             => null,
             'footer-font-size'             => null,
@@ -188,24 +204,22 @@ class Pdf extends AbstractGenerator
             'header-right'                 => null,
             'header-spacing'               => null,
             'replace'                      => null,
-            'disable-dotted-lines'         => null,
+            // Cover object
             'cover'                        => null,
+            // TOC object
             'toc'                          => null,
-            'toc-depth'                    => null,
-            'toc-font-name'                => null,
-            'toc-l1-font-size'             => null,
+            // TOC options
+            'disable-dotted-lines'         => null,
+            'toc-depth'                    => null, // old v0.9
+            'toc-font-name'                => null, // old v0.9
+            'toc-l1-font-size'             => null, // old v0.9
             'toc-header-text'              => null,
-            'toc-header-font-name'         => null,
-            'toc-header-font-size'         => null,
+            'toc-header-font-name'         => null, // old v0.9
+            'toc-header-font-size'         => null, // old v0.9
             'toc-level-indentation'        => null,
             'disable-toc-links'            => null,
             'toc-text-size-shrink'         => null,
             'xsl-style-sheet'              => null,
-            'viewport-size'                => null,
-            'redirect-delay'               => null, // old v0.9
-            'cache-dir'                    => null,
-            'keep-relative-links'          => null,
-            'resolve-relative-links'       => null,
         ]);
     }
 
