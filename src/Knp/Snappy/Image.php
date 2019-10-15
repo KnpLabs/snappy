@@ -28,6 +28,7 @@ class Image extends AbstractGenerator
     {
         $this->addOptions([
             'allow'                        => null,    // Allow the file or files from the specified folder to be loaded (repeatable)
+            'bypass-proxy-for'             => null,    // Bypass proxy for host (repeatable)
             'cache-dir'                    => null,    // Web cache directory
             'checkbox-checked-svg'         => null,    // Use this SVG file when rendering checked checkboxes
             'checked-svg'                  => null,    // Use this SVG file when rendering unchecked checkboxes
@@ -62,6 +63,7 @@ class Image extends AbstractGenerator
             'post-file'                    => [],      // Post an additional file
             'proxy'                        => null,    // Use a proxy
             'quality'                      => null,    // Output image quality (between 0 and 100) (default 94)
+            'quiet'                        => null,    // Be less verbose
             'radiobutton-checked-svg'      => null,    // Use this SVG file when rendering checked radio-buttons
             'radiobutton-svg'              => null,    // Use this SVG file when rendering unchecked radio-buttons
             'run-script'                   => null,    // Run this additional javascript after the page is done loading (repeatable)
@@ -76,7 +78,6 @@ class Image extends AbstractGenerator
             'width'                        => null,    // Set screen width (default is 1024)
             'window-status'                => null,    // Wait until window.status is equal to this string before rendering page
             'zoom'                         => null,    // Use this zoom factor (default 1)
-            'quiet'                        => null,    // Be less verbose
         ]);
     }
 }
