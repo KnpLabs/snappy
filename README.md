@@ -1,6 +1,7 @@
 # Snappy
 
-[![Build Status](https://travis-ci.org/KnpLabs/snappy.svg?branch=master)](https://travis-ci.org/KnpLabs/snappy)
+[![Travis CI Build Status](https://travis-ci.org/KnpLabs/snappy.svg?branch=master)](https://travis-ci.org/KnpLabs/snappy)
+[![AppVeyor CI Build Status](https://ci.appveyor.com/api/projects/status/github/KnpLabs/snappy?branch=master&svg=true)](https://ci.appveyor.com/project/NiR-/snappy)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KnpLabs/Gaufrette/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/KnpLabs/Gaufrette/?branch=master)
 [![StyleCI](https://styleci.io/repos/723980/shield?branch=master)](https://styleci.io/repos/723980)
 
@@ -12,16 +13,10 @@ You will have to download wkhtmltopdf `0.12.x` in order to use Snappy.
 
 Please, check [FAQ](doc/faq.md) before opening a new issue. Snappy is a tiny wrapper around wkhtmltox, so lots of issues are already answered, resolved or wkhtmltox ones.
 
-[![Build Status](https://secure.travis-ci.org/KnpLabs/snappy.png?branch=master)](http://travis-ci.org/KnpLabs/snappy)
-
 Following integrations are available:
 * [`knplabs/knp-snappy-bundle`](https://github.com/KnpLabs/KnpSnappyBundle), for Symfony
 * [`barryvdh/laravel-snappy`](https://github.com/barryvdh/laravel-snappy), for Laravel
 * [`mvlabs/mvlabs-snappy`](https://github.com/mvlabs/MvlabsSnappy), for Zend Framework
-
-## Current maintainer(s)
-
-* [NiR-](https://github.com/NiR-)
 
 ## Installation using [Composer](http://getcomposer.org/)
 
