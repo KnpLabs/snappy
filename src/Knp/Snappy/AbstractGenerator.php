@@ -350,7 +350,8 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         if (!$this->fileExists($output)) {
             throw new \RuntimeException(sprintf(
                 'The file \'%s\' was not created (command: %s).',
-                $output, $command
+                $output,
+                $command
             ));
         }
 
@@ -358,7 +359,8 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         if (0 === $this->filesize($output)) {
             throw new \RuntimeException(sprintf(
                 'The file \'%s\' was created but is empty (command: %s).',
-                $output, $command
+                $output,
+                $command
             ));
         }
     }
@@ -381,7 +383,10 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
                 . 'stderr: "%s"' . "\n"
                 . 'stdout: "%s"' . "\n"
                 . 'command: %s.',
-                $status, $stderr, $stdout, $command
+                $status,
+                $stderr,
+                $stdout,
+                $command
             ), $status);
         }
     }
@@ -555,7 +560,8 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
             if (!$this->isFile($filename)) {
                 throw new \InvalidArgumentException(sprintf(
                     'The output file \'%s\' already exists and it is a %s.',
-                    $filename, $this->isDir($filename) ? 'directory' : 'link'
+                    $filename,
+                    $this->isDir($filename) ? 'directory' : 'link'
                 ));
             } elseif (false === $overwrite) {
                 throw new Exceptions\FileAlreadyExistsException(sprintf(
@@ -686,5 +692,16 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     protected function mkdir($pathname)
     {
         return mkdir($pathname, 0777, true);
+    }
+
+    /**
+     * Reset all options to their initial values.
+     *
+     * @return void
+     */
+    public function resetOptions()
+    {
+        $this->options = [];
+        $this->configure();
     }
 }
