@@ -694,7 +694,7 @@ abstract class AbstractGenerator implements GeneratorInterface
     }
 
     /**
-     * Reset all options to their initial values
+     * Reset all options to their initial values.
      *
      * @return void
      */

@@ -80,6 +80,17 @@ $snappy->setOption('toc', true);
 $snappy->setOption('cache-dir', '/path/to/cache/dir');
 ```
 
+### Reset options
+Options can be reset to their initial values with `resetOption()` method.
+```php
+$snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
+// Set some options
+$snappy->setOption('copies' => 4);
+// ..
+// Reset options
+$snappy->resetOptions();
+```
+
 ## wkhtmltopdf binary as composer dependencies
 
 If you want to download wkhtmltopdf and wkhtmltoimage with composer you add to `composer.json`:
