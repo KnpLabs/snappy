@@ -923,4 +923,26 @@ class AbstractGeneratorTest extends TestCase
         $remove->setAccessible(true);
         $remove->invoke($generator);
     }
+
+    public function testResetOptions()
+    {
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
+                'resetOptions',
+                'setOption',
+            ])
+            ->setConstructorArgs(['the_binary', [], ['PATH' => '/usr/bin']])
+            ->getMock()
+        ;
+
+        $media->setOption('copies', 4);
+        $media->setOption('disable-javascript', true);
+        $media->setOption('no-background', true);
+
+        $media->resetOptions();
+
+        $this->assertEquals($media->getOptions['copies'], null);
+        $this->assertEquals($media->getOptions['disable-javascript'], null);
+        $this->assertEquals($media->getOptions['no-background'], null);
+    }
 }
