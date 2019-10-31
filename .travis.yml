@@ -13,7 +13,7 @@ php:
 
 matrix:
   include:
-    - php: 7.1
+    - php: 7.3
         env: SYMFONY_VERSION="5.0.*@dev" DEPENDENCIES=dev
     - php: 7.1
       env: SYMFONY_VERSION="4.3.*@dev"
