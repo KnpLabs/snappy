@@ -46,6 +46,14 @@ $snappy->setBinary('/usr/local/bin/wkhtmltopdf');
 ```php
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 header('Content-Type: application/pdf');
+echo $snappy->getOutput('http://www.github.com');
+```
+
+### Download the pdf from the browser
+
+```php
+$snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
+header('Content-Type: application/pdf');
 header('Content-Disposition: attachment; filename="file.pdf"');
 echo $snappy->getOutput('http://www.github.com');
 ```
