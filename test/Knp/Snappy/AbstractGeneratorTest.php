@@ -928,8 +928,10 @@ class AbstractGeneratorTest extends TestCase
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
+                'configure',
                 'resetOptions',
                 'setOption',
+                'getOptions',
             ])
             ->setConstructorArgs(['the_binary', [], ['PATH' => '/usr/bin']])
             ->getMock()
@@ -941,8 +943,8 @@ class AbstractGeneratorTest extends TestCase
 
         $media->resetOptions();
 
-        $this->assertEquals($media->getOptions['copies'], null);
-        $this->assertEquals($media->getOptions['disable-javascript'], null);
-        $this->assertEquals($media->getOptions['no-background'], null);
+        $this->assertEquals($media->getOptions()['copies'], null);
+        $this->assertEquals($media->getOptions()['disable-javascript'], null);
+        $this->assertEquals($media->getOptions()['no-background'], null);
     }
 }
