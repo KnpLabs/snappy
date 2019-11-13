@@ -924,6 +924,9 @@ class AbstractGeneratorTest extends TestCase
         $remove->invoke($generator);
     }
 
+    /**
+     * @depends testSetOption
+     */
     public function testResetOptions()
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
