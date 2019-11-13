@@ -924,30 +924,33 @@ class AbstractGeneratorTest extends TestCase
         $remove->invoke($generator);
     }
 
-    /**
-     * @depends testSetOption
-     */
     public function testResetOptions()
     {
-        $media = $this->getMockBuilder(AbstractGenerator::class)
-            ->setMethods([
-                'configure',
-                'resetOptions',
-                'setOption',
-                'getOptions',
-            ])
-            ->setConstructorArgs(['the_binary', [], ['PATH' => '/usr/bin']])
-            ->getMock()
-        ;
+        $media = new class('/usr/local/bin/wkhtmltopdf') extends AbstractGenerator {
+            protected function configure()
+            {
+                $this->addOptions([
+                    'optionA' => null,
+                    'optionB' => 'abc'
+                ]);
 
-        $media->setOption('copies', 4);
-        $media->setOption('disable-javascript', true);
-        $media->setOption('no-background', true);
+            }
+        };
+
+        $media->setOption('optionA', 'bar');
+
+        $this->assertEquals(
+            [
+                'optionA' => 'bar',
+                'optionB' => 'abc'
+            ],
+            $media->getOptions(),
+            '->setOption() defines the value of an option'
+            );
 
         $media->resetOptions();
 
-        $this->assertEquals($media->getOptions()['copies'], null);
-        $this->assertEquals($media->getOptions()['disable-javascript'], null);
-        $this->assertEquals($media->getOptions()['no-background'], null);
+        $this->assertEquals($media->getOptions()['optionA'], null);
+        $this->assertEquals($media->getOptions()['optionB'], 'abc');
     }
 }
