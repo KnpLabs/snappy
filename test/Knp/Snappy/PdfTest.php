@@ -13,28 +13,28 @@ class PdfTest extends TestCase
     {
         $directory = __DIR__ . '/i-dont-exist';
 
-        if (file_exists($directory)) {
+        if (\file_exists($directory)) {
             $iterator = new \RecursiveDirectoryIterator(
                 $directory,
                 \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS
             );
 
             foreach ($iterator as $item) {
-                unlink(strval($item));
+                \unlink(\strval($item));
             }
 
-            rmdir($directory);
+            \rmdir($directory);
         }
 
         $htmlFiles = new \CallbackFilterIterator(
             new \DirectoryIterator(__DIR__),
             function ($filename) {
-                return preg_match('/\.html$/', $filename) === 1;
+                return \preg_match('/\.html$/', $filename) === 1;
             }
         );
 
         foreach ($htmlFiles as $file) {
-            unlink($file->getPathname());
+            \unlink($file->getPathname());
         }
     }
 
@@ -56,7 +56,7 @@ class PdfTest extends TestCase
 
     public function testThatSomethingUsingNonexistentTmpFolder()
     {
-        $temporaryFolder = sys_get_temp_dir() . '/i-dont-exist';
+        $temporaryFolder = \sys_get_temp_dir() . '/i-dont-exist';
 
         $testObject = new PdfSpy();
         $testObject->setTemporaryFolder($temporaryFolder);
@@ -72,10 +72,10 @@ class PdfTest extends TestCase
         $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
         $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, count($pdf->temporaryFiles));
+        $this->assertEquals(1, \count($pdf->temporaryFiles));
         $this->expectException(Error::class);
-        trigger_error('test error', E_USER_ERROR);
-        $this->assertFileNotExists(reset($pdf->temporaryFiles));
+        \trigger_error('test error', E_USER_ERROR);
+        $this->assertFileNotExists(\reset($pdf->temporaryFiles));
     }
 
     /**
@@ -106,7 +106,7 @@ class PdfTest extends TestCase
             // just pass the given footer file
             [
                 ['footer-html' => __FILE__],
-                '/emptyBinary --lowquality --footer-html ' . $q . preg_quote(__FILE__, '/') . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
+                '/emptyBinary --lowquality --footer-html ' . $q . \preg_quote(__FILE__, '/') . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
             ],
             // save the given footer HTML string into a temporary file and pass that filename
             [
@@ -136,10 +136,10 @@ class PdfTest extends TestCase
         $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
         $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, count($pdf->temporaryFiles));
-        $this->assertFileExists(reset($pdf->temporaryFiles));
+        $this->assertEquals(1, \count($pdf->temporaryFiles));
+        $this->assertFileExists(\reset($pdf->temporaryFiles));
         $pdf->__destruct();
-        $this->assertFileNotExists(reset($pdf->temporaryFiles));
+        $this->assertFileNotExists(\reset($pdf->temporaryFiles));
     }
 }
 

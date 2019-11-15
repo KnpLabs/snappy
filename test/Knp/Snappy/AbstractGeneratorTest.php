@@ -561,18 +561,18 @@ class AbstractGeneratorTest extends TestCase
             return $_SERVER['_'];
         }
 
-        if (@defined(PHP_BINARY)) {
+        if (@\defined(PHP_BINARY)) {
             return PHP_BINARY;
         }
 
-        $paths = explode(PATH_SEPARATOR, getenv('PATH'));
+        $paths = \explode(PATH_SEPARATOR, \getenv('PATH'));
         foreach ($paths as $path) {
             // we need this for XAMPP (Windows)
-            if (strstr($path, 'php.exe') && isset($_SERVER['WINDIR']) && file_exists($path) && is_file($path)) {
+            if (\strstr($path, 'php.exe') && isset($_SERVER['WINDIR']) && \file_exists($path) && \is_file($path)) {
                 return $path;
             } else {
                 $php_executable = $path . DIRECTORY_SEPARATOR . 'php' . (isset($_SERVER['WINDIR']) ? '.exe' : '');
-                if (file_exists($php_executable) && is_file($php_executable)) {
+                if (\file_exists($php_executable) && \is_file($php_executable)) {
                     return $php_executable;
                 }
             }
@@ -591,7 +591,7 @@ class AbstractGeneratorTest extends TestCase
                 'http://the.url/',
                 '/the/path',
                 [],
-                $theBinary . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
@@ -602,7 +602,7 @@ class AbstractGeneratorTest extends TestCase
                     'bar'   => false,
                     'baz'   => [],
                 ],
-                $theBinary . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
@@ -613,7 +613,7 @@ class AbstractGeneratorTest extends TestCase
                     'bar'   => ['barvalue1', 'barvalue2'],
                     'baz'   => true,
                 ],
-                $theBinary . ' --foo ' . escapeshellarg('foovalue') . ' --bar ' . escapeshellarg('barvalue1') . ' --bar ' . escapeshellarg('barvalue2') . ' --baz ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' --foo ' . \escapeshellarg('foovalue') . ' --bar ' . \escapeshellarg('barvalue1') . ' --bar ' . \escapeshellarg('barvalue2') . ' --baz ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
@@ -623,7 +623,7 @@ class AbstractGeneratorTest extends TestCase
                     'cookie'          => ['session' => 'bla', 'phpsess' => 12],
                     'no-background'   => '1',
                 ],
-                $theBinary . ' --cookie ' . escapeshellarg('session') . ' ' . escapeshellarg('bla') . ' --cookie ' . escapeshellarg('phpsess') . ' ' . escapeshellarg('12') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' --cookie ' . \escapeshellarg('session') . ' ' . \escapeshellarg('bla') . ' --cookie ' . \escapeshellarg('phpsess') . ' ' . \escapeshellarg('12') . ' --no-background ' . \escapeshellarg('1') . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
@@ -633,7 +633,7 @@ class AbstractGeneratorTest extends TestCase
                     'allow'           => ['/path1', '/path2'],
                     'no-background'   => '1',
                 ],
-                $theBinary . ' --allow ' . escapeshellarg('/path1') . ' --allow ' . escapeshellarg('/path2') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' --allow ' . \escapeshellarg('/path1') . ' --allow ' . \escapeshellarg('/path2') . ' --no-background ' . \escapeshellarg('1') . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
@@ -643,7 +643,7 @@ class AbstractGeneratorTest extends TestCase
                     'image-dpi'     => 100,
                     'image-quality' => 50,
                 ],
-                $theBinary . ' ' . '--image-dpi 100 --image-quality 50 ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' ' . '--image-dpi 100 --image-quality 50 ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
         ];
     }

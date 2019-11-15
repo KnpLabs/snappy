@@ -39,12 +39,12 @@ class Pdf extends AbstractGenerator
                 continue;
             }
 
-            if (!empty($value) && array_key_exists($option, $this->optionsWithContentCheck)) {
+            if (!empty($value) && \array_key_exists($option, $this->optionsWithContentCheck)) {
                 $saveToTempFile = !$this->isFile($value) && !$this->isOptionUrl($value);
                 $fetchUrlContent = $option === 'xsl-style-sheet' && $this->isOptionUrl($value);
 
                 if ($saveToTempFile || $fetchUrlContent) {
-                    $fileContent = $fetchUrlContent ? file_get_contents($value) : $value;
+                    $fileContent = $fetchUrlContent ? \file_get_contents($value) : $value;
                     $options[$option] = $this->createTemporaryFile($fileContent, $this->optionsWithContentCheck[$option]);
                 }
             }
@@ -72,7 +72,7 @@ class Pdf extends AbstractGenerator
      */
     protected function isOptionUrl($option)
     {
-        return (bool) filter_var($option, FILTER_VALIDATE_URL);
+        return (bool) \filter_var($option, FILTER_VALIDATE_URL);
     }
 
     /**
