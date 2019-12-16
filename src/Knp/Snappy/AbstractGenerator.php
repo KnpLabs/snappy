@@ -176,7 +176,7 @@ abstract class AbstractGenerator implements GeneratorInterface
             list($status, $stdout, $stderr) = $this->executeCommand($command);
             $this->checkProcessStatus($status, $stdout, $stderr, $command);
             $this->checkOutput($output, $command);
-        } catch (\Exception $e) { // @TODO: should be replaced by \Throwable when support for php5.6 is dropped
+        } catch (\Exception $e) {
             $this->logger->error(sprintf('An error happened while generating "%s".', $output), [
                 'command' => $command,
                 'status'  => isset($status) ? $status : null,
