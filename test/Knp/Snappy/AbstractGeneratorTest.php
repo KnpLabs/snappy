@@ -783,7 +783,7 @@ class AbstractGeneratorTest extends TestCase
             $r->invokeArgs($media, [1, '', 'Could not connect to X', 'the command']);
             $this->fail('1 status means failure');
         } catch (\RuntimeException $e) {
-            $this->assertEquals(1, $e->getCode(), 'Execption thrown by checkProcessStatus should pass on the error code');
+            $this->assertEquals(1, $e->getCode(), 'Exception thrown by checkProcessStatus should pass on the error code');
         }
     }
 
@@ -931,9 +931,8 @@ class AbstractGeneratorTest extends TestCase
             {
                 $this->addOptions([
                     'optionA' => null,
-                    'optionB' => 'abc'
+                    'optionB' => 'abc',
                 ]);
-
             }
         };
 
@@ -942,15 +941,19 @@ class AbstractGeneratorTest extends TestCase
         $this->assertEquals(
             [
                 'optionA' => 'bar',
-                'optionB' => 'abc'
+                'optionB' => 'abc',
             ],
-            $media->getOptions(),
-            '->setOption() defines the value of an option'
-            );
+            $media->getOptions()
+        );
 
         $media->resetOptions();
 
-        $this->assertEquals($media->getOptions()['optionA'], null);
-        $this->assertEquals($media->getOptions()['optionB'], 'abc');
+        $this->assertEquals(
+            [
+                'optionA' => null,
+                'optionB' => 'abc',
+            ],
+            $media->getOptions()
+        );
     }
 }

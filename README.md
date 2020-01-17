@@ -81,7 +81,7 @@ $snappy->setOption('cache-dir', '/path/to/cache/dir');
 ```
 
 ### Reset options
-Options can be reset to their initial values with `resetOption()` method.
+Options can be reset to their initial values with `resetOptions()` method.
 ```php
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 // Set some options
