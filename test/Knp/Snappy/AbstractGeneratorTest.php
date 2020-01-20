@@ -783,7 +783,7 @@ class AbstractGeneratorTest extends TestCase
             $r->invokeArgs($media, [1, '', 'Could not connect to X', 'the command']);
             $this->fail('1 status means failure');
         } catch (\RuntimeException $e) {
-            $this->assertEquals(1, $e->getCode(), 'Execption thrown by checkProcessStatus should pass on the error code');
+            $this->assertEquals(1, $e->getCode(), 'Exception thrown by checkProcessStatus should pass on the error code');
         }
     }
 
@@ -922,5 +922,38 @@ class AbstractGeneratorTest extends TestCase
         $remove = new \ReflectionMethod($generator, 'removeTemporaryFiles');
         $remove->setAccessible(true);
         $remove->invoke($generator);
+    }
+
+    public function testResetOptions()
+    {
+        $media = new class('/usr/local/bin/wkhtmltopdf') extends AbstractGenerator {
+            protected function configure()
+            {
+                $this->addOptions([
+                    'optionA' => null,
+                    'optionB' => 'abc',
+                ]);
+            }
+        };
+
+        $media->setOption('optionA', 'bar');
+
+        $this->assertEquals(
+            [
+                'optionA' => 'bar',
+                'optionB' => 'abc',
+            ],
+            $media->getOptions()
+        );
+
+        $media->resetOptions();
+
+        $this->assertEquals(
+            [
+                'optionA' => null,
+                'optionB' => 'abc',
+            ],
+            $media->getOptions()
+        );
     }
 }
