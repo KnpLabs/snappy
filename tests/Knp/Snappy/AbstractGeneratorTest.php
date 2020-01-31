@@ -556,6 +556,9 @@ class AbstractGeneratorTest extends TestCase
         $this->assertEquals($expected, $r->invokeArgs($media, [$binary, $url, $path, $options]));
     }
 
+    /**
+     * @return string|null
+     */
     private function getPHPExecutableFromPath(): ?string
     {
         if (isset($_SERVER['_'])) {

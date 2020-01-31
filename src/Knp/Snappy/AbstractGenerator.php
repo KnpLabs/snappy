@@ -96,6 +96,8 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * This method must configure the media options.
      *
+     * @return void
+     *
      * @see AbstractGenerator::addOption()
      */
     abstract protected function configure(): void;
@@ -551,7 +553,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      *
      * @param string $command
      *
-     * @return array(status, stdout, stderr)
+     * @return array [status, stdout, stderr]
      */
     protected function executeCommand(string $command): array
     {

@@ -18,6 +18,8 @@ interface GeneratorInterface
      * @param string       $output    The output media filename
      * @param array        $options   An array of options for this generation only
      * @param bool         $overwrite Overwrite the file if it exists. If not, throw a FileAlreadyExistsException
+     *
+     * @return void
      */
     public function generate($input, string $output, array $options = [], bool $overwrite = false): void;
 
@@ -28,6 +30,8 @@ interface GeneratorInterface
      * @param string       $output    The output media filename
      * @param array        $options   An array of options for this generation only
      * @param bool         $overwrite Overwrite the file if it exists. If not, throw a FileAlreadyExistsException
+     *
+     * @return void
      */
     public function generateFromHtml($html, string $output, array $options = [], bool $overwrite = false): void;
 

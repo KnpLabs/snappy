@@ -62,7 +62,7 @@ class PdfTest extends TestCase
         $testObject = new PdfSpy();
         $testObject->setTemporaryFolder($temporaryFolder);
 
-        $output = $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
+        $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
 
         $this->assertDirectoryExists($temporaryFolder);
     }
