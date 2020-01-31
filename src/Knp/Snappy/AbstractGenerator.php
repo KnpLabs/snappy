@@ -52,7 +52,9 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         $this->setOptions($options);
         $this->env = empty($env) ? null : $env;
 
-        register_shutdown_function([$this, 'removeTemporaryFiles']);
+        if (is_callable([$this, 'removeTemporaryFiles'])) {
+            register_shutdown_function([$this, 'removeTemporaryFiles']);
+        }
     }
 
     public function __destruct()
@@ -91,7 +93,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * Gets the default extension.
      *
-     * @return $string
+     * @return string
      */
     public function getDefaultExtension()
     {
@@ -430,7 +432,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * Removes all temporary files.
      */
-    public function removeTemporaryFiles()
+    public function removeTemporaryFiles(): void
     {
         foreach ($this->temporaryFiles as $file) {
             $this->unlink($file);
@@ -441,7 +443,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      * Builds the command string.
      *
      * @param string       $binary  The binary path/name
-     * @param string/array $input   Url(s) or file location(s) of the page(s) to process
+     * @param string|array $input   Url(s) or file location(s) of the page(s) to process
      * @param string       $output  File location to the image-to-be
      * @param array        $options An array of options
      *

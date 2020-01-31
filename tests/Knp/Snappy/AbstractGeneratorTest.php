@@ -1,7 +1,8 @@
 <?php
 
-namespace Knp\Snappy;
+namespace Tests\Knp\Snappy;
 
+use Knp\Snappy\AbstractGenerator;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -9,7 +10,7 @@ class AbstractGeneratorTest extends TestCase
 {
     public function testAddOption()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $this->assertEquals([], $media->getOptions());
 
@@ -36,13 +37,13 @@ class AbstractGeneratorTest extends TestCase
             $r->invokeArgs($media, ['baz', 'bat']);
             $this->fail($message);
         } catch (\InvalidArgumentException $e) {
-            $this->anything($message);
+            $this->anything();
         }
     }
 
     public function testAddOptions()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $this->assertEquals([], $media->getOptions());
 
@@ -78,7 +79,7 @@ class AbstractGeneratorTest extends TestCase
             $r->invokeArgs($media, [['bak' => 'bam', 'bah' => 'bap', 'baz' => 'bat']]);
             $this->fail($message);
         } catch (\InvalidArgumentException $e) {
-            $this->anything($message);
+            $this->anything();
         }
     }
 
@@ -117,7 +118,7 @@ class AbstractGeneratorTest extends TestCase
             $media->setOption('bad', 'def');
             $this->fail($message);
         } catch (\InvalidArgumentException $e) {
-            $this->anything($message);
+            $this->anything();
         }
     }
 
@@ -157,7 +158,7 @@ class AbstractGeneratorTest extends TestCase
             $media->setOptions(['foo' => 'abc', 'baz' => 'def', 'bad' => 'ghi']);
             $this->fail($message);
         } catch (\InvalidArgumentException $e) {
-            $this->anything($message);
+            $this->anything();
         }
     }
 
@@ -493,7 +494,7 @@ class AbstractGeneratorTest extends TestCase
 
     public function testMergeOptions()
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $originalOptions = ['foo' => 'bar', 'baz' => 'bat'];
 
@@ -538,7 +539,7 @@ class AbstractGeneratorTest extends TestCase
             $r->invokeArgs($media, [['foo' => 'ban', 'bad' => 'bah']]);
             $this->fail($message);
         } catch (\InvalidArgumentException $e) {
-            $this->anything($message);
+            $this->anything();
         }
     }
 
@@ -547,7 +548,7 @@ class AbstractGeneratorTest extends TestCase
      */
     public function testBuildCommand($binary, $url, $path, $options, $expected)
     {
-        $media = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $r = new \ReflectionMethod($media, 'buildCommand');
         $r->setAccessible(true);
@@ -679,7 +680,7 @@ class AbstractGeneratorTest extends TestCase
 
         try {
             $r->invokeArgs($media, ['the_output_file', 'the command']);
-            $this->anything($message);
+            $this->anything();
         } catch (\RuntimeException $e) {
             $this->fail($message);
         }
@@ -712,7 +713,7 @@ class AbstractGeneratorTest extends TestCase
             $r->invokeArgs($media, ['the_output_file', 'the command']);
             $this->fail($message);
         } catch (\RuntimeException $e) {
-            $this->anything($message);
+            $this->anything();
         }
     }
 
@@ -750,7 +751,7 @@ class AbstractGeneratorTest extends TestCase
             $r->invokeArgs($media, ['the_output_file', 'the command']);
             $this->fail($message);
         } catch (\RuntimeException $e) {
-            $this->anything($message);
+            $this->anything();
         }
     }
 
@@ -767,14 +768,14 @@ class AbstractGeneratorTest extends TestCase
 
         try {
             $r->invokeArgs($media, [0, '', '', 'the command']);
-            $this->anything('0 status means success');
+            $this->anything();
         } catch (\RuntimeException $e) {
             $this->fail('0 status means success');
         }
 
         try {
             $r->invokeArgs($media, [1, '', '', 'the command']);
-            $this->anything('1 status means failure, but no stderr content');
+            $this->anything();
         } catch (\RuntimeException $e) {
             $this->fail('1 status means failure, but no stderr content');
         }
@@ -792,7 +793,7 @@ class AbstractGeneratorTest extends TestCase
      */
     public function testIsAssociativeArray($array, $isAssociativeArray)
     {
-        $generator = $this->getMockForAbstractClass('Knp\Snappy\AbstractGenerator', [], '', false);
+        $generator = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $r = new \ReflectionMethod($generator, 'isAssociativeArray');
         $r->setAccessible(true);
