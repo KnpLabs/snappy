@@ -43,7 +43,8 @@
         }
     },
     "scripts": {
-        "phpstan": "vendor/bin/phpstan analyse --ansi"
+        "unit-tests": "vendor/bin/phpunit",
+        "static-analysis": "vendor/bin/phpstan analyse --ansi"
     },
     "extra": {
         "branch-alias": {
