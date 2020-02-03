@@ -31,4 +31,4 @@ install: composer update --prefer-dist
 
 script:
     - vendor/bin/phpunit
-    - composer phpstan
+    - vendor/bin/phpstan analyse --ansi --no-progress
