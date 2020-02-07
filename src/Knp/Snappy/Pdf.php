@@ -11,12 +11,15 @@ namespace Knp\Snappy;
  */
 class Pdf extends AbstractGenerator
 {
+    /**
+     * @var array
+     */
     protected $optionsWithContentCheck = [];
 
     /**
      * {@inheritdoc}
      */
-    public function __construct($binary = null, array $options = [], array $env = null)
+    public function __construct(string $binary = null, array $options = [], array $env = null)
     {
         $this->setDefaultExtension('pdf');
         $this->setOptionsWithContentCheck();
@@ -31,7 +34,7 @@ class Pdf extends AbstractGenerator
      *
      * @return array $options Transformed options
      */
-    protected function handleOptions(array $options = [])
+    protected function handleOptions(array $options = []): array
     {
         foreach ($options as $option => $value) {
             if (null === $value) {
@@ -56,7 +59,7 @@ class Pdf extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    public function generate($input, $output, array $options = [], $overwrite = false)
+    public function generate($input, string $output, array $options = [], bool $overwrite = false): void
     {
         $options = $this->handleOptions($this->mergeOptions($options));
 
@@ -70,7 +73,7 @@ class Pdf extends AbstractGenerator
      *
      * @return bool
      */
-    protected function isOptionUrl($option)
+    protected function isOptionUrl($option): bool
     {
         return (bool) filter_var($option, FILTER_VALIDATE_URL);
     }
@@ -78,7 +81,7 @@ class Pdf extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOptions([
             // Global options
@@ -226,7 +229,7 @@ class Pdf extends AbstractGenerator
     /**
      * Array with options which require to store the content of the option before passing it to wkhtmltopdf.
      */
-    protected function setOptionsWithContentCheck()
+    protected function setOptionsWithContentCheck(): self
     {
         $this->optionsWithContentCheck = [
             'header-html'    => 'html',
@@ -234,5 +237,7 @@ class Pdf extends AbstractGenerator
             'cover'          => 'html',
             'xsl-style-sheet'=> 'xsl',
         ];
+
+        return $this;
     }
 }
