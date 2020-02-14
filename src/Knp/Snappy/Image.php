@@ -14,7 +14,7 @@ class Image extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    public function __construct($binary = null, array $options = [], array $env = null)
+    public function __construct(string $binary = null, array $options = [], array $env = null)
     {
         $this->setDefaultExtension('jpg');
 
@@ -24,7 +24,7 @@ class Image extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOptions([
             'allow'                        => null,    // Allow the file or files from the specified folder to be loaded (repeatable)

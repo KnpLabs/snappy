@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class ImageTest extends TestCase
 {
-    public function testCreateInstance()
+    public function testCreateInstance(): void
     {
         $testObject = new Image();
         $this->assertInstanceOf(Image::class, $testObject);

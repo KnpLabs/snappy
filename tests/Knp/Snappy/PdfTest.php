@@ -10,7 +10,7 @@ class PdfTest extends TestCase
 {
     const SHELL_ARG_QUOTE_REGEX = '(?:"|\')'; // escapeshellarg produces double quotes on Windows, single quotes otherwise
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $directory = __DIR__ . '/i-dont-exist';
 
@@ -39,13 +39,13 @@ class PdfTest extends TestCase
         }
     }
 
-    public function testCreateInstance()
+    public function testCreateInstance(): void
     {
         $testObject = new Pdf();
         $this->assertInstanceOf(Pdf::class, $testObject);
     }
 
-    public function testThatSomethingUsingTmpFolder()
+    public function testThatSomethingUsingTmpFolder(): void
     {
         $q = self::SHELL_ARG_QUOTE_REGEX;
         $testObject = new PdfSpy();
@@ -55,7 +55,7 @@ class PdfTest extends TestCase
         $this->assertRegExp('/emptyBinary --lowquality --footer-html ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . '/', $testObject->getLastCommand());
     }
 
-    public function testThatSomethingUsingNonexistentTmpFolder()
+    public function testThatSomethingUsingNonexistentTmpFolder(): void
     {
         $temporaryFolder = sys_get_temp_dir() . '/i-dont-exist';
 
@@ -67,7 +67,7 @@ class PdfTest extends TestCase
         $this->assertDirectoryExists($temporaryFolder);
     }
 
-    public function testRemovesLocalFilesOnError()
+    public function testRemovesLocalFilesOnError(): void
     {
         $pdf = new PdfSpy();
         $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
@@ -82,14 +82,14 @@ class PdfTest extends TestCase
     /**
      * @dataProvider dataOptions
      */
-    public function testOptions(array $options, $expectedRegex)
+    public function testOptions(array $options, string $expectedRegex): void
     {
         $testObject = new PdfSpy();
         $testObject->getOutputFromHtml('<html></html>', $options);
         $this->assertRegExp($expectedRegex, $testObject->getLastCommand());
     }
 
-    public function dataOptions()
+    public function dataOptions(): array
     {
         $q = self::SHELL_ARG_QUOTE_REGEX;
 
@@ -131,7 +131,7 @@ class PdfTest extends TestCase
         ];
     }
 
-    public function testRemovesLocalFilesOnDestruct()
+    public function testRemovesLocalFilesOnDestruct(): void
     {
         $pdf = new PdfSpy();
         $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
@@ -146,6 +146,9 @@ class PdfTest extends TestCase
 
 class PdfSpy extends Pdf
 {
+    /**
+     * @var string
+     */
     private $lastCommand;
 
     public function __construct()
@@ -153,24 +156,24 @@ class PdfSpy extends Pdf
         parent::__construct('emptyBinary');
     }
 
-    public function getLastCommand()
+    public function getLastCommand(): string
     {
         return $this->lastCommand;
     }
 
-    protected function executeCommand($command)
+    protected function executeCommand(string $command): array
     {
         $this->lastCommand = $command;
 
         return [0, 'output', 'errorOutput'];
     }
 
-    protected function checkOutput($output, $command)
+    protected function checkOutput(string $output, string $command): void
     {
         //let's say everything went right
     }
 
-    public function getOutput($input, array $options = [])
+    public function getOutput($input, array $options = []): string
     {
         $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
         $this->generate($input, $filename, $options, true);

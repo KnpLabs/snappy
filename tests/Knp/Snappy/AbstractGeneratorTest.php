@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 
 class AbstractGeneratorTest extends TestCase
 {
-    public function testAddOption()
+    public function testAddOption(): void
     {
         $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
@@ -41,7 +41,7 @@ class AbstractGeneratorTest extends TestCase
         }
     }
 
-    public function testAddOptions()
+    public function testAddOptions(): void
     {
         $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
@@ -83,7 +83,7 @@ class AbstractGeneratorTest extends TestCase
         }
     }
 
-    public function testSetOption()
+    public function testSetOption(): void
     {
         $media = $this
             ->getMockBuilder(AbstractGenerator::class)
@@ -122,7 +122,7 @@ class AbstractGeneratorTest extends TestCase
         }
     }
 
-    public function testSetOptions()
+    public function testSetOptions(): void
     {
         $media = $this
             ->getMockBuilder(AbstractGenerator::class)
@@ -162,7 +162,7 @@ class AbstractGeneratorTest extends TestCase
         }
     }
 
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -235,7 +235,7 @@ class AbstractGeneratorTest extends TestCase
         $media->generate('the_input_file', 'the_output_file', ['foo' => 'bar']);
     }
 
-    public function testFailingGenerate()
+    public function testFailingGenerate(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -304,7 +304,7 @@ class AbstractGeneratorTest extends TestCase
         $media->generate('the_input_file', 'the_output_file', ['foo' => 'bar']);
     }
 
-    public function testGenerateFromHtml()
+    public function testGenerateFromHtml(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -339,7 +339,7 @@ class AbstractGeneratorTest extends TestCase
         $media->generateFromHtml('<html>foo</html>', 'the_output_file', ['foo' => 'bar']);
     }
 
-    public function testGenerateFromHtmlWithHtmlArray()
+    public function testGenerateFromHtmlWithHtmlArray(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -373,7 +373,7 @@ class AbstractGeneratorTest extends TestCase
         $media->generateFromHtml(['<html>foo</html>'], 'the_output_file', ['foo' => 'bar']);
     }
 
-    public function testGetOutput()
+    public function testGetOutput(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -426,7 +426,7 @@ class AbstractGeneratorTest extends TestCase
         $this->assertEquals('the file contents', $media->getOutput('the_input_file', ['foo' => 'bar']));
     }
 
-    public function testGetOutputFromHtml()
+    public function testGetOutputFromHtml(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -459,7 +459,7 @@ class AbstractGeneratorTest extends TestCase
         $this->assertEquals('the output', $media->getOutputFromHtml('<html>foo</html>', ['foo' => 'bar']));
     }
 
-    public function testGetOutputFromHtmlWithHtmlArray()
+    public function testGetOutputFromHtmlWithHtmlArray(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -492,7 +492,7 @@ class AbstractGeneratorTest extends TestCase
         $this->assertEquals('the output', $media->getOutputFromHtml(['<html>foo</html>'], ['foo' => 'bar']));
     }
 
-    public function testMergeOptions()
+    public function testMergeOptions(): void
     {
         $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
@@ -546,7 +546,7 @@ class AbstractGeneratorTest extends TestCase
     /**
      * @dataProvider dataForBuildCommand
      */
-    public function testBuildCommand($binary, $url, $path, $options, $expected)
+    public function testBuildCommand(string $binary, string $url, string $path, array $options, string $expected): void
     {
         $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
@@ -556,7 +556,7 @@ class AbstractGeneratorTest extends TestCase
         $this->assertEquals($expected, $r->invokeArgs($media, [$binary, $url, $path, $options]));
     }
 
-    private function getPHPExecutableFromPath()
+    private function getPHPExecutableFromPath(): ?string
     {
         if (isset($_SERVER['_'])) {
             return $_SERVER['_'];
@@ -564,6 +564,10 @@ class AbstractGeneratorTest extends TestCase
 
         if (@defined(PHP_BINARY)) {
             return PHP_BINARY;
+        }
+
+        if (false === getenv('PATH')) {
+            return null;
         }
 
         $paths = explode(PATH_SEPARATOR, getenv('PATH'));
@@ -579,10 +583,10 @@ class AbstractGeneratorTest extends TestCase
             }
         }
 
-        return false; // not found
+        return null; // not found
     }
 
-    public function dataForBuildCommand()
+    public function dataForBuildCommand(): array
     {
         $theBinary = $this->getPHPExecutableFromPath() . ' -v'; // i.e.: '/usr/bin/php -v'
 
@@ -649,7 +653,7 @@ class AbstractGeneratorTest extends TestCase
         ];
     }
 
-    public function testCheckOutput()
+    public function testCheckOutput(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -686,7 +690,7 @@ class AbstractGeneratorTest extends TestCase
         }
     }
 
-    public function testCheckOutputWhenTheFileDoesNotExist()
+    public function testCheckOutputWhenTheFileDoesNotExist(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -717,7 +721,7 @@ class AbstractGeneratorTest extends TestCase
         }
     }
 
-    public function testCheckOutputWhenTheFileIsEmpty()
+    public function testCheckOutputWhenTheFileIsEmpty(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -755,7 +759,7 @@ class AbstractGeneratorTest extends TestCase
         }
     }
 
-    public function testCheckProcessStatus()
+    public function testCheckProcessStatus(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods(['configure'])
@@ -791,7 +795,7 @@ class AbstractGeneratorTest extends TestCase
     /**
      * @dataProvider dataForIsAssociativeArray
      */
-    public function testIsAssociativeArray($array, $isAssociativeArray)
+    public function testIsAssociativeArray(array $array, bool $isAssociativeArray): void
     {
         $generator = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
@@ -803,7 +807,7 @@ class AbstractGeneratorTest extends TestCase
     /**
      * @expectedException Knp\Snappy\Exception\FileAlreadyExistsException
      */
-    public function testItThrowsTheProperExceptionWhenFileExistsAndNotOverwritting()
+    public function testItThrowsTheProperExceptionWhenFileExistsAndNotOverwritting(): void
     {
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -831,7 +835,7 @@ class AbstractGeneratorTest extends TestCase
         $r->invokeArgs($media, ['', false]);
     }
 
-    public function dataForIsAssociativeArray()
+    public function dataForIsAssociativeArray(): array
     {
         return [
             [
@@ -869,7 +873,7 @@ class AbstractGeneratorTest extends TestCase
         ];
     }
 
-    public function testCleanupEmptyTemporaryFiles()
+    public function testCleanupEmptyTemporaryFiles(): void
     {
         $generator = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -897,7 +901,7 @@ class AbstractGeneratorTest extends TestCase
         $remove->invoke($generator);
     }
 
-    public function testleanupTemporaryFiles()
+    public function testleanupTemporaryFiles(): void
     {
         $generator = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
@@ -925,10 +929,10 @@ class AbstractGeneratorTest extends TestCase
         $remove->invoke($generator);
     }
 
-    public function testResetOptions()
+    public function testResetOptions(): void
     {
         $media = new class('/usr/local/bin/wkhtmltopdf') extends AbstractGenerator {
-            protected function configure()
+            protected function configure(): void
             {
                 $this->addOptions([
                     'optionA' => null,
