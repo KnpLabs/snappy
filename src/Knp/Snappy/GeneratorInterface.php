@@ -5,7 +5,6 @@ namespace Knp\Snappy;
 /**
  * Interface for the media generators.
  *
- *
  * @author  Matthieu Bontemps <matthieu.bontemps@knplabs.com>
  * @author  Antoine Hérault <antoine.herault@knplabs.com>*
  */

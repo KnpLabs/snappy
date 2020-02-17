@@ -5,6 +5,11 @@ namespace Tests\Knp\Snappy;
 use Knp\Snappy\Pdf;
 use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\TestCase;
+use RecursiveDirectoryIterator;
+use FilesystemIterator;
+use CallbackFilterIterator;
+use DirectoryIterator;
+use ReflectionMethod;
 
 class PdfTest extends TestCase
 {
@@ -14,28 +19,28 @@ class PdfTest extends TestCase
     {
         $directory = __DIR__ . '/i-dont-exist';
 
-        if (file_exists($directory)) {
-            $iterator = new \RecursiveDirectoryIterator(
+        if (\file_exists($directory)) {
+            $iterator = new RecursiveDirectoryIterator(
                 $directory,
-                \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS
+                FilesystemIterator::SKIP_DOTS | FilesystemIterator::UNIX_PATHS
             );
 
             foreach ($iterator as $item) {
-                unlink(strval($item));
+                \unlink((string) $item);
             }
 
-            rmdir($directory);
+            \rmdir($directory);
         }
 
-        $htmlFiles = new \CallbackFilterIterator(
-            new \DirectoryIterator(__DIR__),
+        $htmlFiles = new CallbackFilterIterator(
+            new DirectoryIterator(__DIR__),
             function ($filename) {
-                return preg_match('/\.html$/', $filename) === 1;
+                return \preg_match('/\.html$/', $filename) === 1;
             }
         );
 
         foreach ($htmlFiles as $file) {
-            unlink($file->getPathname());
+            \unlink($file->getPathname());
         }
     }
 
@@ -57,7 +62,7 @@ class PdfTest extends TestCase
 
     public function testThatSomethingUsingNonexistentTmpFolder(): void
     {
-        $temporaryFolder = sys_get_temp_dir() . '/i-dont-exist';
+        $temporaryFolder = \sys_get_temp_dir() . '/i-dont-exist';
 
         $testObject = new PdfSpy();
         $testObject->setTemporaryFolder($temporaryFolder);
@@ -70,13 +75,13 @@ class PdfTest extends TestCase
     public function testRemovesLocalFilesOnError(): void
     {
         $pdf = new PdfSpy();
-        $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
+        $method = new ReflectionMethod($pdf, 'createTemporaryFile');
         $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, count($pdf->temporaryFiles));
+        $this->assertEquals(1, \count($pdf->temporaryFiles));
         $this->expectException(Error::class);
-        trigger_error('test error', E_USER_ERROR);
-        $this->assertFileNotExists(reset($pdf->temporaryFiles));
+        \trigger_error('test error', \E_USER_ERROR);
+        $this->assertFileNotExists(\reset($pdf->temporaryFiles));
     }
 
     /**
@@ -107,7 +112,7 @@ class PdfTest extends TestCase
             // just pass the given footer file
             [
                 ['footer-html' => __FILE__],
-                '/emptyBinary --lowquality --footer-html ' . $q . preg_quote(__FILE__, '/') . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
+                '/emptyBinary --lowquality --footer-html ' . $q . \preg_quote(__FILE__, '/') . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
             ],
             // save the given footer HTML string into a temporary file and pass that filename
             [
@@ -122,8 +127,8 @@ class PdfTest extends TestCase
             // set toc options after toc argument
             [
                 [
-                    'grayscale'            => true,
-                    'toc'                  => true,
+                    'grayscale' => true,
+                    'toc' => true,
                     'disable-dotted-lines' => true,
                 ],
                 '/emptyBinary --grayscale --lowquality toc --disable-dotted-lines ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
@@ -134,13 +139,13 @@ class PdfTest extends TestCase
     public function testRemovesLocalFilesOnDestruct(): void
     {
         $pdf = new PdfSpy();
-        $method = new \ReflectionMethod($pdf, 'createTemporaryFile');
+        $method = new ReflectionMethod($pdf, 'createTemporaryFile');
         $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, count($pdf->temporaryFiles));
-        $this->assertFileExists(reset($pdf->temporaryFiles));
+        $this->assertEquals(1, \count($pdf->temporaryFiles));
+        $this->assertFileExists(\reset($pdf->temporaryFiles));
         $pdf->__destruct();
-        $this->assertFileNotExists(reset($pdf->temporaryFiles));
+        $this->assertFileNotExists(\reset($pdf->temporaryFiles));
     }
 }
 
@@ -161,6 +166,14 @@ class PdfSpy extends Pdf
         return $this->lastCommand;
     }
 
+    public function getOutput($input, array $options = []): string
+    {
+        $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
+        $this->generate($input, $filename, $options, true);
+
+        return 'output';
+    }
+
     protected function executeCommand(string $command): array
     {
         $this->lastCommand = $command;
@@ -171,13 +184,5 @@ class PdfSpy extends Pdf
     protected function checkOutput(string $output, string $command): void
     {
         //let's say everything went right
-    }
-
-    public function getOutput($input, array $options = []): string
-    {
-        $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
-        $this->generate($input, $filename, $options, true);
-
-        return 'output';
     }
 }

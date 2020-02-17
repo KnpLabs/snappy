@@ -32,4 +32,4 @@ install: composer update --prefer-dist
 script:
     - vendor/bin/phpunit
     - vendor/bin/phpstan analyse --ansi --no-progress
-    - vendor/bin/php-cs-fixer fix --diff --dry-run --no-progress --verbose
+    - vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
