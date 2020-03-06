@@ -5,6 +5,10 @@ namespace Tests\Knp\Snappy;
 use Knp\Snappy\AbstractGenerator;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use InvalidArgumentException;
+use RuntimeException;
+use ReflectionProperty;
+use ReflectionMethod;
 
 class AbstractGeneratorTest extends TestCase
 {
@@ -14,7 +18,7 @@ class AbstractGeneratorTest extends TestCase
 
         $this->assertEquals([], $media->getOptions());
 
-        $r = new \ReflectionMethod($media, 'addOption');
+        $r = new ReflectionMethod($media, 'addOption');
         $r->setAccessible(true);
         $r->invokeArgs($media, ['foo', 'bar']);
 
@@ -36,7 +40,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, ['baz', 'bat']);
             $this->fail($message);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $this->anything();
         }
     }
@@ -47,7 +51,7 @@ class AbstractGeneratorTest extends TestCase
 
         $this->assertEquals([], $media->getOptions());
 
-        $r = new \ReflectionMethod($media, 'addOptions');
+        $r = new ReflectionMethod($media, 'addOptions');
         $r->setAccessible(true);
         $r->invokeArgs($media, [['foo' => 'bar', 'baz' => 'bat']]);
 
@@ -78,7 +82,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, [['bak' => 'bam', 'bah' => 'bap', 'baz' => 'bat']]);
             $this->fail($message);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $this->anything();
         }
     }
@@ -98,7 +102,7 @@ class AbstractGeneratorTest extends TestCase
         $media->setLogger($logger);
         $logger->expects($this->once())->method('debug');
 
-        $r = new \ReflectionMethod($media, 'addOption');
+        $r = new ReflectionMethod($media, 'addOption');
         $r->setAccessible(true);
         $r->invokeArgs($media, ['foo', 'bar']);
 
@@ -117,7 +121,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $media->setOption('bad', 'def');
             $this->fail($message);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $this->anything();
         }
     }
@@ -137,7 +141,7 @@ class AbstractGeneratorTest extends TestCase
         $media->setLogger($logger);
         $logger->expects($this->exactly(4))->method('debug');
 
-        $r = new \ReflectionMethod($media, 'addOptions');
+        $r = new ReflectionMethod($media, 'addOptions');
         $r->setAccessible(true);
         $r->invokeArgs($media, [['foo' => 'bar', 'baz' => 'bat']]);
 
@@ -145,8 +149,8 @@ class AbstractGeneratorTest extends TestCase
 
         $this->assertEquals(
             [
-                'foo'   => 'abc',
-                'baz'   => 'def',
+                'foo' => 'abc',
+                'baz' => 'def',
             ],
             $media->getOptions(),
             '->setOptions() defines the values of all the specified options'
@@ -157,7 +161,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $media->setOptions(['foo' => 'abc', 'baz' => 'def', 'bad' => 'ghi']);
             $this->fail($message);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $this->anything();
         }
     }
@@ -192,7 +196,7 @@ class AbstractGeneratorTest extends TestCase
                 ),
                 $this->logicalOr(
                     ['command' => 'the command', 'env' => null, 'timeout' => false],
-                    ['command' => 'the command', 'stdout'  => 'stdout', 'stderr'  => 'stderr']
+                    ['command' => 'the command', 'stdout' => 'stdout', 'stderr' => 'stderr']
                 )
             )
         ;
@@ -268,7 +272,7 @@ class AbstractGeneratorTest extends TestCase
             ->method('error')
             ->with(
                 $this->equalTo('An error happened while generating "the_output_file".'),
-                $this->equalTo(['command' => 'the command', 'status' => 1, 'stdout'  => 'stdout', 'stderr'  => 'stderr'])
+                $this->equalTo(['command' => 'the command', 'status' => 1, 'stdout' => 'stdout', 'stderr' => 'stderr'])
             )
         ;
 
@@ -296,10 +300,10 @@ class AbstractGeneratorTest extends TestCase
             ->expects($this->once())
             ->method('checkProcessStatus')
             ->with(1, 'stdout', 'stderr', 'the command')
-            ->willThrowException(new \RuntimeException())
+            ->willThrowException(new RuntimeException())
         ;
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $media->generate('the_input_file', 'the_output_file', ['foo' => 'bar']);
     }
@@ -498,11 +502,11 @@ class AbstractGeneratorTest extends TestCase
 
         $originalOptions = ['foo' => 'bar', 'baz' => 'bat'];
 
-        $addOptions = new \ReflectionMethod($media, 'addOptions');
+        $addOptions = new ReflectionMethod($media, 'addOptions');
         $addOptions->setAccessible(true);
         $addOptions->invokeArgs($media, [$originalOptions]);
 
-        $r = new \ReflectionMethod($media, 'mergeOptions');
+        $r = new ReflectionMethod($media, 'mergeOptions');
         $r->setAccessible(true);
 
         $mergedOptions = $r->invokeArgs($media, [['foo' => 'ban']]);
@@ -538,7 +542,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, [['foo' => 'ban', 'bad' => 'bah']]);
             $this->fail($message);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $this->anything();
         }
     }
@@ -550,40 +554,10 @@ class AbstractGeneratorTest extends TestCase
     {
         $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
-        $r = new \ReflectionMethod($media, 'buildCommand');
+        $r = new ReflectionMethod($media, 'buildCommand');
         $r->setAccessible(true);
 
         $this->assertEquals($expected, $r->invokeArgs($media, [$binary, $url, $path, $options]));
-    }
-
-    private function getPHPExecutableFromPath(): ?string
-    {
-        if (isset($_SERVER['_'])) {
-            return $_SERVER['_'];
-        }
-
-        if (@defined(PHP_BINARY)) {
-            return PHP_BINARY;
-        }
-
-        if (false === getenv('PATH')) {
-            return null;
-        }
-
-        $paths = explode(PATH_SEPARATOR, getenv('PATH'));
-        foreach ($paths as $path) {
-            // we need this for XAMPP (Windows)
-            if (strstr($path, 'php.exe') && isset($_SERVER['WINDIR']) && file_exists($path) && is_file($path)) {
-                return $path;
-            } else {
-                $php_executable = $path . DIRECTORY_SEPARATOR . 'php' . (isset($_SERVER['WINDIR']) ? '.exe' : '');
-                if (file_exists($php_executable) && is_file($php_executable)) {
-                    return $php_executable;
-                }
-            }
-        }
-
-        return null; // not found
     }
 
     public function dataForBuildCommand(): array
@@ -596,59 +570,59 @@ class AbstractGeneratorTest extends TestCase
                 'http://the.url/',
                 '/the/path',
                 [],
-                $theBinary . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
                 'http://the.url/',
                 '/the/path',
                 [
-                    'foo'   => null,
-                    'bar'   => false,
-                    'baz'   => [],
+                    'foo' => null,
+                    'bar' => false,
+                    'baz' => [],
                 ],
-                $theBinary . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
                 'http://the.url/',
                 '/the/path',
                 [
-                    'foo'   => 'foovalue',
-                    'bar'   => ['barvalue1', 'barvalue2'],
-                    'baz'   => true,
+                    'foo' => 'foovalue',
+                    'bar' => ['barvalue1', 'barvalue2'],
+                    'baz' => true,
                 ],
-                $theBinary . ' --foo ' . escapeshellarg('foovalue') . ' --bar ' . escapeshellarg('barvalue1') . ' --bar ' . escapeshellarg('barvalue2') . ' --baz ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' --foo ' . \escapeshellarg('foovalue') . ' --bar ' . \escapeshellarg('barvalue1') . ' --bar ' . \escapeshellarg('barvalue2') . ' --baz ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
                 'http://the.url/',
                 '/the/path',
                 [
-                    'cookie'          => ['session' => 'bla', 'phpsess' => 12],
-                    'no-background'   => '1',
+                    'cookie' => ['session' => 'bla', 'phpsess' => 12],
+                    'no-background' => '1',
                 ],
-                $theBinary . ' --cookie ' . escapeshellarg('session') . ' ' . escapeshellarg('bla') . ' --cookie ' . escapeshellarg('phpsess') . ' ' . escapeshellarg('12') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' --cookie ' . \escapeshellarg('session') . ' ' . \escapeshellarg('bla') . ' --cookie ' . \escapeshellarg('phpsess') . ' ' . \escapeshellarg('12') . ' --no-background ' . \escapeshellarg('1') . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
                 'http://the.url/',
                 '/the/path',
                 [
-                    'allow'           => ['/path1', '/path2'],
-                    'no-background'   => '1',
+                    'allow' => ['/path1', '/path2'],
+                    'no-background' => '1',
                 ],
-                $theBinary . ' --allow ' . escapeshellarg('/path1') . ' --allow ' . escapeshellarg('/path2') . ' --no-background ' . escapeshellarg('1') . ' ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' --allow ' . \escapeshellarg('/path1') . ' --allow ' . \escapeshellarg('/path2') . ' --no-background ' . \escapeshellarg('1') . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
             [
                 $theBinary,
                 'http://the.url/',
                 '/the/path',
                 [
-                    'image-dpi'     => 100,
+                    'image-dpi' => 100,
                     'image-quality' => 50,
                 ],
-                $theBinary . ' ' . '--image-dpi 100 --image-quality 50 ' . escapeshellarg('http://the.url/') . ' ' . escapeshellarg('/the/path'),
+                $theBinary . ' ' . '--image-dpi 100 --image-quality 50 ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
             ],
         ];
     }
@@ -677,7 +651,7 @@ class AbstractGeneratorTest extends TestCase
             ->will($this->returnValue(123))
         ;
 
-        $r = new \ReflectionMethod($media, 'checkOutput');
+        $r = new ReflectionMethod($media, 'checkOutput');
         $r->setAccessible(true);
 
         $message = '->checkOutput() checks both file existence and size';
@@ -685,7 +659,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, ['the_output_file', 'the command']);
             $this->anything();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->fail($message);
         }
     }
@@ -708,7 +682,7 @@ class AbstractGeneratorTest extends TestCase
             ->will($this->returnValue(false))
         ;
 
-        $r = new \ReflectionMethod($media, 'checkOutput');
+        $r = new ReflectionMethod($media, 'checkOutput');
         $r->setAccessible(true);
 
         $message = '->checkOutput() throws an InvalidArgumentException when the file does not exist';
@@ -716,7 +690,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, ['the_output_file', 'the command']);
             $this->fail($message);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->anything();
         }
     }
@@ -746,7 +720,7 @@ class AbstractGeneratorTest extends TestCase
             ->will($this->returnValue(0))
         ;
 
-        $r = new \ReflectionMethod($media, 'checkOutput');
+        $r = new ReflectionMethod($media, 'checkOutput');
         $r->setAccessible(true);
 
         $message = '->checkOutput() throws an InvalidArgumentException when the file is empty';
@@ -754,7 +728,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, ['the_output_file', 'the command']);
             $this->fail($message);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->anything();
         }
     }
@@ -767,27 +741,27 @@ class AbstractGeneratorTest extends TestCase
             ->getMock()
         ;
 
-        $r = new \ReflectionMethod($media, 'checkProcessStatus');
+        $r = new ReflectionMethod($media, 'checkProcessStatus');
         $r->setAccessible(true);
 
         try {
             $r->invokeArgs($media, [0, '', '', 'the command']);
             $this->anything();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->fail('0 status means success');
         }
 
         try {
             $r->invokeArgs($media, [1, '', '', 'the command']);
             $this->anything();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->fail('1 status means failure, but no stderr content');
         }
 
         try {
             $r->invokeArgs($media, [1, '', 'Could not connect to X', 'the command']);
             $this->fail('1 status means failure');
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->assertEquals(1, $e->getCode(), 'Exception thrown by checkProcessStatus should pass on the error code');
         }
     }
@@ -799,7 +773,7 @@ class AbstractGeneratorTest extends TestCase
     {
         $generator = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
-        $r = new \ReflectionMethod($generator, 'isAssociativeArray');
+        $r = new ReflectionMethod($generator, 'isAssociativeArray');
         $r->setAccessible(true);
         $this->assertEquals($isAssociativeArray, $r->invokeArgs($generator, [$array]));
     }
@@ -829,7 +803,7 @@ class AbstractGeneratorTest extends TestCase
             ->method('isFile')
             ->will($this->returnValue(true))
         ;
-        $r = new \ReflectionMethod($media, 'prepareOutput');
+        $r = new ReflectionMethod($media, 'prepareOutput');
         $r->setAccessible(true);
 
         $r->invokeArgs($media, ['', false]);
@@ -886,17 +860,18 @@ class AbstractGeneratorTest extends TestCase
 
         $generator
             ->expects($this->once())
-            ->method('unlink');
+            ->method('unlink')
+        ;
 
-        $create = new \ReflectionMethod($generator, 'createTemporaryFile');
+        $create = new ReflectionMethod($generator, 'createTemporaryFile');
         $create->setAccessible(true);
         $create->invoke($generator, null, null);
 
-        $files = new \ReflectionProperty($generator, 'temporaryFiles');
+        $files = new ReflectionProperty($generator, 'temporaryFiles');
         $files->setAccessible(true);
         $this->assertCount(1, $files->getValue($generator));
 
-        $remove = new \ReflectionMethod($generator, 'removeTemporaryFiles');
+        $remove = new ReflectionMethod($generator, 'removeTemporaryFiles');
         $remove->setAccessible(true);
         $remove->invoke($generator);
     }
@@ -914,17 +889,18 @@ class AbstractGeneratorTest extends TestCase
 
         $generator
             ->expects($this->once())
-            ->method('unlink');
+            ->method('unlink')
+        ;
 
-        $create = new \ReflectionMethod($generator, 'createTemporaryFile');
+        $create = new ReflectionMethod($generator, 'createTemporaryFile');
         $create->setAccessible(true);
         $create->invoke($generator, '<html/>', 'html');
 
-        $files = new \ReflectionProperty($generator, 'temporaryFiles');
+        $files = new ReflectionProperty($generator, 'temporaryFiles');
         $files->setAccessible(true);
         $this->assertCount(1, $files->getValue($generator));
 
-        $remove = new \ReflectionMethod($generator, 'removeTemporaryFiles');
+        $remove = new ReflectionMethod($generator, 'removeTemporaryFiles');
         $remove->setAccessible(true);
         $remove->invoke($generator);
     }
@@ -960,5 +936,37 @@ class AbstractGeneratorTest extends TestCase
             ],
             $media->getOptions()
         );
+    }
+
+    /**
+     * @return null|string
+     */
+    private function getPHPExecutableFromPath(): ?string
+    {
+        if (isset($_SERVER['_'])) {
+            return $_SERVER['_'];
+        }
+
+        if (@\defined(\PHP_BINARY)) {
+            return \PHP_BINARY;
+        }
+
+        if (false === \getenv('PATH')) {
+            return null;
+        }
+
+        $paths = \explode(\PATH_SEPARATOR, \getenv('PATH'));
+        foreach ($paths as $path) {
+            // we need this for XAMPP (Windows)
+            if (\strstr($path, 'php.exe') && isset($_SERVER['WINDIR']) && \file_exists($path) && \is_file($path)) {
+                return $path;
+            }
+            $php_executable = $path . \DIRECTORY_SEPARATOR . 'php' . (isset($_SERVER['WINDIR']) ? '.exe' : '');
+            if (\file_exists($php_executable) && \is_file($php_executable)) {
+                return $php_executable;
+            }
+        }
+
+        return null; // not found
     }
 }

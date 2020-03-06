@@ -2,6 +2,8 @@
 
 namespace Knp\Snappy\Exception;
 
-class FileAlreadyExistsException extends \InvalidArgumentException
+use InvalidArgumentException;
+
+class FileAlreadyExistsException extends InvalidArgumentException
 {
 }
