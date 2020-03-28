@@ -65,6 +65,29 @@ header('Content-Disposition: attachment; filename="file.pdf"');
 echo $snappy->getOutput(array('http://www.github.com','http://www.knplabs.com','http://www.php.net'));
 ```
 
+### Merge multiple urls into one pdf with different headers
+```php
+$snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
+header('Content-Type: application/pdf');
+header('Content-Disposition: attachment; filename="file.pdf"');
+
+$urls = array();
+$urls[] = array(
+    'url' => 'http://www.github.com',
+    'options' => array(
+        'header-html' => 'header1.html'
+    )
+);
+$urls[] = array(
+    'url' => 'http://www.php.net',
+    'options' => array(
+        'header-html' => 'header2.html'
+    )
+);
+
+echo $snappy->getOutput($urls);
+```
+
 ### Generate local pdf file
 ```php
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
