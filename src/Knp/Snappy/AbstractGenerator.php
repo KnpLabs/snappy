@@ -513,48 +513,73 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
             $command = $escapedBinary;
         }
 
+        $command .= $this->buildOptions($options);
+
+        if (\is_array($input)) {
+            foreach ($input as $i) {
+                if (is_array($i) || is_object($i)) {
+                    if (null !== $i['options'] && false !== $i['options']) {
+                        $command .= ' ' . $this->buildOptions($i['options']);
+                    }
+                    $i = $i['file'];
+                }
+
+                $command .= ' ' . \escapeshellarg($i) . ' ';
+            }
+
+        } else {
+            $command .= ' ' . \escapeshellarg($input) . ' ';
+        }
+
+        $command .= \escapeshellarg($output);
+
+        return $command;
+    }
+
+    /**
+     * Builds the options of the command string.
+     *
+     * @param array        $options An array of options
+     *
+     * @return string
+     */
+    protected function buildOptions($options)
+    {
+        $optionString = '';
+
         foreach ($options as $key => $option) {
             if (null !== $option && false !== $option) {
                 if (true === $option) {
                     // Dont't put '--' if option is 'toc'.
                     if ($key === 'toc') {
-                        $command .= ' ' . $key;
+                        $optionString .= ' ' . $key;
                     } else {
-                        $command .= ' --' . $key;
+                        $optionString .= ' --' . $key;
                     }
                 } elseif (\is_array($option)) {
                     if ($this->isAssociativeArray($option)) {
                         foreach ($option as $k => $v) {
-                            $command .= ' --' . $key . ' ' . \escapeshellarg($k) . ' ' . \escapeshellarg($v);
+                            $optionString .= ' --' . $key . ' ' . \escapeshellarg($k) . ' ' . \escapeshellarg($v);
                         }
                     } else {
                         foreach ($option as $v) {
-                            $command .= ' --' . $key . ' ' . \escapeshellarg($v);
+                            $optionString .= ' --' . $key . ' ' . \escapeshellarg($v);
                         }
                     }
                 } else {
                     // Dont't add '--' if option is "cover"  or "toc".
                     if (\in_array($key, ['toc', 'cover'])) {
-                        $command .= ' ' . $key . ' ' . \escapeshellarg($option);
+                        $optionString .= ' ' . $key . ' ' . \escapeshellarg($option);
                     } elseif (\in_array($key, ['image-dpi', 'image-quality'])) {
-                        $command .= ' --' . $key . ' ' . (int) $option;
+                        $optionString .= ' --' . $key . ' ' . (int)$option;
                     } else {
-                        $command .= ' --' . $key . ' ' . \escapeshellarg($option);
+                        $optionString .= ' --' . $key . ' ' . \escapeshellarg($option);
                     }
                 }
             }
         }
 
-        if (\is_array($input)) {
-            foreach ($input as $i) {
-                $command .= ' ' . \escapeshellarg($i) . ' ';
-            }
-            $command .= \escapeshellarg($output);
-        } else {
-            $command .= ' ' . \escapeshellarg($input) . ' ' . \escapeshellarg($output);
-        }
-
-        return $command;
+        return $optionString;
     }
 
     /**
