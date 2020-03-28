@@ -521,7 +521,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
                     if (null !== $i['options'] && false !== $i['options']) {
                         $command .= ' ' . $this->buildOptions($i['options']);
                     }
-                    $i = $i['file'];
+                    $i = $i['url'];
                 }
 
                 $command .= ' ' . \escapeshellarg($i) . ' ';
