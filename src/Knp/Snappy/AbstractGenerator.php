@@ -164,7 +164,17 @@ abstract class AbstractGenerator implements GeneratorInterface
 
         $command = $this->getCommand($input, $output, $options);
 
-        $inputFiles = is_array($input) ? implode('", "', $input) : $input;
+        $inputFiles = "";
+        if (is_array($input)) {
+            $urls = $input;
+            if (count($input) > 0 and is_array($input[0])) {
+                $urls = array_column($input, 'url');
+            }
+
+            $inputFiles = implode('", "', $urls);
+        } else {
+            $inputFiles = $input;
+        }
 
         $this->logger->info(sprintf('Generate from file(s) "%s" to file "%s".', $inputFiles, $output), [
             'command' => $command,
