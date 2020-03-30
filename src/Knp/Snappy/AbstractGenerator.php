@@ -462,15 +462,25 @@ abstract class AbstractGenerator implements GeneratorInterface
         $command .= $this->buildOptions($options);
 
         if (\is_array($input)) {
+
             foreach ($input as $i) {
+
+                $url = '';
+                $options = null;
+
                 if (is_array($i) || is_object($i)) {
+                    $url = $i['url'];
                     if (null !== $i['options'] && false !== $i['options']) {
-                        $command .= ' ' . $this->buildOptions($i['options']);
+                        $options = $this->buildOptions($i['options']);
                     }
-                    $i = $i['url'];
+                } else {
+                    $url = $i;
                 }
 
-                $command .= ' ' . \escapeshellarg($i) . ' ';
+                $command .= ' ' . \escapeshellarg($url) . ' ';
+                if (null !== $options) {
+                    $command .= ' ' . $options . ' ';
+                }
             }
 
         } else {
@@ -551,7 +561,11 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function executeCommand($command)
     {
-        $process = new Process($command, null, $this->env);
+        if (\method_exists(Process::class, 'fromShellCommandline')) {
+            $process = Process::fromShellCommandline($command, null, $this->env);
+        } else {
+            $process = new Process($command, null, $this->env);
+        }
 
         if (false !== $this->timeout) {
             $process->setTimeout($this->timeout);
