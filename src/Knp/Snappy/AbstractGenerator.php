@@ -531,10 +531,14 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
                 $url = '';
                 $options = null;
 
-                if (is_array($i) || is_object($i)) {
-                    $url = $i['url'];
-                    if (null !== $i['options'] && false !== $i['options']) {
-                        $options = $this->buildOptions($i['options']);
+                if (is_array($i)) {
+                    if (null !== $i['url'] && false !== $i['url']) {
+                        $url = $i['url'];
+                        if (null !== $i['options'] && false !== $i['options']) {
+                            $options = $this->buildOptions($i['options']);
+                        }
+                    } else {
+                        throw new InvalidArgumentException(\sprintf('The url \'%s\' does not exist.', $name));
                     }
                 } else {
                     $url = $i;
