@@ -186,14 +186,14 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
 
         $command = $this->getCommand($input, $output, $options);
 
-        $inputFiles = "";
-        if (is_array($input)) {
+        $inputFiles = '';
+        if (\is_array($input)) {
             $urls = $input;
-            if (count($input) > 0 and is_array($input[0])) {
-                $urls = array_column($input, 'url');
+            if (\count($input) > 0 && \is_array($input[0])) {
+                $urls = \array_column($input, 'url');
             }
 
-            $inputFiles = implode('", "', $urls);
+            $inputFiles = \implode('", "', $urls);
         } else {
             $inputFiles = $input;
         }
@@ -526,12 +526,11 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         $command .= $this->buildOptions($options);
 
         if (\is_array($input)) {
-
             foreach ($input as $i) {
                 $url = '';
                 $options = null;
 
-                if (is_array($i)) {
+                if (\is_array($i)) {
                     if (null !== $i['url'] && false !== $i['url']) {
                         $url = $i['url'];
                         if (null !== $i['options'] && false !== $i['options']) {
@@ -549,7 +548,6 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
                     $command .= ' ' . $options . ' ';
                 }
             }
-
         } else {
             $command .= ' ' . \escapeshellarg($input) . ' ';
         }
@@ -562,7 +560,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * Builds the options of the command string.
      *
-     * @param array        $options An array of options
+     * @param array $options An array of options
      *
      * @return string
      */
@@ -594,7 +592,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
                     if (\in_array($key, ['toc', 'cover'])) {
                         $optionString .= ' ' . $key . ' ' . \escapeshellarg($option);
                     } elseif (\in_array($key, ['image-dpi', 'image-quality'])) {
-                        $optionString .= ' --' . $key . ' ' . (int)$option;
+                        $optionString .= ' --' . $key . ' ' . (int) $option;
                     } else {
                         $optionString .= ' --' . $key . ' ' . \escapeshellarg($option);
                     }

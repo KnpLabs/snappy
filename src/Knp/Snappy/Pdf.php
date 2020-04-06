@@ -34,9 +34,9 @@ class Pdf extends AbstractGenerator
         $options = $this->handleOptions($this->mergeOptions($options));
 
         $handledInput = $inputs;
-        if (is_array($handledInput)) {
+        if (\is_array($handledInput)) {
             foreach ($handledInput as $key => $input) {
-                if (!empty($input['options']) && is_array($input['options'])) {
+                if (!empty($input['options']) && \is_array($input['options'])) {
                     $handledInput[$key]['options'] = $this->handleOptions($input['options']);
                 }
             }
