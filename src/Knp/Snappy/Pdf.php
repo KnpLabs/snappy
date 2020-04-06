@@ -36,7 +36,7 @@ class Pdf extends AbstractGenerator
         $handledInput = $inputs;
         if (is_array($handledInput)) {
             foreach ($handledInput as $key => $input) {
-                if (is_array($input['options']) && !empty($input['options'])) {
+                if (!empty($input['options']) && is_array($input['options'])) {
                     $handledInput[$key]['options'] = $this->handleOptions($input['options']);
                 }
             }
