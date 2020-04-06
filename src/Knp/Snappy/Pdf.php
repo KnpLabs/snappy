@@ -29,11 +29,20 @@ class Pdf extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    public function generate($input, string $output, array $options = [], bool $overwrite = false): void
+    public function generate($inputs, string $output, array $options = [], bool $overwrite = false): void
     {
         $options = $this->handleOptions($this->mergeOptions($options));
 
-        parent::generate($input, $output, $options, $overwrite);
+        $handledInput = $inputs;
+        if (is_array($handledInput)) {
+            foreach ($handledInput as $key => $input) {
+                if (is_array($input['options']) && !empty($input['options'])) {
+                    $handledInput[$key]['options'] = $this->handleOptions($input['options']);
+                }
+            }
+        }
+
+        parent::generate($handledInput, $output, $options, $overwrite);
     }
 
     /**

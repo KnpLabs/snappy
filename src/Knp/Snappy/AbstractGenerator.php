@@ -186,7 +186,17 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
 
         $command = $this->getCommand($input, $output, $options);
 
-        $inputFiles = \is_array($input) ? \implode('", "', $input) : $input;
+        $inputFiles = "";
+        if (is_array($input)) {
+            $urls = $input;
+            if (count($input) > 0 and is_array($input[0])) {
+                $urls = array_column($input, 'url');
+            }
+
+            $inputFiles = implode('", "', $urls);
+        } else {
+            $inputFiles = $input;
+        }
 
         $this->logger->info(\sprintf('Generate from file(s) "%s" to file "%s".', $inputFiles, $output), [
             'command' => $command,
@@ -516,15 +526,24 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         $command .= $this->buildOptions($options);
 
         if (\is_array($input)) {
+
             foreach ($input as $i) {
+                $url = '';
+                $options = null;
+
                 if (is_array($i) || is_object($i)) {
+                    $url = $i['url'];
                     if (null !== $i['options'] && false !== $i['options']) {
-                        $command .= ' ' . $this->buildOptions($i['options']);
+                        $options = $this->buildOptions($i['options']);
                     }
-                    $i = $i['url'];
+                } else {
+                    $url = $i;
                 }
 
-                $command .= ' ' . \escapeshellarg($i) . ' ';
+                $command .= ' ' . \escapeshellarg($url) . ' ';
+                if (null !== $options) {
+                    $command .= ' ' . $options . ' ';
+                }
             }
 
         } else {
