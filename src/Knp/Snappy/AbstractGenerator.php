@@ -538,7 +538,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
                             $options = $this->buildOptions($i['options']);
                         }
                     } else {
-                        throw new InvalidArgumentException(\sprintf('The url \'%s\' does not exist.', $name));
+                        throw new InvalidArgumentException("'url' is not defined.");
                     }
                 } else {
                     $url = $i;
