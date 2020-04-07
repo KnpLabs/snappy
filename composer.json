@@ -36,12 +36,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Knp\\Snappy\\": "src/Knp/Snappy"
+            "Knp\\Snappy\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\Knp\\Snappy\\": "tests/"
         }
     },
     "scripts": {
