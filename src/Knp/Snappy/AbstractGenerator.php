@@ -598,25 +598,6 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     }
 
     /**
-     * Executes the given command via shell and returns the complete output as
-     * a string.
-     *
-     * @param string $command
-     *
-     * @return array [status, stdout, stderr]
-     */
-    protected function executeCommand(string $command): array
-    {
-        if (\method_exists(Process::class, 'fromShellCommandline')) {
-            $process = Process::fromShellCommandline($command, null, $this->env);
-        } else {
-            $process = new Process($command, null, $this->env);
-        }
-
-        return $this->runProcess($process);
-    }
-
-    /**
      * Prepares the specified output.
      *
      * @param string $filename  The output filename
