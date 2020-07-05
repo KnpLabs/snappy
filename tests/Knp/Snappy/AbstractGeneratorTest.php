@@ -5,6 +5,7 @@ namespace Tests\Knp\Snappy;
 use Knp\Snappy\AbstractGenerator;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Process\Process;
 use InvalidArgumentException;
 use RuntimeException;
 use ReflectionProperty;
@@ -173,7 +174,7 @@ class AbstractGeneratorTest extends TestCase
                 'configure',
                 'prepareOutput',
                 'getCommand',
-                'executeCommand',
+                'runProcess',
                 'checkOutput',
                 'checkProcessStatus',
             ])
@@ -214,12 +215,12 @@ class AbstractGeneratorTest extends TestCase
                 $this->equalTo('the_output_file'),
                 $this->equalTo(['foo' => 'bar'])
             )
-            ->will($this->returnValue('the command'))
+            ->will($this->returnValue(['the', 'command']))
         ;
         $media
             ->expects($this->once())
-            ->method('executeCommand')
-            ->with($this->equalTo('the command'))
+            ->method('runProcess')
+            ->with($this->equalTo(new Process(['the', 'command'])))
             ->willReturn([0, 'stdout', 'stderr'])
         ;
         $media
@@ -246,7 +247,7 @@ class AbstractGeneratorTest extends TestCase
                 'configure',
                 'prepareOutput',
                 'getCommand',
-                'executeCommand',
+                'runProcess',
                 'checkOutput',
                 'checkProcessStatus',
             ])
@@ -288,12 +289,12 @@ class AbstractGeneratorTest extends TestCase
                 $this->equalTo('the_input_file'),
                 $this->equalTo('the_output_file')
             )
-            ->will($this->returnValue('the command'))
+            ->will($this->returnValue(['the', 'command']))
         ;
         $media
             ->expects($this->once())
-            ->method('executeCommand')
-            ->with($this->equalTo('the command'))
+            ->method('runProcess')
+            ->with(new Process(['the', 'command'], null, ['PATH' => '/usr/bin']))
             ->willReturn([1, 'stdout', 'stderr'])
         ;
         $media
@@ -550,14 +551,14 @@ class AbstractGeneratorTest extends TestCase
     /**
      * @dataProvider dataForBuildCommand
      */
-    public function testBuildCommand(string $binary, string $url, string $path, array $options, string $expected): void
+    public function testBuildCommand(string $binary, string $url, string $path, array $options, array $expected): void
     {
         $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $r = new ReflectionMethod($media, 'buildCommand');
         $r->setAccessible(true);
 
-        $this->assertEquals($expected, $r->invokeArgs($media, [$binary, $url, $path, $options]));
+        $this->assertSame($expected, $r->invokeArgs($media, [$binary, $url, $path, $options]));
     }
 
     public function dataForBuildCommand(): array
@@ -570,7 +571,7 @@ class AbstractGeneratorTest extends TestCase
                 'http://the.url/',
                 '/the/path',
                 [],
-                $theBinary . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, 'http://the.url/', '/the/path'],
             ],
             [
                 $theBinary,
@@ -581,7 +582,7 @@ class AbstractGeneratorTest extends TestCase
                     'bar' => false,
                     'baz' => [],
                 ],
-                $theBinary . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, 'http://the.url/', '/the/path'],
             ],
             [
                 $theBinary,
@@ -592,7 +593,7 @@ class AbstractGeneratorTest extends TestCase
                     'bar' => ['barvalue1', 'barvalue2'],
                     'baz' => true,
                 ],
-                $theBinary . ' --foo ' . \escapeshellarg('foovalue') . ' --bar ' . \escapeshellarg('barvalue1') . ' --bar ' . \escapeshellarg('barvalue2') . ' --baz ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, '--foo', 'foovalue', '--bar', 'barvalue1', '--bar', 'barvalue2', '--baz', 'http://the.url/', '/the/path'],
             ],
             [
                 $theBinary,
@@ -602,7 +603,7 @@ class AbstractGeneratorTest extends TestCase
                     'cookie' => ['session' => 'bla', 'phpsess' => 12],
                     'no-background' => '1',
                 ],
-                $theBinary . ' --cookie ' . \escapeshellarg('session') . ' ' . \escapeshellarg('bla') . ' --cookie ' . \escapeshellarg('phpsess') . ' ' . \escapeshellarg('12') . ' --no-background ' . \escapeshellarg('1') . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, '--cookie', 'session', 'bla', '--cookie', 'phpsess', 12, '--no-background', '1', 'http://the.url/', '/the/path'],
             ],
             [
                 $theBinary,
@@ -612,7 +613,7 @@ class AbstractGeneratorTest extends TestCase
                     'allow' => ['/path1', '/path2'],
                     'no-background' => '1',
                 ],
-                $theBinary . ' --allow ' . \escapeshellarg('/path1') . ' --allow ' . \escapeshellarg('/path2') . ' --no-background ' . \escapeshellarg('1') . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, '--allow', '/path1', '--allow', '/path2', '--no-background', '1', 'http://the.url/', '/the/path'],
             ],
             [
                 $theBinary,
@@ -622,7 +623,7 @@ class AbstractGeneratorTest extends TestCase
                     'image-dpi' => 100,
                     'image-quality' => 50,
                 ],
-                $theBinary . ' ' . '--image-dpi 100 --image-quality 50 ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, '--image-dpi', 100, '--image-quality', 50, 'http://the.url/', '/the/path'],
             ],
         ];
     }
