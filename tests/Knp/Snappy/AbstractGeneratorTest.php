@@ -13,6 +13,16 @@ use ReflectionMethod;
 
 class AbstractGeneratorTest extends TestCase
 {
+    /**
+     * @var string
+     */
+    private static $commandPartDelimiter;
+
+    public static function setUpBeforeClass(): void
+    {
+        self::$commandPartDelimiter = '\\' !== \DIRECTORY_SEPARATOR ? "'" : ''; // command parts which are not quoted on Windows are enclosed by single quotes on Linux
+    }
+
     public function testAddOption(): void
     {
         $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
@@ -169,6 +179,8 @@ class AbstractGeneratorTest extends TestCase
 
     public function testGenerate(): void
     {
+        $d = self::$commandPartDelimiter;
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
                 'configure',
@@ -196,8 +208,8 @@ class AbstractGeneratorTest extends TestCase
                     'File "the_output_file" has been successfully generated.'
                 ),
                 $this->logicalOr(
-                    ['command' => 'the command', 'env' => null, 'timeout' => false],
-                    ['command' => 'the command', 'stdout' => 'stdout', 'stderr' => 'stderr']
+                    ['command' => "{$d}the{$d} {$d}command{$d}", 'env' => null, 'timeout' => false],
+                    ['command' => "{$d}the{$d} {$d}command{$d}", 'stdout' => 'stdout', 'stderr' => 'stderr']
                 )
             )
         ;
@@ -226,7 +238,7 @@ class AbstractGeneratorTest extends TestCase
         $media
             ->expects($this->once())
             ->method('checkProcessStatus')
-            ->with(0, 'stdout', 'stderr', 'the command')
+            ->with(0, 'stdout', 'stderr', "{$d}the{$d} {$d}command{$d}")
         ;
         $media
             ->expects($this->once())
@@ -242,6 +254,8 @@ class AbstractGeneratorTest extends TestCase
 
     public function testFailingGenerate(): void
     {
+        $d = self::$commandPartDelimiter;
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
                 'configure',
@@ -264,7 +278,7 @@ class AbstractGeneratorTest extends TestCase
             ->method('info')
             ->with(
                 $this->equalTo('Generate from file(s) "the_input_file" to file "the_output_file".'),
-                $this->equalTo(['command' => 'the command', 'env' => ['PATH' => '/usr/bin'], 'timeout' => 2000])
+                $this->equalTo(['command' => "{$d}the{$d} {$d}command{$d}", 'env' => ['PATH' => '/usr/bin'], 'timeout' => 2000])
             )
         ;
 
@@ -273,7 +287,7 @@ class AbstractGeneratorTest extends TestCase
             ->method('error')
             ->with(
                 $this->equalTo('An error happened while generating "the_output_file".'),
-                $this->equalTo(['command' => 'the command', 'status' => 1, 'stdout' => 'stdout', 'stderr' => 'stderr'])
+                $this->equalTo(['command' => "{$d}the{$d} {$d}command{$d}", 'status' => 1, 'stdout' => 'stdout', 'stderr' => 'stderr'])
             )
         ;
 
@@ -300,7 +314,7 @@ class AbstractGeneratorTest extends TestCase
         $media
             ->expects($this->once())
             ->method('checkProcessStatus')
-            ->with(1, 'stdout', 'stderr', 'the command')
+            ->with(1, 'stdout', 'stderr', "{$d}the{$d} {$d}command{$d}")
             ->willThrowException(new RuntimeException())
         ;
 

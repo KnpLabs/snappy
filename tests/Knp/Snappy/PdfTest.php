@@ -14,6 +14,18 @@ use ReflectionMethod;
 
 class PdfTest extends TestCase
 {
+    const SHELL_ARG_QUOTE_REGEX = '(?:"|\')'; // escapeshellarg produces double quotes on Windows, single quotes otherwise
+
+    /**
+     * @var string
+     */
+    private static $commandPartDelimiter;
+
+    public static function setUpBeforeClass(): void
+    {
+        self::$commandPartDelimiter = '\\' !== \DIRECTORY_SEPARATOR ? "'" : ''; // command parts which are not quoted on Windows are enclosed by single quotes on Linux
+    }
+
     public function tearDown(): void
     {
         $directory = __DIR__ . '/i-dont-exist';
@@ -55,7 +67,8 @@ class PdfTest extends TestCase
         $testObject->setTemporaryFolder(__DIR__);
 
         $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
-        $this->assertRegExp('/emptyBinary --lowquality --footer-html .* .* .*/', $testObject->getLastCommand());
+        $d = self::$commandPartDelimiter;
+        $this->assertRegExp("/{$d}emptyBinary{$d} {$d}--lowquality{$d} {$d}--footer-html{$d} {$d}.*{$d} {$d}.*{$d} {$d}.*{$d}/", $testObject->getLastCommand());
     }
 
     public function testThatSomethingUsingNonexistentTmpFolder(): void
@@ -94,31 +107,34 @@ class PdfTest extends TestCase
 
     public function dataOptions(): array
     {
+        $d = self::$commandPartDelimiter;
+        $q = self::SHELL_ARG_QUOTE_REGEX;
+
         return [
             // no options
             [
                 [],
-                '/emptyBinary --lowquality .*\.html .*\.pdf/',
+                "/{$d}emptyBinary{$d} {$d}--lowquality{$d} {$d}.*\.html{$d} {$d}.*\.pdf{$d}/",
             ],
             // just pass the given footer URL
             [
                 ['footer-html' => 'http://google.com'],
-                '/emptyBinary --lowquality --footer-html "' . \preg_quote('http://google.com', '/') . '" .*\.html .*\.pdf/',
+                "/{$d}emptyBinary{$d} {$d}--lowquality{$d} {$d}--footer-html{$d} {$q}" . \preg_quote('http://google.com', '/') . "{$q} {$d}.*\.html{$d} {$d}.*\.pdf{$d}/",
             ],
             // just pass the given footer file
             [
                 ['footer-html' => __FILE__],
-                '/emptyBinary --lowquality --footer-html ' . \preg_quote(__FILE__, '/') . ' .*\.html .*\.pdf/',
+                "/{$d}emptyBinary{$d} {$d}--lowquality{$d} {$d}--footer-html{$d} {$d}" . \preg_quote(__FILE__, '/') . "{$d} {$d}.*\.html{$d} {$d}.*\.pdf{$d}/",
             ],
             // save the given footer HTML string into a temporary file and pass that filename
             [
                 ['footer-html' => 'footer'],
-                '/emptyBinary --lowquality --footer-html .*\.html .*\.html .*\.pdf/',
+                "/{$d}emptyBinary{$d} {$d}--lowquality{$d} {$d}--footer-html{$d} {$d}.*\.html{$d} {$d}.*\.html{$d} {$d}.*\.pdf{$d}/",
             ],
             // save the content of the given XSL URL to a file and pass that filename
             [
                 ['xsl-style-sheet' => 'http://google.com'],
-                '/emptyBinary --lowquality --xsl-style-sheet .*\.xsl .*\.html .*\.pdf/',
+                "/{$d}emptyBinary{$d} {$d}--lowquality{$d} {$d}--xsl-style-sheet{$d} {$d}.*\.xsl{$d} {$d}.*\.html{$d} {$d}.*\.pdf{$d}/",
             ],
             // set toc options after toc argument
             [
@@ -127,7 +143,7 @@ class PdfTest extends TestCase
                     'toc' => true,
                     'disable-dotted-lines' => true,
                 ],
-                '/emptyBinary --grayscale --lowquality toc --disable-dotted-lines .*\.html .*\.pdf/',
+                "/{$d}emptyBinary{$d} {$d}--grayscale{$d} {$d}--lowquality{$d} {$d}toc{$d} {$d}--disable-dotted-lines{$d} {$d}.*\.html{$d} {$d}.*\.pdf{$d}/",
             ],
         ];
     }
