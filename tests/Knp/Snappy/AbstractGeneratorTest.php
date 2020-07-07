@@ -245,7 +245,7 @@ class AbstractGeneratorTest extends TestCase
             ->method('checkOutput')
             ->with(
                 $this->equalTo('the_output_file'),
-                $this->equalTo('the command')
+                $this->equalTo("{$d}the{$d} {$d}command{$d}")
             )
         ;
 
