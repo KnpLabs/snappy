@@ -20,7 +20,7 @@ interface GeneratorInterface
      *
      * @return void
      */
-    public function generate($input, string $output, array $options = [], bool $overwrite = false): void;
+    public function generate($input, $output, array $options = [], $overwrite = false);
 
     /**
      * Generates the output media file from the given HTML.
@@ -32,7 +32,7 @@ interface GeneratorInterface
      *
      * @return void
      */
-    public function generateFromHtml($html, string $output, array $options = [], bool $overwrite = false): void;
+    public function generateFromHtml($html, $output, array $options = [], $overwrite = false);
 
     /**
      * Returns the output of the media generated from the specified input HTML
@@ -43,7 +43,7 @@ interface GeneratorInterface
      *
      * @return string
      */
-    public function getOutput($input, array $options = []): string;
+    public function getOutput($input, array $options = []);
 
     /**
      * Returns the output of the media generated from the given HTML.
@@ -53,5 +53,5 @@ interface GeneratorInterface
      *
      * @return string
      */
-    public function getOutputFromHtml($html, array $options = []): string;
+    public function getOutputFromHtml($html, array $options = []);
 }

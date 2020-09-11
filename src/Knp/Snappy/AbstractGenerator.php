@@ -180,7 +180,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * {@inheritdoc}
      */
-    public function generate($input, string $output, array $options = [], bool $overwrite = false): void
+    public function generate($input, $output, array $options = [], $overwrite = false)
     {
         $this->prepareOutput($output, $overwrite);
 
@@ -219,7 +219,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * {@inheritdoc}
      */
-    public function generateFromHtml($html, string $output, array $options = [], bool $overwrite = false): void
+    public function generateFromHtml($html, $output, array $options = [], $overwrite = false)
     {
         $fileNames = [];
         if (\is_array($html)) {
@@ -236,7 +236,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * {@inheritdoc}
      */
-    public function getOutput($input, array $options = []): string
+    public function getOutput($input, array $options = [])
     {
         $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
 
@@ -248,7 +248,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * {@inheritdoc}
      */
-    public function getOutputFromHtml($html, array $options = []): string
+    public function getOutputFromHtml($html, array $options = [])
     {
         $fileNames = [];
         if (\is_array($html)) {
