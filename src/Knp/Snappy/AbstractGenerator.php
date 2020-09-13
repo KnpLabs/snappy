@@ -197,7 +197,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         ]);
 
         try {
-            list($status, $stdout, $stderr) = $this->runProcess($process, $command);
+            list($status, $stdout, $stderr) = $this->runProcess($process);
             $this->checkProcessStatus($status, $stdout, $stderr, $commandLine);
             $this->checkOutput($output, $commandLine);
         } catch (Exception $e) {
@@ -579,11 +579,10 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      * Executes the given process and returns the complete output as a string.
      *
      * @param Process  $process
-     * @param string[] $command Basically just for testing purposes.
      *
      * @return array [status, stdout, stderr]
      */
-    protected function runProcess(Process $process, array $command): array
+    protected function runProcess(Process $process): array
     {
         if (null !== $this->timeout) {
             $process->setTimeout($this->timeout);

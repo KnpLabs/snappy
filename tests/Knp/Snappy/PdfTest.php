@@ -176,10 +176,15 @@ class PdfSpy extends Pdf
         return 'output';
     }
 
-    protected function runProcess(Process $process, array $command): array
+    public function getCommand($input, string $output, array $options = []): array
     {
-        $this->lastCommand = $command;
+        $this->lastCommand = parent::getCommand($input, $output, $options);
 
+        return $this->lastCommand;
+    }
+
+    protected function runProcess(Process $process): array
+    {
         return [0, 'output', 'errorOutput'];
     }
 
