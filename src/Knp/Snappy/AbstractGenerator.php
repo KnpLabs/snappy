@@ -578,7 +578,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * Executes the given process and returns the complete output as a string.
      *
-     * @param Process  $process
+     * @param Process $process
      *
      * @return array [status, stdout, stderr]
      */
