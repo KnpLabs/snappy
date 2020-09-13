@@ -20,7 +20,12 @@ class AbstractGeneratorTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$commandPartDelimiter = '\\' !== \DIRECTORY_SEPARATOR ? "'" : ''; // command parts which are not quoted on Windows are enclosed by single quotes on Linux
+        /**
+         * Command parts which are not quoted on Windows are enclosed by single quotes on Linux.
+         * 
+         * We should find a better solution to handle this case. Help is appreciated.
+         */
+        self::$commandPartDelimiter = '\\' !== \DIRECTORY_SEPARATOR ? "'" : '';
     }
 
     public function testAddOption(): void
