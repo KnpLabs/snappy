@@ -5,6 +5,7 @@ namespace Tests\Knp\Snappy;
 use Knp\Snappy\Pdf;
 use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Process\Process;
 use RecursiveDirectoryIterator;
 use FilesystemIterator;
 use CallbackFilterIterator;
@@ -13,8 +14,6 @@ use ReflectionMethod;
 
 class PdfTest extends TestCase
 {
-    const SHELL_ARG_QUOTE_REGEX = '(?:"|\')'; // escapeshellarg produces double quotes on Windows, single quotes otherwise
-
     public function tearDown(): void
     {
         $directory = __DIR__ . '/i-dont-exist';
@@ -52,12 +51,14 @@ class PdfTest extends TestCase
 
     public function testThatSomethingUsingTmpFolder(): void
     {
-        $q = self::SHELL_ARG_QUOTE_REGEX;
         $testObject = new PdfSpy();
         $testObject->setTemporaryFolder(__DIR__);
 
         $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
-        $this->assertRegExp('/emptyBinary --lowquality --footer-html ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . '/', $testObject->getLastCommand());
+
+        \array_map(function (string $expectedRegex, string $commandPart) {
+            $this->assertRegExp($expectedRegex, $commandPart);
+        }, ['/emptyBinary/', '/--lowquality/', '/--footer-html/', '/.*\.html/', '/.*\.html/', '/.*\.pdf/'], $testObject->getLastCommand());
     }
 
     public function testThatSomethingUsingNonexistentTmpFolder(): void
@@ -87,42 +88,43 @@ class PdfTest extends TestCase
     /**
      * @dataProvider dataOptions
      */
-    public function testOptions(array $options, string $expectedRegex): void
+    public function testOptions(array $options, array $expectedRegexes): void
     {
         $testObject = new PdfSpy();
         $testObject->getOutputFromHtml('<html></html>', $options);
-        $this->assertRegExp($expectedRegex, $testObject->getLastCommand());
+
+        \array_map(function (string $expectedRegex, string $commandPart) {
+            $this->assertRegExp($expectedRegex, $commandPart);
+        }, $expectedRegexes, $testObject->getLastCommand());
     }
 
     public function dataOptions(): array
     {
-        $q = self::SHELL_ARG_QUOTE_REGEX;
-
         return [
             // no options
             [
                 [],
-                '/emptyBinary --lowquality ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
+                ['/emptyBinary/', '/--lowquality/', '/.*\.html/', '/.*\.pdf/'],
             ],
             // just pass the given footer URL
             [
                 ['footer-html' => 'http://google.com'],
-                '/emptyBinary --lowquality --footer-html ' . $q . 'http:\/\/google\.com' . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
+                ['/emptyBinary/', '/--lowquality/', '/--footer-html/', '/' . \preg_quote('http://google.com', '/') . '/', '/.*\.html/', '/.*\.pdf/'],
             ],
             // just pass the given footer file
             [
                 ['footer-html' => __FILE__],
-                '/emptyBinary --lowquality --footer-html ' . $q . \preg_quote(__FILE__, '/') . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
+                ['/emptyBinary/', '/--lowquality/', '/--footer-html/', '/' . \preg_quote(__FILE__, '/') . '/', '/.*\.html/', '/.*\.pdf/'],
             ],
             // save the given footer HTML string into a temporary file and pass that filename
             [
                 ['footer-html' => 'footer'],
-                '/emptyBinary --lowquality --footer-html ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
+                ['/emptyBinary/', '/--lowquality/', '/--footer-html/', '/.*\.html/', '/.*\.html/', '/.*\.pdf/'],
             ],
             // save the content of the given XSL URL to a file and pass that filename
             [
                 ['xsl-style-sheet' => 'http://google.com'],
-                '/emptyBinary --lowquality --xsl-style-sheet ' . $q . '.*\.xsl' . $q . ' ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
+                ['/emptyBinary/', '/--lowquality/', '/--xsl-style-sheet/', '/.*\.xsl/', '/.*\.html/', '/.*\.pdf/'],
             ],
             // set toc options after toc argument
             [
@@ -131,7 +133,7 @@ class PdfTest extends TestCase
                     'toc' => true,
                     'disable-dotted-lines' => true,
                 ],
-                '/emptyBinary --grayscale --lowquality toc --disable-dotted-lines ' . $q . '.*\.html' . $q . ' ' . $q . '.*\.pdf' . $q . '/',
+                ['/emptyBinary/', '/--grayscale/', '/--lowquality/', '/toc/', '/--disable-dotted-lines/', '/.*\.html/', '/.*\.pdf/'],
             ],
         ];
     }
@@ -152,7 +154,7 @@ class PdfTest extends TestCase
 class PdfSpy extends Pdf
 {
     /**
-     * @var string
+     * @var string[]
      */
     private $lastCommand;
 
@@ -161,7 +163,7 @@ class PdfSpy extends Pdf
         parent::__construct('emptyBinary');
     }
 
-    public function getLastCommand(): string
+    public function getLastCommand(): array
     {
         return $this->lastCommand;
     }
@@ -174,10 +176,15 @@ class PdfSpy extends Pdf
         return 'output';
     }
 
-    protected function executeCommand(string $command): array
+    public function getCommand($input, string $output, array $options = []): array
     {
-        $this->lastCommand = $command;
+        $this->lastCommand = parent::getCommand($input, $output, $options);
 
+        return $this->lastCommand;
+    }
+
+    protected function runProcess(Process $process): array
+    {
         return [0, 'output', 'errorOutput'];
     }
 

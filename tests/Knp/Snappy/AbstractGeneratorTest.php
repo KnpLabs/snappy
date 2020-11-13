@@ -5,6 +5,7 @@ namespace Tests\Knp\Snappy;
 use Knp\Snappy\AbstractGenerator;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Process\Process;
 use InvalidArgumentException;
 use RuntimeException;
 use ReflectionProperty;
@@ -12,6 +13,21 @@ use ReflectionMethod;
 
 class AbstractGeneratorTest extends TestCase
 {
+    /**
+     * @var string
+     */
+    private static $commandPartDelimiter;
+
+    public static function setUpBeforeClass(): void
+    {
+        /*
+         * Command parts which are not quoted on Windows are enclosed by single quotes on Linux.
+         *
+         * We should find a better solution to handle this case. Help is appreciated.
+         */
+        self::$commandPartDelimiter = '\\' !== \DIRECTORY_SEPARATOR ? "'" : '';
+    }
+
     public function testAddOption(): void
     {
         $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
@@ -168,12 +184,14 @@ class AbstractGeneratorTest extends TestCase
 
     public function testGenerate(): void
     {
+        $d = self::$commandPartDelimiter;
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
                 'configure',
                 'prepareOutput',
                 'getCommand',
-                'executeCommand',
+                'runProcess',
                 'checkOutput',
                 'checkProcessStatus',
             ])
@@ -195,8 +213,8 @@ class AbstractGeneratorTest extends TestCase
                     'File "the_output_file" has been successfully generated.'
                 ),
                 $this->logicalOr(
-                    ['command' => 'the command', 'env' => null, 'timeout' => false],
-                    ['command' => 'the command', 'stdout' => 'stdout', 'stderr' => 'stderr']
+                    ['command' => "{$d}the{$d} {$d}command{$d}", 'env' => null, 'timeout' => false],
+                    ['command' => "{$d}the{$d} {$d}command{$d}", 'stdout' => 'stdout', 'stderr' => 'stderr']
                 )
             )
         ;
@@ -214,25 +232,25 @@ class AbstractGeneratorTest extends TestCase
                 $this->equalTo('the_output_file'),
                 $this->equalTo(['foo' => 'bar'])
             )
-            ->will($this->returnValue('the command'))
+            ->will($this->returnValue(['the', 'command']))
         ;
         $media
             ->expects($this->once())
-            ->method('executeCommand')
-            ->with($this->equalTo('the command'))
+            ->method('runProcess')
+            ->with($this->equalTo(new Process(['the', 'command'])))
             ->willReturn([0, 'stdout', 'stderr'])
         ;
         $media
             ->expects($this->once())
             ->method('checkProcessStatus')
-            ->with(0, 'stdout', 'stderr', 'the command')
+            ->with(0, 'stdout', 'stderr', "{$d}the{$d} {$d}command{$d}")
         ;
         $media
             ->expects($this->once())
             ->method('checkOutput')
             ->with(
                 $this->equalTo('the_output_file'),
-                $this->equalTo('the command')
+                $this->equalTo("{$d}the{$d} {$d}command{$d}")
             )
         ;
 
@@ -241,12 +259,14 @@ class AbstractGeneratorTest extends TestCase
 
     public function testFailingGenerate(): void
     {
+        $d = self::$commandPartDelimiter;
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
                 'configure',
                 'prepareOutput',
                 'getCommand',
-                'executeCommand',
+                'runProcess',
                 'checkOutput',
                 'checkProcessStatus',
             ])
@@ -263,7 +283,7 @@ class AbstractGeneratorTest extends TestCase
             ->method('info')
             ->with(
                 $this->equalTo('Generate from file(s) "the_input_file" to file "the_output_file".'),
-                $this->equalTo(['command' => 'the command', 'env' => ['PATH' => '/usr/bin'], 'timeout' => 2000])
+                $this->equalTo(['command' => "{$d}the{$d} {$d}command{$d}", 'env' => ['PATH' => '/usr/bin'], 'timeout' => 2000])
             )
         ;
 
@@ -272,7 +292,7 @@ class AbstractGeneratorTest extends TestCase
             ->method('error')
             ->with(
                 $this->equalTo('An error happened while generating "the_output_file".'),
-                $this->equalTo(['command' => 'the command', 'status' => 1, 'stdout' => 'stdout', 'stderr' => 'stderr'])
+                $this->equalTo(['command' => "{$d}the{$d} {$d}command{$d}", 'status' => 1, 'stdout' => 'stdout', 'stderr' => 'stderr'])
             )
         ;
 
@@ -288,18 +308,18 @@ class AbstractGeneratorTest extends TestCase
                 $this->equalTo('the_input_file'),
                 $this->equalTo('the_output_file')
             )
-            ->will($this->returnValue('the command'))
+            ->will($this->returnValue(['the', 'command']))
         ;
         $media
             ->expects($this->once())
-            ->method('executeCommand')
-            ->with($this->equalTo('the command'))
+            ->method('runProcess')
+            ->with(new Process(['the', 'command'], null, ['PATH' => '/usr/bin']))
             ->willReturn([1, 'stdout', 'stderr'])
         ;
         $media
             ->expects($this->once())
             ->method('checkProcessStatus')
-            ->with(1, 'stdout', 'stderr', 'the command')
+            ->with(1, 'stdout', 'stderr', "{$d}the{$d} {$d}command{$d}")
             ->willThrowException(new RuntimeException())
         ;
 
@@ -550,14 +570,14 @@ class AbstractGeneratorTest extends TestCase
     /**
      * @dataProvider dataForBuildCommand
      */
-    public function testBuildCommand(string $binary, string $url, string $path, array $options, string $expected): void
+    public function testBuildCommand(string $binary, string $url, string $path, array $options, array $expected): void
     {
         $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
 
         $r = new ReflectionMethod($media, 'buildCommand');
         $r->setAccessible(true);
 
-        $this->assertEquals($expected, $r->invokeArgs($media, [$binary, $url, $path, $options]));
+        $this->assertSame($expected, $r->invokeArgs($media, [$binary, $url, $path, $options]));
     }
 
     public function dataForBuildCommand(): array
@@ -570,7 +590,7 @@ class AbstractGeneratorTest extends TestCase
                 'http://the.url/',
                 '/the/path',
                 [],
-                $theBinary . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, 'http://the.url/', '/the/path'],
             ],
             [
                 $theBinary,
@@ -581,7 +601,7 @@ class AbstractGeneratorTest extends TestCase
                     'bar' => false,
                     'baz' => [],
                 ],
-                $theBinary . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, 'http://the.url/', '/the/path'],
             ],
             [
                 $theBinary,
@@ -592,7 +612,7 @@ class AbstractGeneratorTest extends TestCase
                     'bar' => ['barvalue1', 'barvalue2'],
                     'baz' => true,
                 ],
-                $theBinary . ' --foo ' . \escapeshellarg('foovalue') . ' --bar ' . \escapeshellarg('barvalue1') . ' --bar ' . \escapeshellarg('barvalue2') . ' --baz ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, '--foo', 'foovalue', '--bar', 'barvalue1', '--bar', 'barvalue2', '--baz', 'http://the.url/', '/the/path'],
             ],
             [
                 $theBinary,
@@ -602,7 +622,7 @@ class AbstractGeneratorTest extends TestCase
                     'cookie' => ['session' => 'bla', 'phpsess' => 12],
                     'no-background' => '1',
                 ],
-                $theBinary . ' --cookie ' . \escapeshellarg('session') . ' ' . \escapeshellarg('bla') . ' --cookie ' . \escapeshellarg('phpsess') . ' ' . \escapeshellarg('12') . ' --no-background ' . \escapeshellarg('1') . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, '--cookie', 'session', 'bla', '--cookie', 'phpsess', 12, '--no-background', '1', 'http://the.url/', '/the/path'],
             ],
             [
                 $theBinary,
@@ -612,7 +632,7 @@ class AbstractGeneratorTest extends TestCase
                     'allow' => ['/path1', '/path2'],
                     'no-background' => '1',
                 ],
-                $theBinary . ' --allow ' . \escapeshellarg('/path1') . ' --allow ' . \escapeshellarg('/path2') . ' --no-background ' . \escapeshellarg('1') . ' ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, '--allow', '/path1', '--allow', '/path2', '--no-background', '1', 'http://the.url/', '/the/path'],
             ],
             [
                 $theBinary,
@@ -622,7 +642,7 @@ class AbstractGeneratorTest extends TestCase
                     'image-dpi' => 100,
                     'image-quality' => 50,
                 ],
-                $theBinary . ' ' . '--image-dpi 100 --image-quality 50 ' . \escapeshellarg('http://the.url/') . ' ' . \escapeshellarg('/the/path'),
+                [$theBinary, '--image-dpi', 100, '--image-quality', 50, 'http://the.url/', '/the/path'],
             ],
         ];
     }

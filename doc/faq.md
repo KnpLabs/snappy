@@ -89,19 +89,6 @@ $pdf->generate(['https://google.com', 'https://google.jp'], '/tmp/out/test.pdf')
 $pdf->generateFromHtml(['<html><body>Doc 1</body></html>', '<html><body>Doc 2</body></html>'], '/tmp/out/test.pdf');
 ```
 
-###### *Q*: My chars with accents passed to wkhtmltopdf options are not correctly rendered, i.e. `footer-right => 'Página [page] de [toPage]'` is converted to 'PÃ¡gina 1 de 1'.
-
-*A*: The answer is long here. We use `escapeshellarg` function to escape all the option value passed to `wkhtmltox`. `escapeshellarg` makes its escape based on server locale, so if you are  experiencing this issue - you can set 
-```php
-setlocale(LC_CTYPE, 'es_ES.UTF-8')
-``` 
-
-or any locale which is suitable for you. You should take into account that if given locale is not configured on the server - you will still have an issue. Check your locales installed via running
-```bash
-locale -a
-```
-If the needed locale is missing on the server - you should install/configure it.
-
 ###### *Q*: How to put an header/footer on every page of the PDF?
 
 *A*: You need to provide either a valid file path or some HTML content. Note that your HTML document(s) needs to start with a valid doctype and have html, head and body tags, or wkhtmltopdf will fail to render the PDF properly.

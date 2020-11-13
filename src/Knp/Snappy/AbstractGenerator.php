@@ -185,22 +185,24 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         $this->prepareOutput($output, $overwrite);
 
         $command = $this->getCommand($input, $output, $options);
+        $process = new Process($command, null, $this->env);
+        $commandLine = $process->getCommandLine();
 
         $inputFiles = \is_array($input) ? \implode('", "', $input) : $input;
 
         $this->logger->info(\sprintf('Generate from file(s) "%s" to file "%s".', $inputFiles, $output), [
-            'command' => $command,
+            'command' => $commandLine,
             'env' => $this->env,
             'timeout' => $this->timeout,
         ]);
 
         try {
-            list($status, $stdout, $stderr) = $this->executeCommand($command);
-            $this->checkProcessStatus($status, $stdout, $stderr, $command);
-            $this->checkOutput($output, $command);
+            list($status, $stdout, $stderr) = $this->runProcess($process);
+            $this->checkProcessStatus($status, $stdout, $stderr, $commandLine);
+            $this->checkOutput($output, $commandLine);
         } catch (Exception $e) {
             $this->logger->error(\sprintf('An error happened while generating "%s".', $output), [
-                'command' => $command,
+                'command' => $commandLine,
                 'status' => $status ?? null,
                 'stdout' => $stdout ?? null,
                 'stderr' => $stderr ?? null,
@@ -210,7 +212,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         }
 
         $this->logger->info(\sprintf('File "%s" has been successfully generated.', $output), [
-            'command' => $command,
+            'command' => $commandLine,
             'stdout' => $stdout,
             'stderr' => $stderr,
         ]);
@@ -292,9 +294,9 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      * @param array        $options An optional array of options that will be used
      *                              only for this command
      *
-     * @return string
+     * @return string[]
      */
-    public function getCommand($input, string $output, array $options = []): string
+    public function getCommand($input, string $output, array $options = []): array
     {
         if (null === $this->binary) {
             throw new LogicException('You must define a binary prior to conversion.');
@@ -496,50 +498,52 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     }
 
     /**
-     * Builds the command string.
+     * Builds the command.
      *
      * @param string       $binary  The binary path/name
      * @param array|string $input   Url(s) or file location(s) of the page(s) to process
      * @param string       $output  File location to the image-to-be
      * @param array        $options An array of options
      *
-     * @return string
+     * @return string[]
      */
-    protected function buildCommand(string $binary, $input, string $output, array $options = []): string
+    protected function buildCommand(string $binary, $input, string $output, array $options = []): array
     {
-        $command = $binary;
-        $escapedBinary = \escapeshellarg($binary);
-        if (\is_executable($escapedBinary)) {
-            $command = $escapedBinary;
-        }
+        $command = [$binary];
 
         foreach ($options as $key => $option) {
             if (null !== $option && false !== $option) {
                 if (true === $option) {
                     // Dont't put '--' if option is 'toc'.
                     if ($key === 'toc') {
-                        $command .= ' ' . $key;
+                        $command[] = $key;
                     } else {
-                        $command .= ' --' . $key;
+                        $command[] = '--' . $key;
                     }
                 } elseif (\is_array($option)) {
                     if ($this->isAssociativeArray($option)) {
                         foreach ($option as $k => $v) {
-                            $command .= ' --' . $key . ' ' . \escapeshellarg($k) . ' ' . \escapeshellarg($v);
+                            $command[] = '--' . $key;
+                            $command[] = $k;
+                            $command[] = $v;
                         }
                     } else {
                         foreach ($option as $v) {
-                            $command .= ' --' . $key . ' ' . \escapeshellarg($v);
+                            $command[] = '--' . $key;
+                            $command[] = $v;
                         }
                     }
                 } else {
                     // Dont't add '--' if option is "cover"  or "toc".
-                    if (\in_array($key, ['toc', 'cover'])) {
-                        $command .= ' ' . $key . ' ' . \escapeshellarg($option);
-                    } elseif (\in_array($key, ['image-dpi', 'image-quality'])) {
-                        $command .= ' --' . $key . ' ' . (int) $option;
+                    if (\in_array($key, ['toc', 'cover'], true)) {
+                        $command[] = $key;
+                        $command[] = $option;
+                    } elseif (\in_array($key, ['image-dpi', 'image-quality'], true)) {
+                        $command[] = '--' . $key;
+                        $command[] = (int) $option;
                     } else {
-                        $command .= ' --' . $key . ' ' . \escapeshellarg($option);
+                        $command[] = '--' . $key;
+                        $command[] = $option;
                     }
                 }
             }
@@ -547,11 +551,12 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
 
         if (\is_array($input)) {
             foreach ($input as $i) {
-                $command .= ' ' . \escapeshellarg($i) . ' ';
+                $command[] = $i;
             }
-            $command .= \escapeshellarg($output);
+            $command[] = $output;
         } else {
-            $command .= ' ' . \escapeshellarg($input) . ' ' . \escapeshellarg($output);
+            $command[] = $input;
+            $command[] = $output;
         }
 
         return $command;
@@ -571,21 +576,14 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     }
 
     /**
-     * Executes the given command via shell and returns the complete output as
-     * a string.
+     * Executes the given process and returns the complete output as a string.
      *
-     * @param string $command
+     * @param Process $process
      *
      * @return array [status, stdout, stderr]
      */
-    protected function executeCommand(string $command): array
+    protected function runProcess(Process $process): array
     {
-        if (\method_exists(Process::class, 'fromShellCommandline')) {
-            $process = Process::fromShellCommandline($command, null, $this->env);
-        } else {
-            $process = new Process($command, null, $this->env);
-        }
-
         if (null !== $this->timeout) {
             $process->setTimeout($this->timeout);
         }
