@@ -5,11 +5,11 @@ clone_folder:  c:\projects\snappy
 environment:
   matrix:
     - dependencies: lowest
-      php_ver_target: 7.1
-    - dependencies: current
       php_ver_target: 7.2
-    - dependencies: highest
+    - dependencies: current
       php_ver_target: 7.3
+    - dependencies: highest
+      php_ver_target: 7.4
 
 cache:
   - composer.phar

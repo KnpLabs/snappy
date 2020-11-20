@@ -798,11 +798,10 @@ class AbstractGeneratorTest extends TestCase
         $this->assertEquals($isAssociativeArray, $r->invokeArgs($generator, [$array]));
     }
 
-    /**
-     * @expectedException Knp\Snappy\Exception\FileAlreadyExistsException
-     */
     public function testItThrowsTheProperExceptionWhenFileExistsAndNotOverwritting(): void
     {
+        $this->expectException(\Knp\Snappy\Exception\FileAlreadyExistsException::class);
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
                 'configure',
