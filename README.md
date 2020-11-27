@@ -31,7 +31,7 @@ $ composer require knplabs/knp-snappy
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Knp\Snappy\Pdf;
+use Knp\Snappy\Generator\Wkhtmltox\Pdf;
 
 $snappy = new Pdf('/usr/local/bin/wkhtmltopdf');
 
@@ -119,7 +119,7 @@ And then you can use it
 ```php
 <?php
 
-use Knp\Snappy\Pdf;
+use Knp\Snappy\Generator\Wkhtmltox\Pdf;
 
 $myProjectDirectory = '/path/to/my/project';
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Knp\Snappy;
+namespace Tests\Knp\Snappy\Generator\Wkhtmltox;
 
-use Knp\Snappy\Image;
+use Knp\Snappy\Generator\Wkhtmltox\Image;
 use PHPUnit\Framework\TestCase;
 
 class ImageTest extends TestCase

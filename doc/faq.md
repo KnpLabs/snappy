@@ -9,13 +9,13 @@ Please, note that wkhtmltopdf takes only input URL(s) or file name(s) as source.
 
 ###### *Q*: How to get the command executed by Snappy?
 
-*A*: You need to install any PSR-3 compliant logging library and call `setLogger()` method on the generator. It will 
+*A*: You need to install any PSR-3 compliant logging library and call `setLogger()` method on the generator. It will
 log every command executed, its env vars and timeout. It will also log stdout and stderr whenever a command finishes, even if it fails.
 
 
 ###### *Q*: My tables are broken when it is rendered on multiple pages with break.
 
-*A*: Add ```thead``` and ```tbody``` tags. Add the following css 
+*A*: Add ```thead``` and ```tbody``` tags. Add the following css
 ```css
 table { page-break-inside:auto; }
 tr    { page-break-inside:avoid; page-break-after:auto; }
@@ -83,7 +83,7 @@ tfoot { display:table-footer-group; }
 ```php
 <?php
 
-$pdf = new \Knp\Snappy\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
+$pdf = new \Knp\Snappy\Generator\Wkhtmltox\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
 $pdf->generate(['https://google.com', 'https://google.jp'], '/tmp/out/test.pdf');
 // or
 $pdf->generateFromHtml(['<html><body>Doc 1</body></html>', '<html><body>Doc 2</body></html>'], '/tmp/out/test.pdf');
@@ -91,10 +91,10 @@ $pdf->generateFromHtml(['<html><body>Doc 1</body></html>', '<html><body>Doc 2</b
 
 ###### *Q*: My chars with accents passed to wkhtmltopdf options are not correctly rendered, i.e. `footer-right => 'Página [page] de [toPage]'` is converted to 'PÃ¡gina 1 de 1'.
 
-*A*: The answer is long here. We use `escapeshellarg` function to escape all the option value passed to `wkhtmltox`. `escapeshellarg` makes its escape based on server locale, so if you are  experiencing this issue - you can set 
+*A*: The answer is long here. We use `escapeshellarg` function to escape all the option value passed to `wkhtmltox`. `escapeshellarg` makes its escape based on server locale, so if you are  experiencing this issue - you can set
 ```php
 setlocale(LC_CTYPE, 'es_ES.UTF-8')
-``` 
+```
 
 or any locale which is suitable for you. You should take into account that if given locale is not configured on the server - you will still have an issue. Check your locales installed via running
 ```bash
@@ -106,7 +106,7 @@ If the needed locale is missing on the server - you should install/configure it.
 
 *A*: You need to provide either a valid file path or some HTML content. Note that your HTML document(s) needs to start with a valid doctype and have html, head and body tags, or wkhtmltopdf will fail to render the PDF properly.
 
-*Note that this feature does not work with wkhtmltopdf compiled against unpatched Qt. Most of the time, wkhtmltopdf packages from Linux distributions are not fine. You should rather rely on the 
+*Note that this feature does not work with wkhtmltopdf compiled against unpatched Qt. Most of the time, wkhtmltopdf packages from Linux distributions are not fine. You should rather rely on the
 official version available on [wkhtmltopdf.org](https://wkhtmltopdf.org) or the version available from `h4cc/wkhtmltopdf` package.*
 
 ```php
@@ -134,7 +134,7 @@ HTML;
 $footerPath = tempnam('/tmp', 'footer') . '.html';
 file_put_contents($footerPath, $footer);
 
-$pdf = new \Knp\Snappy\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
+$pdf = new \Knp\Snappy\Generator\Wkhtmltox\Pdf(__DIR__ . '/vendor/bin/wkhtmltopdf-amd64');
 $pdf->generateFromHtml('', '/tmp/out/test.pdf', ['header-html' => $header, 'footer-html' => $footerPath], true);
 ```
 
@@ -144,7 +144,7 @@ $pdf->generateFromHtml('', '/tmp/out/test.pdf', ['header-html' => $header, 'foot
 
 ###### *Q*: When running wkhtmltopdf through Snappy, I got an exit code 5 or 6
 
-*A*: It's usually due to bad environment variables. For example, on MacOS, you need to check the value of `DYLD_LIBRARY_PATH` (see [#27](https://github.com/KnpLabs/snappy/issues/27#issuecomment-7199659)). 
+*A*: It's usually due to bad environment variables. For example, on MacOS, you need to check the value of `DYLD_LIBRARY_PATH` (see [#27](https://github.com/KnpLabs/snappy/issues/27#issuecomment-7199659)).
 On Linux, you should check the value of `LD_LIBRARY_PATH`. Also note that, depending on the way you execute PHP, your environment variables might be reset for security reasons (for instance, look at `clear_env` on php-fpm).
 
 ###### *Q*: On Windows, when I generate a PDF nothing happens (there's no PDF file written)
@@ -157,21 +157,21 @@ For more details see [#123](https://github.com/KnpLabs/snappy/issues/123).
 
 *A*: This is generally indicating some networking issues. It might be bad DNS record(s), some sporadic packet losses, unresponsive HTTP server ...
 
-Note that if you use the PHP embedded server, you can't generate a PDF from an HTML page accessible from the same embedded server. 
-Indeed, the embedded server never forks and does not use threads. That means it's not able to process two requests 
-at the same time: it processes the first one, send the first response and only then starts to process the second one. 
+Note that if you use the PHP embedded server, you can't generate a PDF from an HTML page accessible from the same embedded server.
+Indeed, the embedded server never forks and does not use threads. That means it's not able to process two requests
+at the same time: it processes the first one, send the first response and only then starts to process the second one.
 
 ###### *Q*: How to proceed when experiencing `ContentNotFound`, `ConnectionRefusedError` or timeouts?
 
-*A*: When you experience errors like `ContentNotFound` or `ConnectionRefusedError`, try to turn off `quiet` option and 
+*A*: When you experience errors like `ContentNotFound` or `ConnectionRefusedError`, try to turn off `quiet` option and
 look at Snappy logs (you have to set up a logger first).
 
 If you experience timeouts, it might be hard to know what is failing. The best you can do to narrow the scope of the bug
-is to slightly change your HTML code until you found the culprit. Start by removing whole parts, like document body to 
-know if it comes from something in the body or something in the head. If that's now working, re-add it but now remove 
+is to slightly change your HTML code until you found the culprit. Start by removing whole parts, like document body to
+know if it comes from something in the body or something in the head. If that's now working, re-add it but now remove
 one half of its content. And repeat again and again until you find which URLs is buggy.
 
-There's one more (better) way though: fire up tcpdump or wireshark and listen for http requests. You should see which 
+There's one more (better) way though: fire up tcpdump or wireshark and listen for http requests. You should see which
 request(s) is failing, and you can even check the content of the request/response.
 
 ###### *Q*: My custom fonts aren't smooth

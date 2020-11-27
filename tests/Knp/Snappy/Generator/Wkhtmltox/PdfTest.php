@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Knp\Snappy;
+namespace Tests\Knp\Snappy\Generator\Wkhtmltox;
 
-use Knp\Snappy\Pdf;
+use Knp\Snappy\Generator\Wkhtmltox\Pdf;
 use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;

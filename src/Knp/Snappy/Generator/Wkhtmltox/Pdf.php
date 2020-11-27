@@ -1,6 +1,6 @@
 <?php
 
-namespace Knp\Snappy;
+namespace Knp\Snappy\Generator\Wkhtmltox;
 
 /**
  * Use this class to transform a html/a url to a pdf.

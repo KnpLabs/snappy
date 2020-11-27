@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Knp\Snappy;
+namespace Tests\Knp\Snappy\Generator\Wkhtmltox;
 
-use Knp\Snappy\AbstractGenerator;
+use Knp\Snappy\Generator\Wkhtmltox\AbstractGenerator;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use InvalidArgumentException;

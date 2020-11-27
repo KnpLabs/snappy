@@ -1,16 +1,17 @@
 <?php
 
-namespace Knp\Snappy;
+namespace Knp\Snappy\Generator\Wkhtmltox;
 
-use Knp\Snappy\Exception\FileAlreadyExistsException;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
-use Symfony\Component\Process\Process;
 use Exception;
 use LogicException;
 use RuntimeException;
+use Psr\Log\NullLogger;
+use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
+use Psr\Log\LoggerAwareInterface;
+use Knp\Snappy\GeneratorInterface;
+use Symfony\Component\Process\Process;
+use Knp\Snappy\Exception\FileAlreadyExistsException;
 
 /**
  * Base generator class for medias.
