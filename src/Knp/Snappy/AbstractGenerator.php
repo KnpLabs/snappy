@@ -34,6 +34,16 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     public $temporaryFiles = [];
 
     /**
+     * @var array
+     */
+    public static $staticTemporaryFiles = [];
+
+    /**
+     * @var bool
+     */
+    public static $shutdownRegistered = false;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -52,7 +62,10 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         $this->setOptions($options);
         $this->env = empty($env) ? null : $env;
 
-        register_shutdown_function([$this, 'removeTemporaryFiles']);
+        if (!self::$shutdownRegistered) {
+            register_shutdown_function([self::class, 'staticRemoveTemporaryFiles']);
+            self::$shutdownRegistered = true;
+        }
     }
 
     public function __destruct()
@@ -423,6 +436,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         }
 
         $this->temporaryFiles[] = $filename;
+        self::$staticTemporaryFiles[$filename] = null;
 
         return $filename;
     }
@@ -434,7 +448,22 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     {
         foreach ($this->temporaryFiles as $file) {
             $this->unlink($file);
+            unset(self::$staticTemporaryFiles[$file]);
         }
+    }
+
+    /**
+     * Removes all temporary files.
+     */
+    public static function staticRemoveTemporaryFiles()
+    {
+        foreach (self::$staticTemporaryFiles as $file => $_) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
+
+        self::$staticTemporaryFiles = [];
     }
 
     /**
