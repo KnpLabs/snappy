@@ -20,12 +20,8 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v2
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: '7.3'
-            - run: composer install --prefer-dist --no-interaction --no-progress --ansi
-            - run: vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
+            - name: Fix CS
+              uses: docker://oskarstark/php-cs-fixer-ga
     tests:
         runs-on: ubuntu-20.04
         strategy:

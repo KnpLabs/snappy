@@ -1,14 +1,15 @@
 <?php
 
-$finder = PhpCsFixer\Finder::create()
+$finder = new PhpCsFixer\Finder();
+$finder
     ->in(__DIR__.'/src')
     ->in(__DIR__.'/tests')
 ;
 
-return PhpCsFixer\Config::create()
+$config = new PhpCsFixer\Config();
+return $config
     ->setFinder($finder)
     ->setRiskyAllowed(true)
-    ->registerCustomFixers(new PedroTroller\CS\Fixer\Fixers())
     ->setRules([
         '@PHP71Migration' => true,
         '@PSR1' => true,
@@ -180,10 +181,5 @@ return PhpCsFixer\Config::create()
         'trim_array_spaces' => true,
         'unary_operator_spaces' => true,
         'whitespace_after_comma_in_array' => true,
-        'PedroTroller/exceptions_punctuation' => true,
-        'PedroTroller/line_break_between_method_arguments' => [
-            'max-args' => 5,
-        ],
-        'PedroTroller/useless_code_after_return' => true,
     ])
 ;
