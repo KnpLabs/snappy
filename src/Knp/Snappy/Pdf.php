@@ -18,7 +18,7 @@ class Pdf extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    public function __construct(string $binary = null, array $options = [], array $env = null)
+    public function __construct($binary = null, array $options = [], array $env = null)
     {
         $this->setDefaultExtension('pdf');
         $this->setOptionsWithContentCheck();
@@ -43,7 +43,7 @@ class Pdf extends AbstractGenerator
      *
      * @return array $options Transformed options
      */
-    protected function handleOptions(array $options = []): array
+    protected function handleOptions(array $options = [])
     {
         foreach ($options as $option => $value) {
             if (null === $value) {
@@ -73,7 +73,7 @@ class Pdf extends AbstractGenerator
      *
      * @return bool
      */
-    protected function isOptionUrl($option): bool
+    protected function isOptionUrl($option)
     {
         return (bool) \filter_var($option, \FILTER_VALIDATE_URL);
     }
@@ -81,7 +81,7 @@ class Pdf extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    protected function configure(): void
+    protected function configure()
     {
         $this->addOptions([
             // Global options
@@ -228,8 +228,10 @@ class Pdf extends AbstractGenerator
 
     /**
      * Array with options which require to store the content of the option before passing it to wkhtmltopdf.
+     *
+     * @return $this
      */
-    protected function setOptionsWithContentCheck(): self
+    protected function setOptionsWithContentCheck()
     {
         $this->optionsWithContentCheck = [
             'header-html' => 'html',

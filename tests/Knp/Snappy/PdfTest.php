@@ -161,12 +161,18 @@ class PdfSpy extends Pdf
         parent::__construct('emptyBinary');
     }
 
-    public function getLastCommand(): string
+    /**
+     * @return string
+     */
+    public function getLastCommand()
     {
         return $this->lastCommand;
     }
 
-    public function getOutput($input, array $options = []): string
+    /**
+     * {@inheritdoc}
+     */
+    public function getOutput($input, array $options = [])
     {
         $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
         $this->generate($input, $filename, $options, true);
@@ -174,14 +180,20 @@ class PdfSpy extends Pdf
         return 'output';
     }
 
-    protected function executeCommand(string $command): array
+    /**
+     * {@inheritdoc}
+     */
+    protected function executeCommand($command)
     {
         $this->lastCommand = $command;
 
         return [0, 'output', 'errorOutput'];
     }
 
-    protected function checkOutput(string $output, string $command): void
+    /**
+     * {@inheritdoc}
+     */
+    protected function checkOutput($output, $command)
     {
         //let's say everything went right
     }
