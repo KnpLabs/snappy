@@ -1,0 +1,67 @@
+name: Build
+
+on:
+    pull_request: ~
+    push: ~
+
+jobs:
+    check:
+        runs-on: ubuntu-20.04
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+            - name: Validate composer.json
+              run: composer validate --strict --no-check-lock
+    cs-fixer:
+        runs-on: ubuntu-20.04
+        name: PHP-CS-Fixer
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '7.3'
+            - run: composer install --prefer-dist --no-interaction --no-progress --ansi
+            - run: vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
+    tests:
+        runs-on: ubuntu-20.04
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - description: 'Symfony 5.0'
+                      php: '7.3'
+                      symfony: '5.0.*@dev'
+                    - description: 'Symfony 4.3'
+                      php: '7.1'
+                      symfony: '4.3.*@dev'
+                    - description: 'Symfony 3.4'
+                      php: '7.3'
+                      symfony: '3.4.*@dev'
+                    - description: 'Beta deps'
+                      php: '7.2'
+                      beta: true
+        name: PHP ${{ matrix.php }} tests (${{ matrix.description }})
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Cache
+              uses: actions/cache@v2
+              with:
+                  path: ~/.composer/cache/files
+                  key: composer-${{ matrix.php }}-${{ matrix.symfony }}-${{ matrix.composer_option }}
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+            - run: |
+                  sed -ri 's/"symfony\/(.+)": "(.+)"/"symfony\/\1": "'${{ matrix.symfony }}'"/' composer.json;
+              if: matrix.symfony
+            - run: composer config minimum-stability beta
+              if: matrix.beta
+            - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
+            - run: vendor/bin/phpunit
+            - run: vendor/bin/phpstan analyse --ansi --no-progress
