@@ -31,23 +31,45 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
+                php:
+                  - '7.1'
+                  - '7.2'
+                  - '7.3'
+                  - '7.4'
+                  - '8.0'
+                  - '8.1'
+                dependencies:
+                  - 'highest'
                 include:
+                    - description: 'Symfony 3.4'
+                      php: '7.1'
+                      symfony: '3.4.*'
+                      dependencies: 'lowest'
+
+                    - description: 'Symfony 4.4'
+                      php: '7.3'
+                      symfony: '4.4.*'
+                      dependencies: 'highest'
+
+                    - description: 'Symfony 5.3'
+                      php: '7.4'
+                      symfony: '5.3.*'
+                      dependencies: 'highest'
+
+                    - description: 'Symfony 5.4'
+                      php: '7.4'
+                      symfony: '5.4.*'
+                      dependencies: 'highest'
+
                     - description: 'Symfony 6.0'
                       php: '8.0'
-                      symfony: '6.0.*@dev'
-                    - description: 'Symfony 5.0'
-                      php: '7.3'
-                      symfony: '5.0.*'
-                    - description: 'Symfony 4.4'
-                      php: '7.1'
-                      symfony: '4.3.*@dev'
-                    - description: 'Symfony 3.4'
-                      php: '7.3'
-                      symfony: '3.4.*'
+                      symfony: '6.0.0'
+                      dependencies: 'highest'
+
                     - description: 'Beta deps'
                       php: '7.2'
                       beta: true
-        name: PHP ${{ matrix.php }} tests (${{ matrix.description }})
+        name: PHP ${{ matrix.php }} tests + ${{ matrix.dependencies }} ${{ matrix.description }}
         steps:
             - name: Checkout
               uses: actions/checkout@v2
@@ -67,10 +89,9 @@ jobs:
                   composer config minimum-stability dev
                   composer config prefer-stable true
               if: matrix.beta
-            - name: remove cs-fixer for Symfony 6
-              if: contains(matrix.symfony, '6.0.*@dev')
-              run: |
-                  composer remove --dev friendsofphp/php-cs-fixer pedrotroller/php-cs-custom-fixer --no-update
-            - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
+            - name: Install dependencies with Composer
+              uses: ramsey/composer-install@v1
+              with:
+                dependency-versions: ${{ matrix.dependencies }}
             - run: vendor/bin/phpunit
             - run: vendor/bin/phpstan analyse --ansi --no-progress

@@ -806,6 +806,8 @@ class AbstractGeneratorTest extends TestCase
         $r = new ReflectionMethod($media, 'prepareOutput');
         $r->setAccessible(true);
 
+        $this->expectException(\Knp\Snappy\Exception\FileAlreadyExistsException::class);
+
         $r->invokeArgs($media, ['', false]);
     }
 
