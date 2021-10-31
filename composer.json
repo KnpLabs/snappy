@@ -24,7 +24,7 @@
         "phpunit/phpunit": "~7.4",
         "phpstan/phpstan": "^0.12.7",
         "phpstan/phpstan-phpunit": "^0.12.6",
-        "friendsofphp/php-cs-fixer": "^2.16",
+        "friendsofphp/php-cs-fixer": "^2.16||^3.0",
         "pedrotroller/php-cs-custom-fixer": "^2.19"
     },
     "suggest": {

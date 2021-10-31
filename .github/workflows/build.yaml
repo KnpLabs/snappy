@@ -34,13 +34,13 @@ jobs:
                 include:
                     - description: 'Symfony 5.0'
                       php: '7.3'
-                      symfony: '5.0.*@dev'
-                    - description: 'Symfony 4.3'
+                      symfony: '5.0.*'
+                    - description: 'Symfony 4.4'
                       php: '7.1'
-                      symfony: '4.3.*@dev'
+                      symfony: '4.4.*'
                     - description: 'Symfony 3.4'
                       php: '7.3'
-                      symfony: '3.4.*@dev'
+                      symfony: '3.4.*'
                     - description: 'Beta deps'
                       php: '7.2'
                       beta: true

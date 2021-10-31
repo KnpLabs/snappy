@@ -3,3 +3,4 @@ composer.lock
 vendor
 bin
 .php_cs.cache
+.php-cs-fixer.cache
