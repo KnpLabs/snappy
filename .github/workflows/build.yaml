@@ -32,12 +32,15 @@ jobs:
             fail-fast: false
             matrix:
                 include:
+                    - description: 'Symfony 6.0'
+                      php: '8.0'
+                      symfony: '6.0.*@dev'
                     - description: 'Symfony 5.0'
                       php: '7.3'
                       symfony: '5.0.*'
                     - description: 'Symfony 4.4'
                       php: '7.1'
-                      symfony: '4.4.*'
+                      symfony: '4.3.*@dev'
                     - description: 'Symfony 3.4'
                       php: '7.3'
                       symfony: '3.4.*'
@@ -60,8 +63,14 @@ jobs:
             - run: |
                   sed -ri 's/"symfony\/(.+)": "(.+)"/"symfony\/\1": "'${{ matrix.symfony }}'"/' composer.json;
               if: matrix.symfony
-            - run: composer config minimum-stability beta
+            - run: |
+                  composer config minimum-stability dev
+                  composer config prefer-stable true
               if: matrix.beta
+            - name: remove cs-fixer for Symfony 6
+              if: contains(matrix.symfony, '6.0.*@dev')
+              run: |
+                  composer remove --dev friendsofphp/php-cs-fixer pedrotroller/php-cs-custom-fixer --no-update
             - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
             - run: vendor/bin/phpunit
             - run: vendor/bin/phpstan analyse --ansi --no-progress
