@@ -145,6 +145,19 @@ $snappy->setOption('xsl-style-sheet', 'http://path/to/stylesheet.xsl') //or loca
 $snappy->generateFromHtml('<p>Some content</p>', 'test.pdf');
 ```
 
+## PhpUnit Tests
+
+```bash
+$ vendor/bin/phpunit
+```
+
+## Code coverage
+Generates reports wth phpdbg and open it in firefox
+```bash
+$ phpdbg -qrr vendor/bin/phpunit
+$ firefox .coverage/index.html
+```
+
 ## Bugs & Support
 
 If you found a bug please fill a detailed issue with all the following points.

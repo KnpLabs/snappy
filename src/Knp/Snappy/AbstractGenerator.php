@@ -587,7 +587,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      *
      * @return bool
      */
-    protected function isAssociativeArray(array $array)
+    protected function isAssociativeArray(array $array): bool
     {
         return (bool) \count(\array_filter(\array_keys($array), 'is_string'));
     }
@@ -690,7 +690,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      *
      * @return bool
      */
-    protected function isFile($filename)
+    protected function isFile(string $filename): bool
     {
         return \strlen($filename) <= \PHP_MAXPATHLEN && \is_file($filename);
     }
@@ -702,7 +702,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      *
      * @return int
      */
-    protected function filesize($filename)
+    protected function filesize(string $filename): int
     {
         $filesize = \filesize($filename);
 
