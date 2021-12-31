@@ -190,7 +190,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * {@inheritdoc}
      */
-    public function generate($input, $output, array $options = [], $overwrite = false)
+    public function generate($input, string $output, array $options = [], $overwrite = false): void
     {
         $this->prepareOutput($output, $overwrite);
 
@@ -232,12 +232,12 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     public function generateFromHtml($html, $output, array $options = [], $overwrite = false)
     {
         $fileNames = [];
-        if (\is_array($html)) {
-            foreach ($html as $htmlInput) {
-                $fileNames[] = $this->createTemporaryFile($htmlInput, 'html');
-            }
-        } else {
-            $fileNames[] = $this->createTemporaryFile($html, 'html');
+        if (is_string($html)) {
+            $html = [$html];
+        }
+        
+        foreach ($html as $htmlInput) {
+            $fileNames[] = $this->createTemporaryFile($htmlInput, 'html');
         }
 
         $this->generate($fileNames, $output, $options, $overwrite);
@@ -261,12 +261,12 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     public function getOutputFromHtml($html, array $options = [])
     {
         $fileNames = [];
-        if (\is_array($html)) {
-            foreach ($html as $htmlInput) {
-                $fileNames[] = $this->createTemporaryFile($htmlInput, 'html');
-            }
-        } else {
-            $fileNames[] = $this->createTemporaryFile($html, 'html');
+        if (is_string($html)) {
+            $html = [$html];
+        }
+        
+        foreach ($html as $htmlInput) {
+            $fileNames[] = $this->createTemporaryFile($htmlInput, 'html');
         }
 
         return $this->getOutput($fileNames, $options);
@@ -362,7 +362,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      *
      * @return void
      */
-    public function resetOptions()
+    public function resetOptions(): void
     {
         $this->options = [];
         $this->configure();
@@ -634,7 +634,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      *
      * @return void
      */
-    protected function prepareOutput($filename, $overwrite)
+    protected function prepareOutput(string $filename, bool $overwrite)
     {
         $directory = \dirname($filename);
 
@@ -660,7 +660,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      *
      * @return string
      */
-    protected function getFileContents($filename)
+    protected function getFileContents(string $filename): string
     {
         $fileContent = \file_get_contents($filename);
 
@@ -678,7 +678,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      *
      * @return bool
      */
-    protected function fileExists($filename)
+    protected function fileExists(string $filename): bool
     {
         return \file_exists($filename);
     }

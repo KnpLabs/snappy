@@ -20,7 +20,7 @@ interface GeneratorInterface
      *
      * @return void
      */
-    public function generate($input, $output, array $options = [], $overwrite = false);
+    public function generate($input, string $output, array $options = [], $overwrite = false): void;
 
     /**
      * Generates the output media file from the given HTML.
