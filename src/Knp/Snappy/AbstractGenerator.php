@@ -4,8 +4,7 @@ namespace Knp\Snappy;
 
 use Knp\Snappy\Exception\FileAlreadyExistsException;
 use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Process\Process;
 use Exception;
 use LogicException;
@@ -20,6 +19,8 @@ use InvalidArgumentException;
  */
 abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var array
      */
@@ -56,11 +57,6 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     private $defaultExtension;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @param null|string $binary
      * @param array       $options
      * @param null|array  $env
@@ -69,7 +65,6 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     {
         $this->configure();
 
-        $this->logger = new NullLogger();
         $this->setBinary($binary);
         $this->setOptions($options);
         $this->env = empty($env) ? null : $env;
@@ -82,20 +77,6 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     public function __destruct()
     {
         $this->removeTemporaryFiles();
-    }
-
-    /**
-     * Set the logger to use to log debugging data.
-     *
-     * @param LoggerInterface $logger
-     *
-     * @return $this
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-
-        return $this;
     }
 
     /**
@@ -142,7 +123,9 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
 
         $this->options[$name] = $value;
 
-        $this->logger->debug(\sprintf('Set option "%s".', $name), ['value' => $value]);
+        if (null !== $this->logger) {
+            $this->logger->debug(\sprintf('Set option "%s".', $name), ['value' => $value]);
+        }
 
         return $this;
     }
@@ -198,32 +181,38 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
 
         $inputFiles = \is_array($input) ? \implode('", "', $input) : $input;
 
-        $this->logger->info(\sprintf('Generate from file(s) "%s" to file "%s".', $inputFiles, $output), [
-            'command' => $command,
-            'env' => $this->env,
-            'timeout' => $this->timeout,
-        ]);
+        if (null !== $this->logger) {
+            $this->logger->info(\sprintf('Generate from file(s) "%s" to file "%s".', $inputFiles, $output), [
+                'command' => $command,
+                'env' => $this->env,
+                'timeout' => $this->timeout,
+            ]);
+        }
 
         try {
             list($status, $stdout, $stderr) = $this->executeCommand($command);
             $this->checkProcessStatus($status, $stdout, $stderr, $command);
             $this->checkOutput($output, $command);
         } catch (Exception $e) {
-            $this->logger->error(\sprintf('An error happened while generating "%s".', $output), [
-                'command' => $command,
-                'status' => $status ?? null,
-                'stdout' => $stdout ?? null,
-                'stderr' => $stderr ?? null,
-            ]);
+            if (null !== $this->logger) {
+                $this->logger->error(\sprintf('An error happened while generating "%s".', $output), [
+                    'command' => $command,
+                    'status' => $status ?? null,
+                    'stdout' => $stdout ?? null,
+                    'stderr' => $stderr ?? null,
+                ]);
+            }
 
             throw $e;
         }
 
-        $this->logger->info(\sprintf('File "%s" has been successfully generated.', $output), [
-            'command' => $command,
-            'stdout' => $stdout,
-            'stderr' => $stderr,
-        ]);
+        if (null !== $this->logger) {
+            $this->logger->info(\sprintf('File "%s" has been successfully generated.', $output), [
+                'command' => $command,
+                'stdout' => $stdout,
+                'stderr' => $stderr,
+            ]);
+        }
     }
 
     /**
