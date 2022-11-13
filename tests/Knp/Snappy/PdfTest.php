@@ -80,7 +80,7 @@ class PdfTest extends TestCase
         $this->assertCount(1, $pdf->temporaryFiles);
         $this->expectError();
         \trigger_error('test error', \E_USER_ERROR);
-        #$this->assertFileDoesNotExist(\reset($pdf->temporaryFiles)); # TODO Unreachable Code. What Todo here?
+        //$this->assertFileDoesNotExist(\reset($pdf->temporaryFiles)); # TODO Unreachable Code. What Todo here?
     }
 
     /**

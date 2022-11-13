@@ -2,6 +2,8 @@
 
 namespace Knp\Snappy;
 
+use Exception;
+
 /**
  * Use this class to transform a html/a url to a pdf.
  *
@@ -22,7 +24,8 @@ class Pdf extends AbstractGenerator
 
     /**
      * {@inheritdoc}
-     * @throws \Exception
+     *
+     * @throws Exception
      */
     public function generate($input, $output, array $options = [], $overwrite = false): void
     {

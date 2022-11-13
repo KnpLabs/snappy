@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpStanGlobal */
+<?php
+
+/** @noinspection PhpStanGlobal */
 
 namespace Tests\Knp\Snappy;
 
@@ -10,6 +12,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use ReflectionProperty;
 use ReflectionMethod;
+use ReflectionException;
 
 class AbstractGeneratorTest extends TestCase
 {
@@ -41,7 +44,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, ['baz', 'bat']);
             $this->fail($message);
-        } catch (InvalidArgumentException|\ReflectionException) {
+        } catch (InvalidArgumentException|ReflectionException) {
             $this->anything();
         }
     }
@@ -83,7 +86,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, [['bak' => 'bam', 'bah' => 'bap', 'baz' => 'bat']]);
             $this->fail($message);
-        } catch (InvalidArgumentException|\ReflectionException) {
+        } catch (InvalidArgumentException|ReflectionException) {
             $this->anything();
         }
     }
@@ -542,7 +545,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, [['foo' => 'ban', 'bad' => 'bah']]);
             $this->fail($message);
-        } catch (InvalidArgumentException|\ReflectionException) {
+        } catch (InvalidArgumentException|ReflectionException) {
             $this->anything();
         }
     }
@@ -957,7 +960,7 @@ class AbstractGeneratorTest extends TestCase
         $paths = \explode(\PATH_SEPARATOR, \getenv('PATH'));
         foreach ($paths as $path) {
             // we need this for XAMPP (Windows)
-            if (str_contains($path, 'php.exe') && isset($_SERVER['WINDIR']) && \file_exists($path) && \is_file($path)) {
+            if (\str_contains($path, 'php.exe') && isset($_SERVER['WINDIR']) && \file_exists($path) && \is_file($path)) {
                 return $path;
             }
             $php_executable = $path . \DIRECTORY_SEPARATOR . 'php' . (isset($_SERVER['WINDIR']) ? '.exe' : '');

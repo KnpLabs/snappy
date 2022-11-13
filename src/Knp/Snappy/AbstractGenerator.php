@@ -35,7 +35,6 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
 
     private string $defaultExtension;
 
-
     public function __construct(?string $binary, array $options = [], ?array $env = null)
     {
         $this->configure();
@@ -100,7 +99,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * Sets the timeout.
      *
-     * @param int|null $timeout The timeout to set
+     * @param null|int $timeout The timeout to set
      */
     public function setTimeout(?int $timeout): static
     {
@@ -153,7 +152,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         }
 
         try {
-            [$status, $stdout, $stderr] = $this->executeCommand($command);
+            list($status, $stdout, $stderr) = $this->executeCommand($command);
             $this->checkProcessStatus($status, $stdout, $stderr, $command);
             $this->checkOutput($output, $command);
         } catch (Exception $e) {
@@ -180,10 +179,15 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
 
     /**
      * {@inheritdoc}
+     *
      * @throws Exception
      */
-    public function generateFromHtml(array|string $html, string $output, array $options = [], bool $overwrite = false): void
-    {
+    public function generateFromHtml(
+        array|string $html,
+        string $output,
+        array $options = [],
+        bool $overwrite = false
+    ): void {
         $fileNames = [];
         if (\is_array($html)) {
             foreach ($html as $htmlInput) {
@@ -198,6 +202,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
 
     /**
      * {@inheritdoc}
+     *
      * @throws Exception
      */
     public function getOutput(array|string $input, array $options = []): string
@@ -229,7 +234,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * Defines the binary.
      *
-     * @param string|null $binary The path/name of the binary
+     * @param null|string $binary The path/name of the binary
      */
     public function setBinary(?string $binary): static
     {
@@ -250,7 +255,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      * Returns the command for the given input and output files.
      *
      * @param array|string $input   The input file
-     * @param string $output  The output file
+     * @param string       $output  The output file
      * @param array        $options An optional array of options that will be used
      *                              only for this command
      */
@@ -310,12 +315,12 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * Adds an option.
      *
-     * @param string $name    The name
-     * @param mixed|null $default An optional default value
+     * @param string     $name    The name
+     * @param null|mixed $default An optional default value
      *
-     * @return $this
      * @throws InvalidArgumentException
      *
+     * @return $this
      */
     protected function addOption(string $name, mixed $default = null): static
     {
@@ -391,7 +396,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * Checks the process return status.
      *
-     * @param int $status  The exit status code
+     * @param int    $status  The exit status code
      * @param string $stdout  The stdout content
      * @param string $stderr  The stderr content
      * @param string $command The run command
@@ -409,8 +414,8 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      * Creates a temporary file.
      * The file is not created if the $content argument is null.
      *
-     * @param string|null $content   Optional content for the temporary file
-     * @param string|null $extension An optional extension for the filename
+     * @param null|string $content   Optional content for the temporary file
+     * @param null|string $extension An optional extension for the filename
      *
      * @return string The filename
      */
@@ -444,9 +449,9 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     /**
      * Builds the command string.
      *
-     * @param string $binary  The binary path/name
+     * @param string       $binary  The binary path/name
      * @param array|string $input   Url(s) or file location(s) of the page(s) to process
-     * @param string $output  File location to the image-to-be
+     * @param string       $output  File location to the image-to-be
      * @param array        $options An array of options
      *
      * @return string
@@ -525,7 +530,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         if (\method_exists(Process::class, 'fromShellCommandline')) {
             $process = Process::fromShellCommandline($command, null, $this->env);
         } else {
-            $process = new Process((array)$command, null, $this->env);
+            $process = new Process((array) $command, null, $this->env);
         }
 
         if (null !== $this->timeout) {
@@ -545,7 +550,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      * Prepares the specified output.
      *
      * @param string $filename  The output filename
-     * @param bool $overwrite Whether to overwrite the file if it already exists
+     * @param bool   $overwrite Whether to overwrite the file if it already exists
      *
      * @throws RuntimeException
      * @throws InvalidArgumentException
