@@ -5,11 +5,11 @@ clone_folder:  c:\projects\snappy
 environment:
   matrix:
     - dependencies: lowest
-      php_ver_target: 7.1
+      php_ver_target: 8.0
     - dependencies: current
-      php_ver_target: 7.2
+      php_ver_target: 8.1
     - dependencies: highest
-      php_ver_target: 7.3
+      php_ver_target: 8.2
 
 cache:
   - composer.phar
@@ -26,7 +26,7 @@ init:
 install:
   - IF EXIST c:\tools\php (SET PHP=0)
   - ps: Set-Service wuauserv -StartupType Manual
-  # In order to be able to list all the avialable PHP packages we have to
+  # In order to be able to list all the available PHP packages we have to
   # downgrade Chocolatey to version 0.10.13.
   # See https://github.com/chocolatey/choco/issues/1843
   - ps: choco install chocolatey -y --version 0.10.13 --allow-downgrade --force

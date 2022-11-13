@@ -3,7 +3,6 @@
 namespace Tests\Knp\Snappy;
 
 use Knp\Snappy\Pdf;
-use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use FilesystemIterator;
@@ -57,7 +56,7 @@ class PdfTest extends TestCase
         $testObject->setTemporaryFolder(__DIR__);
 
         $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
-        $this->assertRegExp('/emptyBinary --lowquality --footer-html ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . '/', $testObject->getLastCommand());
+        $this->assertMatchesRegularExpression('/emptyBinary --lowquality --footer-html ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . '/', $testObject->getLastCommand());
     }
 
     public function testThatSomethingUsingNonexistentTmpFolder(): void
@@ -78,10 +77,10 @@ class PdfTest extends TestCase
         $method = new ReflectionMethod($pdf, 'createTemporaryFile');
         $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, \count($pdf->temporaryFiles));
-        $this->expectException(Error::class);
+        $this->assertCount(1, $pdf->temporaryFiles);
+        $this->expectError();
         \trigger_error('test error', \E_USER_ERROR);
-        $this->assertFileNotExists(\reset($pdf->temporaryFiles));
+        #$this->assertFileDoesNotExist(\reset($pdf->temporaryFiles)); # TODO Unreachable Code. What Todo here?
     }
 
     /**
@@ -91,7 +90,7 @@ class PdfTest extends TestCase
     {
         $testObject = new PdfSpy();
         $testObject->getOutputFromHtml('<html></html>', $options);
-        $this->assertRegExp($expectedRegex, $testObject->getLastCommand());
+        $this->assertMatchesRegularExpression($expectedRegex, $testObject->getLastCommand());
     }
 
     public function dataOptions(): array
@@ -142,29 +141,23 @@ class PdfTest extends TestCase
         $method = new ReflectionMethod($pdf, 'createTemporaryFile');
         $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, \count($pdf->temporaryFiles));
+        $this->assertCount(1, $pdf->temporaryFiles);
         $this->assertFileExists(\reset($pdf->temporaryFiles));
         $pdf->__destruct();
-        $this->assertFileNotExists(\reset($pdf->temporaryFiles));
+        $this->assertFileDoesNotExist(\reset($pdf->temporaryFiles));
     }
 }
 
 class PdfSpy extends Pdf
 {
-    /**
-     * @var string
-     */
-    private $lastCommand;
+    private string $lastCommand;
 
     public function __construct()
     {
         parent::__construct('emptyBinary');
     }
 
-    /**
-     * @return string
-     */
-    public function getLastCommand()
+    public function getLastCommand(): string
     {
         return $this->lastCommand;
     }
@@ -172,7 +165,7 @@ class PdfSpy extends Pdf
     /**
      * {@inheritdoc}
      */
-    public function getOutput($input, array $options = [])
+    public function getOutput(array|string $input, array $options = []): string
     {
         $filename = $this->createTemporaryFile(null, $this->getDefaultExtension());
         $this->generate($input, $filename, $options, true);
@@ -183,7 +176,7 @@ class PdfSpy extends Pdf
     /**
      * {@inheritdoc}
      */
-    protected function executeCommand($command)
+    protected function executeCommand(string $command): array
     {
         $this->lastCommand = $command;
 
@@ -193,7 +186,7 @@ class PdfSpy extends Pdf
     /**
      * {@inheritdoc}
      */
-    protected function checkOutput($output, $command)
+    protected function checkOutput(string $output, string $command): void
     {
         //let's say everything went right
     }

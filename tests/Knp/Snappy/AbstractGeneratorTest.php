@@ -1,8 +1,9 @@
-<?php
+<?php /** @noinspection PhpStanGlobal */
 
 namespace Tests\Knp\Snappy;
 
 use Knp\Snappy\AbstractGenerator;
+use Knp\Snappy\Exception\FileAlreadyExistsException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
@@ -40,7 +41,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, ['baz', 'bat']);
             $this->fail($message);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException|\ReflectionException) {
             $this->anything();
         }
     }
@@ -82,7 +83,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, [['bak' => 'bam', 'bah' => 'bap', 'baz' => 'bat']]);
             $this->fail($message);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException|\ReflectionException) {
             $this->anything();
         }
     }
@@ -207,14 +208,13 @@ class AbstractGeneratorTest extends TestCase
             ->with($this->equalTo('the_output_file'))
         ;
         $media
-            ->expects($this->any())
             ->method('getCommand')
             ->with(
                 $this->equalTo('the_input_file'),
                 $this->equalTo('the_output_file'),
                 $this->equalTo(['foo' => 'bar'])
             )
-            ->will($this->returnValue('the command'))
+            ->willReturn('the command')
         ;
         $media
             ->expects($this->once())
@@ -542,7 +542,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, [['foo' => 'ban', 'bad' => 'bah']]);
             $this->fail($message);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException|\ReflectionException) {
             $this->anything();
         }
     }
@@ -778,11 +778,10 @@ class AbstractGeneratorTest extends TestCase
         $this->assertEquals($isAssociativeArray, $r->invokeArgs($generator, [$array]));
     }
 
-    /**
-     * @expectedException Knp\Snappy\Exception\FileAlreadyExistsException
-     */
     public function testItThrowsTheProperExceptionWhenFileExistsAndNotOverwritting(): void
     {
+        $this->expectException(FileAlreadyExistsException::class);
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
                 'configure',
@@ -958,7 +957,7 @@ class AbstractGeneratorTest extends TestCase
         $paths = \explode(\PATH_SEPARATOR, \getenv('PATH'));
         foreach ($paths as $path) {
             // we need this for XAMPP (Windows)
-            if (\strstr($path, 'php.exe') && isset($_SERVER['WINDIR']) && \file_exists($path) && \is_file($path)) {
+            if (str_contains($path, 'php.exe') && isset($_SERVER['WINDIR']) && \file_exists($path) && \is_file($path)) {
                 return $path;
             }
             $php_executable = $path . \DIRECTORY_SEPARATOR . 'php' . (isset($_SERVER['WINDIR']) ? '.exe' : '');

@@ -1,3 +1,8 @@
+## 2.0.0
+
+* Drop support for php7
+* BC Break: Add strong types (Interfaces have now strong types too)
+
 ## 1.1.0
 
 * Add bypass-proxy-for option added in 0.12.3 (see [#302](https://github.com/KnpLabs/snappy/pull/302))

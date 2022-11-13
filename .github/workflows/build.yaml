@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-20.04
         steps:
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
             - name: Validate composer.json
@@ -19,11 +19,11 @@ jobs:
         name: PHP-CS-Fixer
         steps:
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: '7.3'
+                  php-version: '8.0'
             - run: composer install --prefer-dist --no-interaction --no-progress --ansi
             - run: vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
     tests:
@@ -34,25 +34,19 @@ jobs:
                 include:
                     - description: 'Symfony 6.0'
                       php: '8.0'
-                      symfony: '6.0.*@dev'
+                      symfony: '6.0.*'
                     - description: 'Symfony 5.0'
-                      php: '7.3'
+                      php: '8.0'
                       symfony: '5.0.*'
                     - description: 'Symfony 4.4'
-                      php: '7.1'
-                      symfony: '4.3.*@dev'
-                    - description: 'Symfony 3.4'
-                      php: '7.3'
-                      symfony: '3.4.*'
-                    - description: 'Beta deps'
-                      php: '7.2'
-                      beta: true
+                      php: '8.0'
+                      symfony: '4.4.*'
         name: PHP ${{ matrix.php }} tests (${{ matrix.description }})
         steps:
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: Cache
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: ~/.composer/cache/files
                   key: composer-${{ matrix.php }}-${{ matrix.symfony }}-${{ matrix.composer_option }}

@@ -10,15 +10,9 @@ namespace Knp\Snappy;
  */
 class Pdf extends AbstractGenerator
 {
-    /**
-     * @var array
-     */
-    protected $optionsWithContentCheck = [];
+    protected array $optionsWithContentCheck = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct($binary = null, array $options = [], array $env = null)
+    public function __construct(?string $binary = null, array $options = [], array $env = null)
     {
         $this->setDefaultExtension('pdf');
         $this->setOptionsWithContentCheck();
@@ -28,8 +22,9 @@ class Pdf extends AbstractGenerator
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
-    public function generate($input, $output, array $options = [], $overwrite = false)
+    public function generate($input, $output, array $options = [], $overwrite = false): void
     {
         $options = $this->handleOptions($this->mergeOptions($options));
 
@@ -43,7 +38,7 @@ class Pdf extends AbstractGenerator
      *
      * @return array $options Transformed options
      */
-    protected function handleOptions(array $options = [])
+    protected function handleOptions(array $options = []): array
     {
         foreach ($options as $option => $value) {
             if (null === $value) {
@@ -68,12 +63,8 @@ class Pdf extends AbstractGenerator
 
     /**
      * Convert option content or url to file if it is needed.
-     *
-     * @param mixed $option
-     *
-     * @return bool
      */
-    protected function isOptionUrl($option)
+    protected function isOptionUrl(mixed $option): bool
     {
         return (bool) \filter_var($option, \FILTER_VALIDATE_URL);
     }
@@ -81,7 +72,7 @@ class Pdf extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOptions([
             // Global options
@@ -228,10 +219,8 @@ class Pdf extends AbstractGenerator
 
     /**
      * Array with options which require to store the content of the option before passing it to wkhtmltopdf.
-     *
-     * @return $this
      */
-    protected function setOptionsWithContentCheck()
+    protected function setOptionsWithContentCheck(): static
     {
         $this->optionsWithContentCheck = [
             'header-html' => 'html',

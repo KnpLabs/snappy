@@ -38,7 +38,7 @@ tfoot { display:table-footer-group; }
 
 *A*: It is known problem of `wkhtmltopdf`. You can use css `page-break-after`, like:
 ```html
-<style type="text/css">
+<style>
     .page {
         overflow: hidden;
         page-break-after: always;

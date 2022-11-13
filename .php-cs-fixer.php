@@ -14,7 +14,6 @@ return (new PhpCsFixer\Config())
         '@PSR1' => true,
         '@PSR2' => true,
         'array_indentation' => true,
-        'array_syntax' => [ 'syntax' => 'short' ],
         'align_multiline_comment' => [
             'comment_type' => 'all_multiline',
         ],
