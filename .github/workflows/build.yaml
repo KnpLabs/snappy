@@ -6,7 +6,7 @@ on:
 
 jobs:
     check:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         steps:
             - name: Checkout
               uses: actions/checkout@v3
@@ -15,7 +15,7 @@ jobs:
             - name: Validate composer.json
               run: composer validate --strict --no-check-lock
     cs-fixer:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         name: PHP-CS-Fixer
         steps:
             - name: Checkout
@@ -23,11 +23,11 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: '8.0'
+                  php-version: '8.1'
             - run: composer install --prefer-dist --no-interaction --no-progress --ansi
             - run: vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
     tests:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
@@ -35,6 +35,9 @@ jobs:
                     - description: 'Symfony 6.0'
                       php: '8.0'
                       symfony: '6.0.*'
+                    - description: 'Symfony 6.1'
+                      php: '8.1'
+                      symfony: '6.1.*'
                     - description: 'Symfony 5.0'
                       php: '8.0'
                       symfony: '5.0.*'
