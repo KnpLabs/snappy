@@ -8,12 +8,9 @@ use SplFileInfo;
 
 class FileStream
 {
-    private SplFileInfo $fileInfo;
-
     public function __construct(
-        string $filePath,
+        private SplFileInfo $fileInfo,
     ) {
-        $this->fileInfo = new SplFileInfo($filePath);
     }
 
     public function __destruct()

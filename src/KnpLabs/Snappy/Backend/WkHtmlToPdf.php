@@ -11,7 +11,7 @@ use KnpLabs\Snappy\Process\ProcessRunner;
 use LogicException;
 use SplFileInfo;
 
-class WkHtmlToPdfBackend implements FileToPdfBackend, UriToPdfBackend
+class WkHtmlToPdf implements FileToPdfBackend, UriToPdfBackend
 {
     public function __construct(
         private readonly string $binary,
@@ -51,7 +51,7 @@ class WkHtmlToPdfBackend implements FileToPdfBackend, UriToPdfBackend
         $processOuput = $this->processRunner->executeCommand($command);
         $processOuput->ensureSuccessful();
 
-        return new FileStream($outputPath);
+        return new FileStream(new SplFileInfo($outputPath));
     }
 
     private function getCommand(string $input, string $output, OptionCollection $options): string
