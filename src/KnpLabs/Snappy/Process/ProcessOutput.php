@@ -1,9 +1,8 @@
-
 <?php
 
 declare(strict_types=1);
 
-namespace KnpLabs\Snappy;
+namespace KnpLabs\Snappy\Process;
 
 use RuntimeException;
 
@@ -17,6 +16,9 @@ class ProcessOutput
     ) {
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public function ensureSuccessful(): void
     {
         if (0 === $this->exitCode || '' === $this->stderr) {

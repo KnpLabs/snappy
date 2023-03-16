@@ -6,24 +6,18 @@ namespace KnpLabs\Snappy\Option;
 
 use KnpLabs\Snappy\Option;
 
+/**
+ * TODO: what about escapeshellarg()?
+ */
 class SimpleOption implements Option
 {
     public function __construct(
-        protected string $name,
-        protected string $value,
-        protected string $separator = '='
+        private string $value
     ) {
     }
 
-    public function getIdentifier(): string
+    public function __toString(): string
     {
-        return $this->name;
-    }
-
-    public function __toString()
-    {
-        $value = \escapeshellarg($this->value);
-
-        return "--{$this->name}{$this->separator}{$value}";
+        return $this->value;
     }
 }

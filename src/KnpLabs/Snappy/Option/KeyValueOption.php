@@ -4,26 +4,17 @@ declare(strict_types=1);
 
 namespace KnpLabs\Snappy\Option;
 
-use KnpLabs\Snappy\Option;
-
-class KeyValueOption implements Option
+class KeyValueOption
 {
     public function __construct(
-        private string $name,
         private string $key,
         private string $value,
+        private string $separator = '=',
     ) {
     }
 
-    public function getIdentifier(): string
+    public function __toString(): string
     {
-        return "{$this->name}.{$this->key}";
-    }
-
-    public function __toString()
-    {
-        $value = \escapeshellarg($this->value);
-
-        return "--{$this->name} {$this->key} {$value}";
+        return $this->key . $this->separator . $this->value;
     }
 }
