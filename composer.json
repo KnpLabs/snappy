@@ -16,16 +16,16 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-        "symfony/process": "~3.4||~4.3||~5.0||~6.0",
-        "psr/log": "^1.0||^2.0||^3.0"
+        "php": ">=8.1",
+        "symfony/process": "~5.0||~6.0",
+        "psr/log": "^2.0||^3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~7.4||~8.5",
-        "phpstan/phpstan": "^0.12.7",
-        "phpstan/phpstan-phpunit": "^0.12.6",
-        "friendsofphp/php-cs-fixer": "^2.16||^3.0",
-        "pedrotroller/php-cs-custom-fixer": "^2.19"
+        "phpunit/phpunit": "~10.0.15",
+        "phpstan/phpstan": "^1.10.6",
+        "phpstan/phpstan-phpunit": "^1.3.10",
+        "friendsofphp/php-cs-fixer": "^3.15.1",
+        "pedrotroller/php-cs-custom-fixer": "^2.31.0"
     },
     "suggest": {
         "h4cc/wkhtmltopdf-amd64": "Provides wkhtmltopdf-amd64 binary for Linux-compatible machines, use version `~0.12` as dependency",
@@ -36,7 +36,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Knp\\Snappy\\": "src/Knp/Snappy"
+            "KnpLabs\\Snappy\\": "src/KnpLabs/Snappy"
         }
     },
     "autoload-dev": {

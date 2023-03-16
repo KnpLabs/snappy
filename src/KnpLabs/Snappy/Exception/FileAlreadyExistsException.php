@@ -1,6 +1,6 @@
 <?php
 
-namespace Knp\Snappy\Exception;
+namespace KnpLabs\Snappy\Exception;
 
 use InvalidArgumentException;
 
