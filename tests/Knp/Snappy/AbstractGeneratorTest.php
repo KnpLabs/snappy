@@ -938,6 +938,30 @@ class AbstractGeneratorTest extends TestCase
         );
     }
 
+    public function testFailingGenerateWithOutputContainingPharPrefix(): void
+    {
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
+                'configure',
+                'prepareOutput',
+            ])
+            ->setConstructorArgs(['the_binary', [], ['PATH' => '/usr/bin']])
+            ->getMock()
+        ;
+
+        $media->setTimeout(2000);
+
+        $media
+            ->expects($this->once())
+            ->method('prepareOutput')
+            ->with($this->equalTo('phar://the_output_file'))
+        ;
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $media->generate('the_input_file', 'phar://the_output_file', ['foo' => 'bar']);
+    }
+
     /**
      * @return null|string
      */
