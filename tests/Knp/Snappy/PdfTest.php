@@ -81,6 +81,7 @@ class PdfTest extends TestCase
         $this->assertEquals(1, \count($pdf->temporaryFiles));
         $this->expectException(Error::class);
         \trigger_error('test error', \E_USER_ERROR);
+        // @phpstan-ignore-next-line See https://github.com/phpstan/phpstan/issues/7799
         $this->assertFileNotExists(\reset($pdf->temporaryFiles));
     }
 

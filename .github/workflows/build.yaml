@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-20.04
         steps:
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
             - name: Validate composer.json
@@ -19,7 +19,7 @@ jobs:
         name: PHP-CS-Fixer
         steps:
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
@@ -32,9 +32,15 @@ jobs:
             fail-fast: false
             matrix:
                 include:
+                    - description: 'Symfony 6.3 DEV'
+                      php: '8.2'
+                      symfony: '6.3.*@dev'
+                    - description: 'Symfony 6.2'
+                      php: '8.2'
+                      symfony: '6.2.*'
                     - description: 'Symfony 6.0'
-                      php: '8.0'
-                      symfony: '6.0.*@dev'
+                      php: '8.1'
+                      symfony: '6.0.*'
                     - description: 'Symfony 5.0'
                       php: '7.3'
                       symfony: '5.0.*'
@@ -50,9 +56,9 @@ jobs:
         name: PHP ${{ matrix.php }} tests (${{ matrix.description }})
         steps:
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: Cache
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: ~/.composer/cache/files
                   key: composer-${{ matrix.php }}-${{ matrix.symfony }}-${{ matrix.composer_option }}
@@ -68,7 +74,7 @@ jobs:
                   composer config prefer-stable true
               if: matrix.beta
             - name: remove cs-fixer for Symfony 6
-              if: contains(matrix.symfony, '6.0.*@dev')
+              if: contains(matrix.symfony, '6.3.*@dev')
               run: |
                   composer remove --dev friendsofphp/php-cs-fixer pedrotroller/php-cs-custom-fixer --no-update
             - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
