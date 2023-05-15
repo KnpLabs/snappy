@@ -22,8 +22,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~7.4||~8.5",
-        "phpstan/phpstan": "^0.12.7",
-        "phpstan/phpstan-phpunit": "^0.12.6",
+        "phpstan/phpstan": "^1.0.0",
+        "phpstan/phpstan-phpunit": "^1.0.0",
         "friendsofphp/php-cs-fixer": "^2.16||^3.0",
         "pedrotroller/php-cs-custom-fixer": "^2.19"
     },

@@ -3,6 +3,7 @@
 namespace Tests\Knp\Snappy;
 
 use Knp\Snappy\AbstractGenerator;
+use Knp\Snappy\Exception\FileAlreadyExistsException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
@@ -40,6 +41,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, ['baz', 'bat']);
             $this->fail($message);
+            // @phpstan-ignore-next-line
         } catch (InvalidArgumentException $e) {
             $this->anything();
         }
@@ -82,6 +84,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, [['bak' => 'bam', 'bah' => 'bap', 'baz' => 'bat']]);
             $this->fail($message);
+            // @phpstan-ignore-next-line
         } catch (InvalidArgumentException $e) {
             $this->anything();
         }
@@ -542,6 +545,7 @@ class AbstractGeneratorTest extends TestCase
         try {
             $r->invokeArgs($media, [['foo' => 'ban', 'bad' => 'bah']]);
             $this->fail($message);
+            // @phpstan-ignore-next-line
         } catch (InvalidArgumentException $e) {
             $this->anything();
         }
@@ -778,11 +782,10 @@ class AbstractGeneratorTest extends TestCase
         $this->assertEquals($isAssociativeArray, $r->invokeArgs($generator, [$array]));
     }
 
-    /**
-     * @expectedException Knp\Snappy\Exception\FileAlreadyExistsException
-     */
     public function testItThrowsTheProperExceptionWhenFileExistsAndNotOverwritting(): void
     {
+        $this->expectException(FileAlreadyExistsException::class);
+
         $media = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
                 'configure',
