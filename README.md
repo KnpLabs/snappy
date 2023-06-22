@@ -20,7 +20,7 @@ Following integrations are available:
 ## Installation using [Composer](http://getcomposer.org/)
 
 ```bash
-$ composer require knplabs/knp-snappy
+composer require knplabs/knp-snappy
 ```
 
 ## Usage
@@ -103,15 +103,15 @@ $snappy->resetOptions();
 If you want to download wkhtmltopdf and wkhtmltoimage with composer you add to `composer.json`:
 
 ```bash
-$ composer require h4cc/wkhtmltopdf-i386 0.12.x
-$ composer require h4cc/wkhtmltoimage-i386 0.12.x
+composer require h4cc/wkhtmltopdf-i386 0.12.x
+composer require h4cc/wkhtmltoimage-i386 0.12.x
 ```
 
 or this if you are in 64 bit based system:
 
 ```bash
-$ composer require h4cc/wkhtmltopdf-amd64 0.12.x
-$ composer require h4cc/wkhtmltoimage-amd64 0.12.x
+composer require h4cc/wkhtmltopdf-amd64 0.12.x
+composer require h4cc/wkhtmltoimage-amd64 0.12.x
 ```
 
 And then you can use it
