@@ -1,0 +1,74 @@
+---
+name: 'Packages Split'
+
+on:
+  push:
+    branches:
+      - v2-unstable # Remove before releasing v2
+      - master
+    tags:
+      - '*'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+concurrency:
+  group: "Packages Split"
+  cancel-in-progress: false
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - remote: 'knplabs/snappy-core'
+            path: 'src/Core'
+          - remote: 'knplabs/snappy-bundle'
+            path: 'src/Bundle'
+          - remote: 'knplabs/snappy-wkhtmltopdf'
+            path: 'src/Backend/WkHtmlToPdf'
+    steps:
+      - run: |
+          git config --global user.name  "knpEdgar"
+          git config --global user.email "hello@knplabs.com"
+      - uses: actions/checkout@v2
+        with:
+          path: ./monolyth
+      - run: mkdir ./readonly
+      - run: mkdir ./build
+      - name: git clone
+        run: |
+          cd ./readonly
+          git clone -- https://${{ secrets.ACCESS_TOKEN }}@github.com/${{ matrix.package.remote }} .
+          git fetch
+      - name: cleanup
+        run: cp --verbose -ra ./readonly/.git ./build/.git
+      - run: cp --verbose -ra ./monolyth/${{ matrix.package.path }}/* ./build
+      - run: ls -la ./build
+      - name: git add .
+        id: git_status
+        run: |
+          cd ./build
+          git status --porcelain
+          echo "STATUS=$(git status --porcelain)" >> $GITHUB_OUTPUT
+          git add . --verbose
+      - name: git commit
+        if: ${{ '' != steps.git_status.outputs.STATUS }}
+        run: |
+          cd ./monolyth
+          COMMIT_MESSAGE=$(git show -s --format=%B ${GITHUB_SHA})
+          cd ../build
+          git commit --message "$COMMIT_MESSAGE"
+      - name: git push
+        if: ${{ '' != steps.git_status.outputs.STATUS }}
+        run: |
+          cd ./build
+          git push --quiet origin main
+      - name: git tag
+        if: "startsWith(github.ref, 'refs/tags/')"
+        run: |
+          cd ./build
+          git tag %s -m "${GITHUB_REF#refs/tags/}"
+          git push --quiet origin "${GITHUB_REF#refs/tags/}"
