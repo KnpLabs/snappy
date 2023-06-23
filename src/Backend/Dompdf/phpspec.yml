@@ -1,0 +1,5 @@
+suites:
+    default:
+        namespace: KnpLabs\Snappy\Backend\Dompdf
+        psr4_prefix: KnpLabs\Snappy\Backend\Dompdf
+        src_path: '%paths.config%'
