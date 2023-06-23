@@ -1,0 +1,47 @@
+{
+    "name": "knplabs/snappy-backend-chrome-headless",
+    "type": "library",
+    "description": "Easily create PDF and images in Symfony from HTML inputs",
+    "keywords": ["knplabs", "knp", "snappy", "pdf", "bundle"],
+    "homepage": "http://github.com/KnpLabs/snappy",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "KnpLabs",
+            "homepage": "https://knplabs.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "http://github.com/KnpLabs/snappy/contributors"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../Core"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "symfony/process": "~5.0||~6.0",
+        "psr/log": "^2.0||^3.0",
+        "psr/http-message": "^2.0",
+        "knplabs/snappy-core": "@dev"
+    },
+    "autoload": {
+        "psr-4": { "KnpLabs\\Snappy\\Backend\\ChromeHeadless\\": "" },
+        "exclude-from-classmap": [
+            "/spec/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KnpLabs\\Snappy\\Backend\\ChromeHeadless\\Spec\\": "spec/"
+        }
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^7.4",
+        "beberlei/assert": "^3.3",
+        "nyholm/psr7": "^1.8"
+    }
+}

@@ -23,13 +23,19 @@
         "psr/http-message": "^2.0"
     },
     "autoload": {
-        "psr-4": {
-            "KnpLabs\\Snappy\\": "src/"
-        }
+        "psr-4": { "KnpLabs\\Snappy\\": "src/" },
+        "exclude-from-classmap": [
+            "/spec/"
+        ]
     },
     "extra": {
         "branch-alias": {
             "dev-master": "2.x-dev"
         }
+    },
+    "require-dev": {
+        "nyholm/psr7": "^1.8",
+        "beberlei/assert": "^3.3",
+        "phpspec/phpspec": "^7.4"
     }
 }
