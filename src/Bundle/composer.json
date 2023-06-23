@@ -1,0 +1,33 @@
+{
+    "name": "knplabs/snappy-bundle",
+    "type": "symfony-bundle",
+    "description": "Easily create PDF and images in Symfony from HTML inputs",
+    "keywords": ["knplabs", "knp", "snappy", "pdf", "bundle"],
+    "homepage": "http://github.com/KnpLabs/snappy",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "KnpLabs",
+            "homepage": "https://knplabs.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "http://github.com/KnpLabs/snappy/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "symfony/http-kernel": "^5.4|^6.2"
+    },
+    "autoload": {
+        "psr-4": { "KnpLabs\\Snappy\\Bundle\\": "" },
+        "exclude-from-classmap": [
+            "/spec/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KnpLabs\\Snappy\\Bundle\\Spec\\": "spec/"
+        }
+    }
+}
