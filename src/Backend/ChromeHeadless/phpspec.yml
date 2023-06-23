@@ -1,0 +1,5 @@
+suites:
+  default:
+    namespace: KnpLabs\Snappy\Backend\ChromeHeadless
+    psr4_prefix: KnpLabs\Snappy\Backend\ChromeHeadless
+    src_path: '%paths.config%'

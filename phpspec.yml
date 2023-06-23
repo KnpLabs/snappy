@@ -1,0 +1,5 @@
+suites:
+  chrome_headless:
+    namespace: KnpLabs\Snappy
+    src_path: 'src/Backend/ChromeHeadless'
+    spec_path: 'src/Backend/ChromeHeadless/spec'
