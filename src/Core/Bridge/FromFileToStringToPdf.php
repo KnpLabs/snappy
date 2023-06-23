@@ -7,7 +7,6 @@ namespace KnpLabs\Core\Bridge;
 use KnpLabs\Snappy\Core\FileToPdf;
 use KnpLabs\Snappy\Core\StringToPdf;
 use Psr\Http\Message\StreamInterface;
-use SplFileInfo;
 
 final class FromFileToStringToPdf implements FileToPdf
 {
@@ -15,9 +14,9 @@ final class FromFileToStringToPdf implements FileToPdf
     {
     }
 
-    public function generate(SplFileInfo $file, ArrayAccess|array $options = []): StreamInterface
+    public function generateFromFile(\SplFileInfo $file, \ArrayAccess|array $options = []): StreamInterface
     {
-        return $this->stringToPdf->generate(
+        return $this->stringToPdf->generateFromString(
             file_get_contents($file->getPathname()),
             $options,
         );
