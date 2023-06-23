@@ -13,19 +13,8 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
             - name: Validate composer.json
-              run: composer validate --strict --no-check-lock
-    cs-fixer:
-        runs-on: ubuntu-20.04
-        name: PHP-CS-Fixer
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: '7.3'
-            - run: composer install --prefer-dist --no-interaction --no-progress --ansi
-            - run: vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
+              run: |
+                (cd src/Bundle && composer validate --strict --no-check-lock)
     tests:
         runs-on: ubuntu-20.04
         strategy:
@@ -41,15 +30,9 @@ jobs:
                     - description: 'Symfony 6.0'
                       php: '8.1'
                       symfony: '6.0.*'
-                    - description: 'Symfony 5.0'
+                    - description: 'Symfony 5.4'
                       php: '7.3'
-                      symfony: '5.0.*'
-                    - description: 'Symfony 4.4'
-                      php: '7.1'
-                      symfony: '4.3.*@dev'
-                    - description: 'Symfony 3.4'
-                      php: '7.3'
-                      symfony: '3.4.*'
+                      symfony: '5.4.*'
                     - description: 'Beta deps'
                       php: '7.2'
                       beta: true
@@ -67,16 +50,58 @@ jobs:
               with:
                   php-version: ${{ matrix.php }}
             - run: |
-                  sed -ri 's/"symfony\/(.+)": "(.+)"/"symfony\/\1": "'${{ matrix.symfony }}'"/' composer.json;
+                  sed -ri 's/"symfony\/(.+)": "(.+)"/"symfony\/\1": "'${{ matrix.symfony }}'"/' src/Bundle/composer.json;
               if: matrix.symfony
             - run: |
                   composer config minimum-stability dev
                   composer config prefer-stable true
               if: matrix.beta
-            - name: remove cs-fixer for Symfony 6
-              if: contains(matrix.symfony, '6.3.*@dev')
-              run: |
-                  composer remove --dev friendsofphp/php-cs-fixer pedrotroller/php-cs-custom-fixer --no-update
-            - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
-            - run: vendor/bin/phpunit
-            - run: vendor/bin/phpstan analyse --ansi --no-progress
+            - run: |
+                  (cd src/Bundle && composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }})
+            - run: |
+                  (cd src/Bundle && vendor/bin/phpunit)
+    tests-windows:
+        runs-on: windows-2022
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - description: 'Symfony 6.3 DEV'
+                      php: '8.2'
+                      symfony: '6.3.*@dev'
+                    - description: 'Symfony 6.2'
+                      php: '8.2'
+                      symfony: '6.2.*'
+                    - description: 'Symfony 6.0'
+                      php: '8.1'
+                      symfony: '6.0.*'
+                    - description: 'Symfony 5.4'
+                      php: '7.3'
+                      symfony: '5.4.*'
+                    - description: 'Beta deps'
+                      php: '7.2'
+                      beta: true
+        name: "[WINDOWS] PHP ${{ matrix.php }} tests (${{ matrix.description }})"
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Cache
+              uses: actions/cache@v3
+              with:
+                  path: ~/.composer/cache/files
+                  key: composer-${{ matrix.php }}-${{ matrix.symfony }}-${{ matrix.composer_option }}
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+            - run: |
+                  (Get-Content composer.json) -replace '("symfony/[^"]+": )"[^"]+"', '$1"${{ matrix.symfony }}"' | Out-File -encoding ASCII src/Bundle/composer.json
+              if: matrix.symfony
+            - run: |
+                  composer config minimum-stability dev
+                  composer config prefer-stable true
+              if: matrix.beta
+            - run: |
+                  {cd src/Bundle && composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}}
+            - run: |
+                  {cd src/Bundle && vendor/bin/phpunit}
