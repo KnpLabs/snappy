@@ -625,8 +625,13 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      */
     protected function prepareOutput($filename, $overwrite)
     {
-        if (\strpos($filename, 'phar://') === 0) {
-            throw new InvalidArgumentException('The output file cannot be a phar archive.');
+        if (false === $parsedFilename = \parse_url($filename)) {
+            throw new InvalidArgumentException('The output filename is invalid.');
+        }
+
+        $scheme = isset($parsedFilename['scheme']) ? \mb_strtolower($parsedFilename['scheme']) : '';
+        if ($scheme !== '' && $scheme !== 'file') {
+            throw new InvalidArgumentException(\sprintf('The output file scheme is not supported. Expected \'\' or \'file\' but got \'%s\'.', $scheme));
         }
 
         $directory = \dirname($filename);
