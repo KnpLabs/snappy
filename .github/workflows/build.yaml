@@ -83,3 +83,45 @@ jobs:
             - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
             - run: vendor/bin/phpunit
             - run: vendor/bin/phpstan analyse --ansi --no-progress
+    tests-windows:
+        runs-on: windows-2022
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - description: 'Symfony 6.4 DEV'
+                      php: '8.2'
+                      symfony: '6.4.*@dev'
+                    - description: 'Symfony 6.3'
+                      php: '8.3'
+                      symfony: '6.3.*'
+                    - description: 'Symfony 6.3'
+                      php: '8.2'
+                      symfony: '6.3.*'
+        name: "[WINDOWS] PHP ${{ matrix.php }} tests (${{ matrix.description }})"
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Cache
+              uses: actions/cache@v3
+              with:
+                  path: ~/.composer/cache/files
+                  key: composer-${{ matrix.php }}-${{ matrix.symfony }}-${{ matrix.composer_option }}
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+            - run: |
+                  (Get-Content composer.json) -replace '("symfony/[^"]+": )"[^"]+"', '$1"${{ matrix.symfony }}"' | Out-File -encoding ASCII composer.json
+              if: matrix.symfony
+            - run: |
+                  composer config minimum-stability dev
+                  composer config prefer-stable true
+              if: matrix.beta
+            - name: remove cs-fixer for Symfony 6
+              if: contains(matrix.symfony, '6.4.*@dev')
+              run: |
+                  composer remove --dev friendsofphp/php-cs-fixer pedrotroller/php-cs-custom-fixer --no-update
+            - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
+            - run: vendor/bin/phpunit
+            - run: vendor/bin/phpstan analyse --ansi --no-progress
