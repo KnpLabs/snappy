@@ -21,6 +21,10 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
 {
     use LoggerAwareTrait;
 
+    protected const ALLOWED_PROTOCOLS = ['file'];
+
+    protected const WINDOWS_LOCAL_FILENAME_REGEX = '/^[a-z]:(?:[\\\\\/]?(?:[\w\s!#()-]+|[\.]{1,2})+)*[\\\\\/]?/i';
+
     /**
      * @var array
      */
@@ -625,21 +629,8 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      */
     protected function prepareOutput($filename, $overwrite)
     {
-        if (false === $parsedFilename = \parse_url($filename)) {
-            throw new InvalidArgumentException('The output filename is invalid.');
-        }
-
-        $scheme = isset($parsedFilename['scheme']) ? \mb_strtolower($parsedFilename['scheme']) : '';
-        if (!(
-            $scheme === '' ||
-            $scheme === 'file' ||
-            (
-                // Check if it's a Windows path
-                \strlen($scheme) === 1 &&
-                \preg_match('/^[a-z]:(?:[\\\\\/]?(?:[\w\s!#()-]+|[\.]{1,2})+)*[\\\\\/]?/i', $filename) === 1
-            )
-        )) {
-            throw new InvalidArgumentException(\sprintf('The output file scheme is not supported. Expected \'file\' but got \'%s\'.', $scheme));
+        if (!$this->isProtocolAllowed($filename)) {
+            throw new InvalidArgumentException(\sprintf('The output file scheme is not supported. Expected one of [\'%s\'].', \implode('\', \'', self::ALLOWED_PROTOCOLS)));
         }
 
         $directory = \dirname($filename);
@@ -657,6 +648,34 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         } elseif (!$this->isDir($directory) && !$this->mkdir($directory)) {
             throw new RuntimeException(\sprintf('The output file\'s directory \'%s\' could not be created.', $directory));
         }
+    }
+
+    /**
+     * Verifies if the given filename has a supported protocol.
+     *
+     * @param string $filename
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return bool
+     */
+    protected function isProtocolAllowed($filename)
+    {
+        if (false === $parsedFilename = \parse_url($filename)) {
+            throw new InvalidArgumentException('The filename is not valid.');
+        }
+
+        $protocol = isset($parsedFilename['scheme']) ? \mb_strtolower($parsedFilename['scheme']) : 'file';
+
+        if (
+            \PHP_OS_FAMILY === 'Windows'
+            && \strlen($protocol) === 1
+            && \preg_match(self::WINDOWS_LOCAL_FILENAME_REGEX, $filename)
+        ) {
+            $protocol = 'file';
+        }
+
+        return \in_array($protocol, self::ALLOWED_PROTOCOLS, true);
     }
 
     /**
