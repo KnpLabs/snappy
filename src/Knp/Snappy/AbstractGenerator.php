@@ -630,8 +630,16 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         }
 
         $scheme = isset($parsedFilename['scheme']) ? \mb_strtolower($parsedFilename['scheme']) : '';
-        if ($scheme !== '' && $scheme !== 'file') {
-            throw new InvalidArgumentException(\sprintf('The output file scheme is not supported. Expected \'\' or \'file\' but got \'%s\'.', $scheme));
+        if (!(
+            $scheme === '' ||
+            $scheme === 'file' ||
+            (
+                // Check if it's a Windows path
+                \strlen($scheme) === 1 &&
+                \preg_match('/^[a-z]:(?:[\\\\\/]?(?:[\w\s!#()-]+|[\.]{1,2})+)*[\\\\\/]?/i', $filename) === 1
+            )
+        )) {
+            throw new InvalidArgumentException(\sprintf('The output file scheme is not supported. Expected \'file\' but got \'%s\'.', $scheme));
         }
 
         $directory = \dirname($filename);
