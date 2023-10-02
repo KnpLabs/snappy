@@ -1,0 +1,12 @@
+{
+    "name": "knplabs/snappy-core",
+    "require": {
+        "php": ">=7.2.5",
+        "psr/http-message": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "KnpLabs\\Snappy\\Core\\": "./"
+        }
+    }
+}
