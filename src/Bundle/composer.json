@@ -16,18 +16,23 @@
         }
     ],
     "require": {
-        "php": ">=8.0",
-        "symfony/http-kernel": "^5.4|^6.2"
+        "php": ">=7.2.5",
+        "symfony/config": "^5.4|^6.0",
+        "symfony/dependency-injection": "^5.4|^6.0",
+        "symfony/http-kernel": "^5.4|^6.0"
     },
     "autoload": {
         "psr-4": { "KnpLabs\\Snappy\\Bundle\\": "" },
         "exclude-from-classmap": [
-            "/spec/"
+            "/Tests/"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "KnpLabs\\Snappy\\Bundle\\Spec\\": "spec/"
+            "Tests\\KnpLabs\\Snappy\\Bundle\\": "Tests/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "<7.5|^9.6"
     }
 }
