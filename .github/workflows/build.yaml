@@ -32,6 +32,9 @@ jobs:
             fail-fast: false
             matrix:
                 include:
+                    - description: 'Symfony 7.0 DEV'
+                      php: '8.2'
+                      symfony: '7.0.*@dev'
                     - description: 'Symfony 6.4 DEV'
                       php: '8.2'
                       symfony: '6.4.*@dev'
