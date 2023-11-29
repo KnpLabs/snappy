@@ -32,28 +32,31 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - description: 'Symfony 6.4 DEV'
-                      php: '8.2'
-                      symfony: '6.4.*@dev'
-                    - description: 'Symfony 6.3'
+                    - description: 'Symfony 7.0 on PHP 8.3'
                       php: '8.3'
-                      symfony: '6.3.*'
-                    - description: 'Symfony 6.3'
+                      symfony: '7.0.*'
+                    - description: 'Symfony 7.0 on PHP 8.2'
                       php: '8.2'
-                      symfony: '6.3.*'
-                    - description: 'Symfony 6.0'
+                      symfony: '7.0.*'
+                    - description: 'Symfony 6.4 on PHP 8.3'
+                      php: '8.3'
+                      symfony: '6.4.*'
+                    - description: 'Symfony 6.4 on PHP 8.2'
+                      php: '8.2'
+                      symfony: '6.4.*'
+                    - description: 'Symfony 6.0 on PHP 8.1'
                       php: '8.1'
                       symfony: '6.0.*'
-                    - description: 'Symfony 5.0'
+                    - description: 'Symfony 5.0 on PHP 7.3'
                       php: '7.3'
                       symfony: '5.0.*'
-                    - description: 'Symfony 4.4'
+                    - description: 'Symfony 4.4 on PHP 7.1'
                       php: '7.1'
                       symfony: '4.3.*@dev'
-                    - description: 'Symfony 3.4'
+                    - description: 'Symfony 3.4 on PHP 7.3'
                       php: '7.3'
                       symfony: '3.4.*'
-                    - description: 'Beta deps'
+                    - description: 'Beta deps on PHP 7.2'
                       php: '7.2'
                       beta: true
         name: PHP ${{ matrix.php }} tests (${{ matrix.description }})
@@ -89,15 +92,12 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - description: 'Symfony 6.4 DEV'
-                      php: '8.2'
-                      symfony: '6.4.*@dev'
-                    - description: 'Symfony 6.3'
+                    - description: 'Symfony 6.4 on PHP 8.3'
                       php: '8.3'
-                      symfony: '6.3.*'
-                    - description: 'Symfony 6.3'
+                      symfony: '6.4.*'
+                    - description: 'Symfony 6.4 on PHP 8.2'
                       php: '8.2'
-                      symfony: '6.3.*'
+                      symfony: '6.4.*'
         name: "[WINDOWS] PHP ${{ matrix.php }} tests (${{ matrix.description }})"
         steps:
             - name: Checkout
