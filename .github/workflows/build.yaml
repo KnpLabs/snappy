@@ -92,6 +92,12 @@ jobs:
             fail-fast: false
             matrix:
                 include:
+                    - description: 'Symfony 7.0 on PHP 8.3'
+                      php: '8.3'
+                      symfony: '7.0.*'
+                    - description: 'Symfony 7.0 on PHP 8.2'
+                      php: '8.2'
+                      symfony: '7.0.*'
                     - description: 'Symfony 6.4 on PHP 8.3'
                       php: '8.3'
                       symfony: '6.4.*'
