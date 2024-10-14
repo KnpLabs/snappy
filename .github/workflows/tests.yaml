@@ -1,0 +1,65 @@
+name: Tests
+
+on:
+  pull_request: ~
+  push: ~
+
+jobs:
+  packages:
+    runs-on: ubuntu-20.04
+    outputs:
+      packages: ${{ steps.script.outputs.result }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/github-script@v7
+        id: script
+        with:
+          script: |
+            const fs = require('fs');
+
+            const composer = JSON.parse(
+              fs.readFileSync('./composer.json')
+            );
+
+            const packages = Object.keys(composer.autoload['psr-4']).map(
+              (namespace) => {
+                const path = composer.autoload['psr-4'][namespace];
+                const name = JSON.parse(fs.readFileSync(path + 'composer.json')).name;
+
+                return {
+                  name: name,
+                  path: './' + path,
+                };
+              }
+            );
+
+            console.log(packages);
+
+            return packages;
+
+  package:
+    runs-on: ubuntu-20.04
+    needs: packages
+    strategy:
+      matrix:
+        name:
+          - knplabs/snappy
+        path:
+          - ./
+        # include: ${{ fromJson(needs.packages.outputs.packages) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.path }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            src/Core/
+            ${{ matrix.path }}
+      - uses: shivammathur/setup-php@v2
+      - name: composer install
+        run: |
+          composer install
+      - name: vendor/bin/phpunit
+        run: |
+          vendor/bin/phpunit
