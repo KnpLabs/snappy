@@ -11,6 +11,11 @@ final class OrientationOption implements ExtraOption
 {
     public function __construct(private readonly Orientation\Value $orientation) {}
 
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public static function fromPageOrientation(PageOrientation $pageOrientation): self
     {
         return new self(

@@ -9,7 +9,7 @@ use KNPLabs\Snappy\Core\Backend\Adapter\Reconfigurable;
 use KNPLabs\Snappy\Core\Backend\Adapter\UriToPdf;
 use KNPLabs\Snappy\Core\Backend\Options;
 use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
-use KNPLabs\Snappy\Core\Stream\FileStream;
+use KNPLabs\Snappy\Core\Filesystem\SplResourceInfo;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriFactoryInterface;
@@ -36,11 +36,7 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
         private readonly StreamFactoryInterface $streamFactory,
         private readonly UriFactoryInterface $uriFactory,
     ) {
-        foreach ($options->extraOptions as $extraOption) {
-            if (!$extraOption instanceof ExtraOption) {
-                throw new \InvalidArgumentException('Invalid option type.');
-            }
-        }
+        $this->validateOptions($options);
 
         $this->factory = $factory;
         $this->options = $options;
@@ -61,15 +57,16 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
 
     public function generateFromUri(UriInterface $uri): StreamInterface
     {
-        $outputStream = FileStream::createTmpFile($this->streamFactory);
+        $outputFile = SplResourceInfo::fromTmpFile();
 
         $process = new Process(
             command: [
                 $this->binary,
+                '--log-level', 'none',
                 '--quiet',
                 ...$this->compileOptions(),
                 $uri->toString(),
-                $outputStream->file->getPathname(),
+                $outputFile->getPathname(),
             ],
             timeout: $this->timeout,
         );
@@ -80,7 +77,31 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
             throw new ProcessFailedException($process);
         }
 
-        return $outputStream;
+        return $this->streamFactory->createFromResource($outputFile->resource);
+    }
+
+    private function validateOptions(Options $options): void
+    {
+        $optionTypes = [];
+
+        foreach ($options->extraOptions as $option) {
+            if (!$option instanceof ExtraOption) {
+                throw new \InvalidArgumentException(\sprintf(
+                    'Invalid option type provided. Expected "%s", received "%s".',
+                    ExtraOption::class,
+                    'object' === \gettype($option) ? $option::class : \gettype($option),
+                ));
+            }
+
+            if (\in_array($option::class, $optionTypes, true) && !$option->isRepeatable()) {
+                throw new \InvalidArgumentException(\sprintf(
+                    'Duplicate option type provided: "%s".',
+                    $option::class,
+                ));
+            }
+
+            $optionTypes[] = $option::class;
+        }
     }
 
     /**

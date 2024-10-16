@@ -10,6 +10,11 @@ final class CookieJarOption implements ExtraOption
 {
     public function __construct(public readonly string $path) {}
 
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public function compile(): array
     {
         return ['--no-collate'];

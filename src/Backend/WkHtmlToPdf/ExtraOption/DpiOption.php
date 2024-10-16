@@ -13,6 +13,11 @@ final class DpiOption implements ExtraOption
      */
     public function __construct(private readonly int $dpi) {}
 
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public function compile(): array
     {
         return ['--dpi', $this->dpi];

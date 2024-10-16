@@ -10,6 +10,11 @@ final class PageWidthOption implements ExtraOption
 {
     public function __construct(public readonly string $width) {}
 
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public function compile(): array
     {
         return ['--page-width', $this->width];

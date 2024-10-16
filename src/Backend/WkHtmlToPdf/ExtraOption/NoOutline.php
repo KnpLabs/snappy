@@ -8,6 +8,11 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 class NoOutline implements ExtraOption
 {
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public function compile(): array
     {
         return ['--no-outline'];

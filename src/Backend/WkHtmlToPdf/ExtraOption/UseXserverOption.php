@@ -8,6 +8,11 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 final class UseXserverOption implements ExtraOption
 {
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public function compile(): array
     {
         return ['--use-xserver'];
