@@ -4,18 +4,27 @@ declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Core\Tests\Stream;
 
+use KNPLabs\Snappy\Core\Filesystem\SplResourceInfo;
 use KNPLabs\Snappy\Core\Stream\FileStream;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 final class FileStreamTest extends TestCase
 {
     private FileStream $stream;
 
     public function setUp(): void
     {
-        $this->stream = FileStream::createTmpFile(
-            new Psr17Factory,
+        $file = SplResourceInfo::fromTmpFile();
+
+        $this->stream = new FileStream(
+            $file,
+            (new Psr17Factory())->createStreamFromResource($file->resource),
         );
     }
 
@@ -24,8 +33,8 @@ final class FileStreamTest extends TestCase
         $file = $this->stream->file;
 
         $this->assertFileExists($file->getPathname());
-        $this->assertFileIsReadable( $file->getPathname());
-        $this->assertFileIsWritable( $file->getPathname());
+        $this->assertFileIsReadable($file->getPathname());
+        $this->assertFileIsWritable($file->getPathname());
     }
 
     public function testTmpFileStreamReadTheFile(): void

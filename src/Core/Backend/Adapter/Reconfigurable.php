@@ -21,7 +21,7 @@ trait Reconfigurable
     /**
      * @return TAdapter
      */
-    public function withOptions(Options|callable $options): static
+    public function withOptions(callable|Options $options): static
     {
         if (is_callable($options)) {
             $options = $options($this->options);
