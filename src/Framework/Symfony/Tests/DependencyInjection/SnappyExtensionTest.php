@@ -1,16 +1,13 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace KNPLabs\Snappy\Framework\Symfony\Tests\DependencyInjection;
 
 use KNPLabs\Snappy\Backend\Dompdf\DompdfAdapter;
 use KNPLabs\Snappy\Backend\Dompdf\DompdfFactory;
-use KNPLabs\Snappy\Core\Backend\Adapter;
 use KNPLabs\Snappy\Core\Backend\Options;
 use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
-use KNPLabs\Snappy\Core\Filesystem\TmpDirectory;
-use KNPLabs\Snappy\Core\Stream\TemporaryFileStream;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\SnappyExtension;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
@@ -26,8 +23,8 @@ final class SnappyExtensionTest extends TestCase
 
     public function setUp(): void
     {
-        $this->extension = new SnappyExtension;
-        $this->container = new ContainerBuilder;
+        $this->extension = new SnappyExtension();
+        $this->container = new ContainerBuilder();
 
         $this->container->setDefinition(
             StreamFactoryInterface::class,
@@ -45,7 +42,7 @@ final class SnappyExtensionTest extends TestCase
         );
 
         $this->assertEquals(
-            array_keys($this->container->getDefinitions()),
+            \array_keys($this->container->getDefinitions()),
             [
                 'service_container',
                 StreamFactoryInterface::class,
@@ -69,18 +66,18 @@ final class SnappyExtensionTest extends TestCase
                                     'output' => [
                                         'compress' => '1',
                                     ],
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
         $this->extension->load($configuration, $this->container);
 
         $this->assertEquals(
-            array_keys($this->container->getDefinitions()),
+            \array_keys($this->container->getDefinitions()),
             [
                 'service_container',
                 StreamFactoryInterface::class,
@@ -107,7 +104,7 @@ final class SnappyExtensionTest extends TestCase
         $this->assertEquals(
             $factory,
             new DompdfFactory($streamFactory),
-        ) ;
+        );
 
         $this->assertEquals(
             $backend,

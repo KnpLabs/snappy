@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace KNPLabs\Snappy\Core\Tests\Stream;
 
@@ -15,7 +15,7 @@ final class FileStreamTest extends TestCase
     public function setUp(): void
     {
         $this->stream = FileStream::createTmpFile(
-            new Psr17Factory,
+            new Psr17Factory(),
         );
     }
 
@@ -24,15 +24,15 @@ final class FileStreamTest extends TestCase
         $file = $this->stream->file;
 
         $this->assertFileExists($file->getPathname());
-        $this->assertFileIsReadable( $file->getPathname());
-        $this->assertFileIsWritable( $file->getPathname());
+        $this->assertFileIsReadable($file->getPathname());
+        $this->assertFileIsWritable($file->getPathname());
     }
 
     public function testTmpFileStreamReadTheFile(): void
     {
         $file = $this->stream->file;
 
-        file_put_contents($file->getPathname(), 'the content');
+        \file_put_contents($file->getPathname(), 'the content');
 
         $this->assertEquals(
             (string) $this->stream,

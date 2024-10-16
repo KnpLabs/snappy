@@ -1,17 +1,13 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration;
 
-use WkHtmlToPdf\WkHtmlToPdf;
-use KNPLabs\Snappy\Backend\WkHtmlToPdf\Adapter;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfAdapter;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfFactory;
 use Psr\Http\Message\StreamFactoryInterface;
-use Symfony\Component\Config\Definition\ArrayNode;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
@@ -24,23 +20,30 @@ final class WkHtmlToPdfConfigurationFactory implements BackendConfigurationFacto
 
     public function isAvailable(): bool
     {
-        return class_exists(WkHtmlToPdfAdapter::class);
+        return \class_exists(WkHtmlToPdfAdapter::class);
     }
 
-    public function create(ContainerBuilder $container, array $configuration, string $backendId, string $backendName, string $factoryId, Definition $options): void
-    {
+    public function create(
+        ContainerBuilder $container,
+        array $configuration,
+        string $backendId,
+        string $backendName,
+        string $factoryId,
+        Definition $options
+    ): void {
         $container
             ->setDefinition(
-            $factoryId,
-            new Definition(
-                WkHtmlToPdfFactory::class,
-                [
-                    '$streamFactory' => $container->getDefinition(StreamFactoryInterface::class),
-                    '$binary' => $configuration['binary'],
-                    '$timeout' => $configuration['timeout'],
-                ]
-            ),
-        );
+                $factoryId,
+                new Definition(
+                    WkHtmlToPdfFactory::class,
+                    [
+                        '$streamFactory' => $container->getDefinition(StreamFactoryInterface::class),
+                        '$binary' => $configuration['binary'],
+                        '$timeout' => $configuration['timeout'],
+                    ]
+                ),
+            )
+        ;
 
         $container
             ->setDefinition(

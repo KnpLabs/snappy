@@ -1,12 +1,23 @@
 name: Tests
 
 on:
-  pull_request: ~
   push: ~
 
 jobs:
+  php-cs-fixer:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+      - name: composer install
+        run: |
+          composer --working-dir=tools/php-cs-fixer install
+      - name: php-cs-fixer
+        run: |
+          tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --dry-run --diff --show-progress=dots .
   packages:
     runs-on: ubuntu-20.04
+    needs: php-cs-fixer
     outputs:
       packages: ${{ steps.script.outputs.result }}
     steps:
@@ -52,10 +63,9 @@ jobs:
         working-directory: ${{ matrix.path }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            src/Core/
-            ${{ matrix.path }}
+        # with:
+        #   sparse-checkout: |
+        #     ${{ matrix.path }}
       - uses: shivammathur/setup-php@v2
       - name: composer install
         run: |
