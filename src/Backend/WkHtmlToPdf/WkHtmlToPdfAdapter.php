@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Backend\WkHtmlToPdf;
 
-use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption\Orientation;
+use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 use KNPLabs\Snappy\Core\Backend\Adapter\HtmlFileToPdf;
 use KNPLabs\Snappy\Core\Backend\Adapter\Reconfigurable;
 use KNPLabs\Snappy\Core\Backend\Adapter\UriToPdf;
 use KNPLabs\Snappy\Core\Backend\Options;
-use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
 use KNPLabs\Snappy\Core\Stream\FileStream;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use SplFileInfo;
 
 final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
@@ -37,14 +37,13 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
         private readonly StreamFactoryInterface $streamFactory,
         private readonly UriFactoryInterface $uriFactory,
     ) {
-        $this->factory = $factory;
-
         foreach ($options->extraOptions as $extraOption) {
             if (!$extraOption instanceof ExtraOption) {
                 throw new \InvalidArgumentException("Invalid option type");
             }
         }
 
+        $this->factory = $factory;
         $this->options = $options;
     }
 
@@ -68,12 +67,19 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
         $process = new Process(
             command: [
                 $this->binary,
+                '--quiet',
                 ...$this->compileOptions(),
                 $uri->toString(),
                 $outputStream->file->getPathname(),
             ],
             timeout: $this->timeout,
         );
+
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
 
         return $outputStream;
     }
@@ -86,10 +92,10 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
         return array_reduce(
             $this->options->extraOptions,
             fn (array $carry, ExtraOption $extraOption) =>
-                $this->options->pageOrientation !== null && $extraOption instanceof Orientation
+                $extraOption instanceof ExtraOption\OrientationOption && $this->options->pageOrientation !== null
                     ? [
                         ...$carry,
-                        ...(new Orientation($this->options->pageOrientation->value))->compile(),
+                        ...ExtraOption\OrientationOption::fromPageOrientation($this->options->pageOrientation)->compile(),
                     ]
                     : [
                         ...$carry,

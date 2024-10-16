@@ -8,6 +8,9 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 final class DpiOptions implements ExtraOption
 {
+    /**
+     * @param positive-int $dpi
+     */
     public function __construct(private readonly int $dpi) {}
 
     public function compile(): array
