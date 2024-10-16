@@ -46,17 +46,16 @@ jobs:
           - knplabs/snappy
         path:
           - ./
-        # include: ${{ fromJson(needs.packages.outputs.packages) }}
+        include: ${{ fromJson(needs.packages.outputs.packages) }}
     defaults:
       run:
         working-directory: ${{ matrix.path }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            src/Core/
-            ${{ matrix.path }}
       - uses: shivammathur/setup-php@v2
+      - name: composer patch
+        run: |
+          cat <<< $(jq '.+{repositories: [{type: "path", url: "${{ github.workspace }}/src/Core", options: { versions: { "knplabs/snappy-core": "self.version" } }}]}' < composer.json) > composer.json
       - name: composer install
         run: |
           composer install

@@ -14,7 +14,7 @@ jobs:
               uses: shivammathur/setup-php@v2
             - name: Validate composer.json
               run: |
-                (cd src/Bundle && composer validate --strict --no-check-lock)
+                (cd src/Framework/Symfony && composer validate --strict --no-check-lock)
     tests:
         runs-on: ubuntu-20.04
         strategy:
@@ -50,16 +50,16 @@ jobs:
               with:
                   php-version: ${{ matrix.php }}
             - run: |
-                  sed -ri 's/"symfony\/(.+)": "(.+)"/"symfony\/\1": "'${{ matrix.symfony }}'"/' src/Bundle/composer.json;
+                  sed -ri 's/"symfony\/(.+)": "(.+)"/"symfony\/\1": "'${{ matrix.symfony }}'"/' src/Framework/Symfony/composer.json;
               if: matrix.symfony
             - run: |
                   composer config minimum-stability dev
                   composer config prefer-stable true
               if: matrix.beta
             - run: |
-                  (cd src/Bundle && composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }})
+                  (cd src/Framework/Symfony && composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }})
             - run: |
-                  (cd src/Bundle && vendor/bin/phpunit)
+                  (cd src/Framework/Symfony && vendor/bin/phpunit)
     tests-windows:
         runs-on: windows-2022
         strategy:
@@ -95,13 +95,13 @@ jobs:
               with:
                   php-version: ${{ matrix.php }}
             - run: |
-                  (Get-Content composer.json) -replace '("symfony/[^"]+": )"[^"]+"', '$1"${{ matrix.symfony }}"' | Out-File -encoding ASCII src/Bundle/composer.json
+                  (Get-Content composer.json) -replace '("symfony/[^"]+": )"[^"]+"', '$1"${{ matrix.symfony }}"' | Out-File -encoding ASCII src/Framework/Symfony/composer.json
               if: matrix.symfony
             - run: |
                   composer config minimum-stability dev
                   composer config prefer-stable true
               if: matrix.beta
             - run: |
-                  {cd src/Bundle && composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}}
+                  {cd src/Framework/Symfony && composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}}
             - run: |
-                  {cd src/Bundle && vendor/bin/phpunit}
+                  {cd src/Framework/Symfony && vendor/bin/phpunit}
