@@ -111,10 +111,10 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
     {
         return array_reduce(
             $this->options->extraOptions,
-            fn (array $carry, ExtraOption $extraOption): array => $extraOption instanceof ExtraOption\OrientationOption && $this->options->pageOrientation instanceof PageOrientation
+            fn (array $carry, ExtraOption $extraOption): array => $extraOption instanceof ExtraOption\Orientation && $this->options->pageOrientation instanceof PageOrientation
                     ? [
                         ...$carry,
-                        ...ExtraOption\OrientationOption::fromPageOrientation($this->options->pageOrientation)->compile(),
+                        ...ExtraOption\Orientation::fromPageOrientation($this->options->pageOrientation)->compile(),
                     ]
                     : [
                         ...$carry,
