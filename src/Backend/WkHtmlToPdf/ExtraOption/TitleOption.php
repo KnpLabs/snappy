@@ -6,12 +6,12 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class GrayscaleOption implements ExtraOption
+final class TitleOption implements ExtraOption
 {
-    public function __construct() {}
+    public function __construct(public readonly string $title) {}
 
     public function compile(): array
     {
-        return ['--grayscale'];
+        return ['--title', $this->title];
     }
 }
