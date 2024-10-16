@@ -6,10 +6,15 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class Outline implements ExtraOption
+final class HeaderLineOption implements ExtraOption
 {
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public function compile(): array
     {
-        return ['--outline'];
+        return ['--header-line'];
     }
 }

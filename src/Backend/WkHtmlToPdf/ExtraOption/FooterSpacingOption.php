@@ -6,8 +6,10 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class LowQualityOption implements ExtraOption
+final class FooterSpacingOption implements ExtraOption
 {
+    public function __construct(public readonly int $spacing) {}
+
     public function isRepeatable(): bool
     {
         return false;
@@ -15,6 +17,6 @@ final class LowQualityOption implements ExtraOption
 
     public function compile(): array
     {
-        return ['--lowquality'];
+        return ['--footer-spacing', $this->spacing];
     }
 }

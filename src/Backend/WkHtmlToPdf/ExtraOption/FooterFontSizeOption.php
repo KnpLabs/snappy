@@ -6,8 +6,13 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class LowQualityOption implements ExtraOption
+final class FooterFontSizeOption implements ExtraOption
 {
+    /**
+     * @param positive-int $size
+     */
+    public function __construct(public readonly int $size) {}
+
     public function isRepeatable(): bool
     {
         return false;
@@ -15,6 +20,6 @@ final class LowQualityOption implements ExtraOption
 
     public function compile(): array
     {
-        return ['--lowquality'];
+        return ['--footer-font-size', $this->size];
     }
 }

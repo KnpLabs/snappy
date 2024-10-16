@@ -13,6 +13,11 @@ final class ImageQualityOption implements ExtraOption
      */
     public function __construct(public readonly int $quality) {}
 
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public function compile(): array
     {
         return ['--image-quality', $this->quality];

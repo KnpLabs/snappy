@@ -10,6 +10,11 @@ final class PageSizeOption implements ExtraOption
 {
     public function __construct(public readonly string $size) {}
 
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public function compile(): array
     {
         return ['--page-size', $this->size];

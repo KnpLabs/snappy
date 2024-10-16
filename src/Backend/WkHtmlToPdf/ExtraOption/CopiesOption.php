@@ -13,6 +13,11 @@ final class CopiesOption implements ExtraOption
      */
     public function __construct(private readonly int $number) {}
 
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public function compile(): array
     {
         return ['--copies', $this->number];
