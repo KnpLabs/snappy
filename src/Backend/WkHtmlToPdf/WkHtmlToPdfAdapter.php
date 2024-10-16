@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Backend\WkHtmlToPdf;
 
-use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption\Orientation;
+use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 use KNPLabs\Snappy\Core\Backend\Adapter\HtmlFileToPdf;
 use KNPLabs\Snappy\Core\Backend\Adapter\Reconfigurable;
 use KNPLabs\Snappy\Core\Backend\Adapter\UriToPdf;
 use KNPLabs\Snappy\Core\Backend\Options;
-use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
 use KNPLabs\Snappy\Core\Stream\FileStream;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
@@ -86,10 +85,10 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
         return array_reduce(
             $this->options->extraOptions,
             fn (array $carry, ExtraOption $extraOption) =>
-                $this->options->pageOrientation !== null && $extraOption instanceof Orientation
+                $this->options->pageOrientation !== null && $extraOption instanceof ExtraOption\Orientation
                     ? [
                         ...$carry,
-                        ...(new Orientation($this->options->pageOrientation->value))->compile(),
+                        ...(new ExtraOption\Orientation($this->options->pageOrientation->value))->compile(),
                     ]
                     : [
                         ...$carry,
