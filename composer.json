@@ -1,10 +1,16 @@
 {
     "name": "knplabs/knp-snappy",
-    "type": "library",
     "description": "PHP library allowing thumbnail, snapshot or PDF generation from a url or a html page. Wrapper for wkhtmltopdf/wkhtmltoimage.",
-    "keywords": ["pdf", "thumbnail", "snapshot", "knplabs", "knp", "wkhtmltopdf"],
-    "homepage": "http://github.com/KnpLabs/snappy",
     "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "pdf",
+        "thumbnail",
+        "snapshot",
+        "knplabs",
+        "knp",
+        "wkhtmltopdf"
+    ],
     "authors": [
         {
             "name": "KNP Labs Team",
@@ -15,17 +21,45 @@
             "homepage": "http://github.com/KnpLabs/snappy/contributors"
         }
     ],
+    "homepage": "http://github.com/KnpLabs/snappy",
     "require": {
         "php": ">=8.1",
-        "symfony/process": "~5.0||~6.0",
-        "psr/log": "^2.0||^3.0",
-        "symfony/http-client": "^6.2",
-        "psr/http-message": "^2.0"
+        "dompdf/dompdf": "^3.0",
+        "psr/http-factory": "^1.1",
+        "psr/http-message": "^2.0",
+        "psr/log": "^2.0|^3.0",
+        "symfony/config": "^5.4|^6.4|^7.1",
+        "symfony/dependency-injection": "^5.4|^6.4|^7.1",
+        "symfony/http-client": "^5.4|^6.4|^7.1",
+        "symfony/http-kernel": "^5.4|^6.4|^7.1",
+        "symfony/process": "^5.4|^6.4|^7.1"
+    },
+    "require-dev": {
+        "nyholm/psr7": "^1.8",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^1.12",
+        "phpstan/phpstan-phpunit": "^1.4",
+        "phpunit/phpunit": "^11.4"
+    },
+    "replace": {
+        "knplabs/snappy-bundle": "self.version",
+        "knplabs/snappy-core": "self.version",
+        "knplabs/snappy-dompdf": "self.version",
+        "knplabs/snappy-wkhtmltopdf": "self.version"
     },
     "autoload": {
         "psr-4": {
-            "KnpLabs\\Snappy\\": "src/"
+            "KNPLabs\\Snappy\\Backend\\Dompdf\\": "src/Backend/Dompdf/",
+            "KNPLabs\\Snappy\\Backend\\WkHtmlToPdf\\": "src/Backend/WkHtmlToPdf/",
+            "KNPLabs\\Snappy\\Core\\": "src/Core/",
+            "KNPLabs\\Snappy\\Framework\\Symfony\\": "src/Framework/Symfony/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        },
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {

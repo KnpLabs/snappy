@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/9.3/phpunit.xsd"
+  backupGlobals="false"
+  colors="true"
+  bootstrap="vendor/autoload.php"
+  failOnRisky="true"
+  failOnWarning="true"
+>
+  <php>
+    <ini name="error_reporting" value="-1" />
+  </php>
+
+  <testsuites>
+    <testsuite name="Snappy Dompdf backend">
+      <directory>./src/Backend/Dompdf</directory>
+    </testsuite>
+    <testsuite name="Snappy WkHtmlToPdf backend">
+      <directory>./src/Backend/WkHtmlToPdf</directory>
+    </testsuite>
+    <testsuite name="Snappy core">
+      <directory>./src/Core/</directory>
+    </testsuite>
+    <testsuite name="Snappy Symfony framework integration">
+      <directory>./src/Framework/Symfony/</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

@@ -2,7 +2,13 @@
     "name": "knplabs/snappy-bundle",
     "type": "symfony-bundle",
     "description": "Easily create PDF and images in Symfony from HTML inputs",
-    "keywords": ["knplabs", "knp", "snappy", "pdf", "bundle"],
+    "keywords": [
+        "knplabs",
+        "knp",
+        "snappy",
+        "pdf",
+        "bundle"
+    ],
     "homepage": "http://github.com/KnpLabs/snappy",
     "license": "MIT",
     "authors": [
@@ -16,23 +22,27 @@
         }
     ],
     "require": {
-        "php": ">=7.2.5",
-        "symfony/config": "^5.4|^6.0",
-        "symfony/dependency-injection": "^5.4|^6.0",
-        "symfony/http-kernel": "^5.4|^6.0"
+        "php": ">=8.1",
+        "knplabs/snappy-core": "^2.0",
+        "symfony/config": "^5.4|^6.4|^7.1",
+        "symfony/dependency-injection": "^5.4|^6.4|^7.1",
+        "symfony/http-kernel": "^5.4|^6.4|^7.1"
     },
     "autoload": {
-        "psr-4": { "KnpLabs\\Snappy\\Bundle\\": "" },
+        "psr-4": {
+            "KNPLabs\\Snappy\\Bundle\\": ""
+        },
         "exclude-from-classmap": [
             "/Tests/"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\KnpLabs\\Snappy\\Bundle\\": "Tests/"
+            "Tests\\KNPLabs\\Snappy\\Bundle\\": "Tests/"
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "<7.5|^9.6"
+        "nyholm/psr7": "^1.8",
+        "phpunit/phpunit": "^11.4"
     }
 }
