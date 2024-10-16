@@ -6,12 +6,15 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class CollateOption implements ExtraOption
+final class FooterLineOption implements ExtraOption
 {
-    public function __construct() {}
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
 
     public function compile(): array
     {
-        return ['--collate'];
+        return ['--footer-line'];
     }
 }

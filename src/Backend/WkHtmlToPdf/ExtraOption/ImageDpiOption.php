@@ -13,6 +13,11 @@ final class ImageDpiOption implements ExtraOption
      */
     public function __construct(public readonly int $dpi) {}
 
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public function compile(): array
     {
         return ['--image-dpi', $this->dpi];
