@@ -14,8 +14,7 @@ final class Options
     public function __construct(
         public readonly ?PageOrientation $pageOrientation,
         public readonly array $extraOptions
-    ) {
-    }
+    ) {}
 
     public static function create(): self
     {
