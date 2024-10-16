@@ -4,4 +4,12 @@ declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class NoCollateOption {}
+use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
+
+final class NoCollateOption implements ExtraOption
+{
+    public function compile(): array
+    {
+        return ['--no-collate'];
+    }
+}

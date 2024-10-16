@@ -6,15 +6,12 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class DpiOption implements ExtraOption
+final class PageWidthOption implements ExtraOption
 {
-    /**
-     * @param positive-int $dpi
-     */
-    public function __construct(private readonly int $dpi) {}
+    public function __construct(public readonly string $width) {}
 
     public function compile(): array
     {
-        return ['--dpi', $this->dpi];
+        return ['--page-width', $this->width];
     }
 }

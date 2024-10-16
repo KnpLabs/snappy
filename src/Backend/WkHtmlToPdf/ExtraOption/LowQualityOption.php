@@ -6,15 +6,10 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class DpiOption implements ExtraOption
+final class LowQualityOption implements ExtraOption
 {
-    /**
-     * @param positive-int $dpi
-     */
-    public function __construct(private readonly int $dpi) {}
-
     public function compile(): array
     {
-        return ['--dpi', $this->dpi];
+        return ['--lowquality'];
     }
 }
