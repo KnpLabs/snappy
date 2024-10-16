@@ -10,7 +10,6 @@ use KNPLabs\Snappy\Core\Backend\Adapter\Reconfigurable;
 use KNPLabs\Snappy\Core\Backend\Adapter\UriToPdf;
 use KNPLabs\Snappy\Core\Backend\Options;
 use KNPLabs\Snappy\Core\Filesystem\SplResourceInfo;
-use KNPLabs\Snappy\Core\Stream\FileStream;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriFactoryInterface;
@@ -114,10 +113,10 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
         return array_reduce(
             $this->options->extraOptions,
             fn (array $carry, ExtraOption $extraOption) =>
-                $extraOption instanceof ExtraOption\OrientationOption && $this->options->pageOrientation !== null
+                $extraOption instanceof ExtraOption\Orientation && $this->options->pageOrientation !== null
                     ? [
                         ...$carry,
-                        ...ExtraOption\OrientationOption::fromPageOrientation($this->options->pageOrientation)->compile(),
+                        ...ExtraOption\Orientation::fromPageOrientation($this->options->pageOrientation)->compile(),
                     ]
                     : [
                         ...$carry,
