@@ -10,6 +10,11 @@ final class MarginLeftOption implements ExtraOption
 {
     public function __construct(public readonly string $margin) {}
 
+    public function isRepeatable(): bool
+    {
+        return false;
+    }
+
     public function compile(): array
     {
         return ['--margin-left', $this->margin];
