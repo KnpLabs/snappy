@@ -6,12 +6,12 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class GrayscaleOption implements ExtraOption
+final class NoPdfCompressionOption implements ExtraOption
 {
     public function __construct() {}
 
     public function compile(): array
     {
-        return ['--grayscale'];
+        return ['--no-pdf-compression'];
     }
 }

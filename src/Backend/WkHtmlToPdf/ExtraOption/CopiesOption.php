@@ -8,6 +8,9 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 final class CopiesOption implements ExtraOption
 {
+    /**
+     * @param positive-int $number
+     */
     public function __construct(private readonly int $number) {}
 
     public function compile(): array
