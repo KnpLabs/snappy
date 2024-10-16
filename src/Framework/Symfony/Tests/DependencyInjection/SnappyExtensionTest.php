@@ -8,6 +8,7 @@ use KNPLabs\Snappy\Backend\Dompdf\DompdfAdapter;
 use KNPLabs\Snappy\Backend\Dompdf\DompdfFactory;
 use KNPLabs\Snappy\Core\Backend\Options;
 use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
+use KNPLabs\Snappy\Core\Frontend;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\SnappyExtension;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
@@ -46,7 +47,7 @@ final class SnappyExtensionTest extends TestCase
             $this->container,
         );
 
-        self::assertSame(
+        self::assertEquals(
             array_keys($this->container->getDefinitions()),
             [
                 'service_container',
@@ -81,13 +82,17 @@ final class SnappyExtensionTest extends TestCase
 
         $this->extension->load($configuration, $this->container);
 
-        self::assertSame(
+        self::assertEquals(
             array_keys($this->container->getDefinitions()),
             [
                 'service_container',
                 StreamFactoryInterface::class,
-                'snappy.backend.myBackend.factory',
-                'snappy.backend.myBackend',
+                'knplabs.snappy.core.backend.factory.myBackend',
+                'knplabs.snappy.core.backend.adapter.myBackend',
+                'knplabs.snappy.core.frontend.domdocumenttopdf.myBackend',
+                'knplabs.snappy.core.frontend.htmlfiletopdf.myBackend',
+                'knplabs.snappy.core.frontend.htmltopdf.myBackend',
+                'knplabs.snappy.core.frontend.streamtopdf.myBackend',
             ]
         );
 
@@ -95,7 +100,7 @@ final class SnappyExtensionTest extends TestCase
 
         self::assertInstanceOf(StreamFactoryInterface::class, $streamFactory);
 
-        $factory = $this->container->get('snappy.backend.myBackend.factory');
+        $factory = $this->container->get('knplabs.snappy.core.backend.factory.myBackend');
 
         self::assertInstanceOf(DompdfFactory::class, $factory);
         self::assertEquals(
@@ -103,9 +108,14 @@ final class SnappyExtensionTest extends TestCase
             new DompdfFactory($streamFactory)
         );
 
-        $backend = $this->container->get('snappy.backend.myBackend');
+        $backend = $this->container->get('knplabs.snappy.core.backend.adapter.myBackend');
 
         self::assertInstanceOf(DompdfAdapter::class, $backend);
+        self::assertEquals(
+            $factory,
+            new DompdfFactory($streamFactory),
+        );
+
         self::assertEquals(
             $backend,
             new DompdfAdapter(
@@ -117,6 +127,38 @@ final class SnappyExtensionTest extends TestCase
                         'output' => ['compress' => '1'],
                     ],
                 ),
+                $streamFactory,
+            ),
+        );
+
+        self::assertEquals(
+            $this->container->get('knplabs.snappy.core.frontend.domdocumenttopdf.myBackend'),
+            new Frontend\DOMDocumentToPdf(
+                $backend,
+                $streamFactory,
+            ),
+        );
+
+        self::assertEquals(
+            $this->container->get('knplabs.snappy.core.frontend.htmlfiletopdf.myBackend'),
+            new Frontend\HtmlFileToPdf(
+                $backend,
+                $streamFactory,
+            ),
+        );
+
+        self::assertEquals(
+            $this->container->get('knplabs.snappy.core.frontend.htmltopdf.myBackend'),
+            new Frontend\HtmlToPdf(
+                $backend,
+                $streamFactory,
+            ),
+        );
+
+        self::assertEquals(
+            $this->container->get('knplabs.snappy.core.frontend.streamtopdf.myBackend'),
+            new Frontend\StreamToPdf(
+                $backend,
                 $streamFactory,
             ),
         );
