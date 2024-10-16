@@ -21,6 +21,9 @@ Snappy is a PHP library that allows you to generate PDF files from HTML.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Examples of use](#examples-of-use)
+- [Bugs and Support](#bugs-and-support)
+- [License](#license)
+- [Contributing](#contributing)
 - [Contributors](#contributors)
 
 ## Installation
