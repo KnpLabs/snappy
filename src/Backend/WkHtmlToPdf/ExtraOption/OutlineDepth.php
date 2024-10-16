@@ -8,7 +8,7 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 class OutlineDepth implements ExtraOption
 {
-    public function __construct(private readonly ?int $depth = 4)
+    public function __construct(private readonly int $depth)
     {}
 
     public function compile(): array
