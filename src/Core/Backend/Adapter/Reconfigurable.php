@@ -23,7 +23,7 @@ trait Reconfigurable
      */
     public function withOptions(Options|callable $options): static
     {
-        if (is_callable($options)) {
+        if (\is_callable($options)) {
             $options = $options($this->options);
         }
 

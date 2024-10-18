@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace KNPLabs\Snappy\Backend\Dompdf;
 
-use ArrayAccess;
 use DOMDocument;
 use Dompdf;
 use KNPLabs\Snappy\Core\Backend\Adapter\DOMDocumentToPdf;
@@ -23,11 +22,8 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
      */
     use Reconfigurable;
 
-    public function __construct(
-        DompdfFactory $factory,
-        Options $options,
-        private readonly StreamFactoryInterface $streamFactory
-    ) {
+    public function __construct(DompdfFactory $factory, Options $options, private StreamFactoryInterface $streamFactory)
+    {
         $this->factory = $factory;
         $this->options = $options;
     }
@@ -58,13 +54,13 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
 
     private function buildDompdf(): Dompdf\Dompdf
     {
-        return new Dompdf\Dompdf( $this->compileConstructOptions());
+        return new Dompdf\Dompdf($this->compileConstructOptions());
     }
 
     private function compileConstructOptions(): Dompdf\Options
     {
         $options = new Dompdf\Options(
-            is_array($this->options->extraOptions['construct'])
+            \is_array($this->options->extraOptions['construct'])
                 ? $this->options->extraOptions['construct']
                 : null
         );
@@ -85,7 +81,7 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
     {
         $options = $this->options->extraOptions['output'];
 
-        if (false === is_array($options)) {
+        if (false === \is_array($options)) {
             $options = [];
         }
 

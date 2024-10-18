@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace KNPLabs\Snappy\Framework\Symfony\DependencyInjection;
 
@@ -25,20 +25,20 @@ final class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('snappy');
-        $rootNode    = $treeBuilder->getRootNode();
+        $rootNode = $treeBuilder->getRootNode();
 
         $backendNodeBuilder = $rootNode
             ->children()
             ->arrayNode('backends')
             ->useAttributeAsKey('name')
             ->example(
-                array_merge(
-                    ...array_map(
-                        fn(BackendConfigurationFactory $factory): array => [
+                \array_merge(
+                    ...\array_map(
+                        fn (BackendConfigurationFactory $factory): array => [
                             $factory->getKey() => [
                                 'pageOrientation' => PageOrientation::PORTRAIT->value,
                                 'options' => [],
-                                ...$factory->getExample()
+                                ...$factory->getExample(),
                             ],
                         ],
                         $this->factories
@@ -49,7 +49,7 @@ final class Configuration implements ConfigurationInterface
         ;
 
         foreach ($this->factories as $factory) {
-            $name = str_replace('-', '_', $factory->getKey());
+            $name = \str_replace('-', '_', $factory->getKey());
 
             $factoryNode = $backendNodeBuilder
                 ->children()
@@ -76,8 +76,8 @@ final class Configuration implements ConfigurationInterface
             ->children()
             ->enumNode('pageOrientation')
             ->values(
-                array_map(
-                    fn(PageOrientation $pageOrientation): string => $pageOrientation->value,
+                \array_map(
+                    fn (PageOrientation $pageOrientation): string => $pageOrientation->value,
                     PageOrientation::cases(),
                 )
             )
