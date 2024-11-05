@@ -8,9 +8,7 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 class Proxy implements ExtraOption
 {
-    public function __construct(private readonly string $proxy)
-    {
-    }
+    public function __construct(private readonly string $proxy) {}
 
     public function isRepeatable(): bool
     {

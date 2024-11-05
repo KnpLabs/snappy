@@ -11,9 +11,7 @@ class MinimumFontSize implements ExtraOption
     /**
      * @param non-negative-int $size
      */
-    public function __construct(private readonly int $size)
-    {
-    }
+    public function __construct(private readonly int $size) {}
 
     public function isRepeatable(): bool
     {

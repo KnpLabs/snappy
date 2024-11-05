@@ -8,9 +8,7 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 class Encoding implements ExtraOption
 {
-    public function __construct(private readonly string $encoding)
-    {
-    }
+    public function __construct(private readonly string $encoding) {}
 
     public function isRepeatable(): bool
     {

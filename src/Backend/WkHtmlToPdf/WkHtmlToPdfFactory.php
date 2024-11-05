@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Backend\WkHtmlToPdf;
 
@@ -24,8 +24,7 @@ final class WkHtmlToPdfFactory implements Factory
         private readonly int $timeout,
         private readonly StreamFactoryInterface $streamFactory,
         private readonly UriFactoryInterface $uriFactory,
-    ) {
-    }
+    ) {}
 
     public function create(Options $options): Adapter
     {

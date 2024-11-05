@@ -6,17 +6,15 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class Allow implements ExtraOption
+final class DisableLocalFileAccess implements ExtraOption
 {
-    public function __construct(private readonly string $path) {}
-
     public function isRepeatable(): bool
     {
-        return true;
+        return false;
     }
 
     public function compile(): array
     {
-        return ['--allow', $this->path];
+        return ['--disable-local-file-access'];
     }
 }

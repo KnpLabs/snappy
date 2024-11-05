@@ -8,9 +8,7 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 class RunScript implements ExtraOption
 {
-    public function __construct(private readonly string $js)
-    {
-    }
+    public function __construct(private readonly string $js) {}
 
     public function isRepeatable(): bool
     {

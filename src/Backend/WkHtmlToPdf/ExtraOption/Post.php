@@ -8,8 +8,7 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 class Post implements ExtraOption
 {
-    public function __construct(private readonly string $name, private readonly string $value)
-    {}
+    public function __construct(private readonly string $name, private readonly string $value) {}
 
     public function isRepeatable(): bool
     {

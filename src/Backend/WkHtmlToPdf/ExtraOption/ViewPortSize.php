@@ -8,9 +8,7 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 class ViewPortSize implements ExtraOption
 {
-    public function __construct(private readonly string $viewSize)
-    {
-    }
+    public function __construct(private readonly string $viewSize) {}
 
     public function isRepeatable(): bool
     {

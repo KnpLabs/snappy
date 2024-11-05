@@ -11,14 +11,13 @@ class JavascriptDelay implements ExtraOption
     /**
      * @param non-negative-int $msec
      */
-    public function __construct(private readonly int $msec)
-    {
-    }
+    public function __construct(private readonly int $msec) {}
 
     public function isRepeatable(): bool
     {
         return false;
     }
+
     public function compile(): array
     {
         return ['--javascript-delay', $this->msec];
