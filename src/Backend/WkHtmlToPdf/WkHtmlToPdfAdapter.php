@@ -53,7 +53,7 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
         }
 
         return $this->generateFromUri(
-            $this->uriFactory->createUri($filepath)->withScheme('file')
+            $this->uriFactory->createUri($filepath)
         );
     }
 
@@ -64,10 +64,11 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
         $process = new Process(
             command: [
                 $this->binary,
-                '--log-level', 'none',
+                '--log-level',
+                'none',
                 '--quiet',
                 ...$this->compileOptions(),
-                $uri->toString(),
+                (string) $uri,
                 $outputFile->getPathname(),
             ],
             timeout: $this->timeout,
@@ -79,7 +80,7 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
             throw new ProcessFailedException($process);
         }
 
-        return $this->streamFactory->createFromResource($outputFile->resource);
+        return $this->streamFactory->createStreamFromResource($outputFile->resource);
     }
 
     private static function validateOptions(Options $options): void
@@ -113,17 +114,16 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
     {
         return array_reduce(
             $this->options->extraOptions,
-            fn (array $carry, ExtraOption $extraOption) =>
-                $extraOption instanceof ExtraOption\Orientation && $this->options->pageOrientation !== null
-                    ? [
-                        ...$carry,
-                        ...ExtraOption\Orientation::fromPageOrientation($this->options->pageOrientation)->compile(),
-                    ]
-                    : [
-                        ...$carry,
-                        ...$extraOption->compile(),
-                    ]
-            ,
+            fn(array $carry, ExtraOption $extraOption) =>
+            $extraOption instanceof ExtraOption\Orientation && $this->options->pageOrientation !== null
+                ? [
+                    ...$carry,
+                    ...ExtraOption\Orientation::fromPageOrientation($this->options->pageOrientation)->compile(),
+                ]
+                : [
+                    ...$carry,
+                    ...$extraOption->compile(),
+                ],
             [],
         );
     }
