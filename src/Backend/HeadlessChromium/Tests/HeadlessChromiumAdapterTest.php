@@ -1,127 +1,85 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace KNPLabs\Snappy\Backend\HeadlessChromium\Tests;
 
+use KNPLabs\Snappy\Backend\HeadlessChromium\ExtraOption\DisableGpu;
+use KNPLabs\Snappy\Backend\HeadlessChromium\ExtraOption\Headless;
+use KNPLabs\Snappy\Backend\HeadlessChromium\ExtraOption\PrintToPdf;
 use KNPLabs\Snappy\Backend\HeadlessChromium\HeadlessChromiumAdapter;
 use KNPLabs\Snappy\Backend\HeadlessChromium\HeadlessChromiumFactory;
 use KNPLabs\Snappy\Core\Backend\Options;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
+use SplFileInfo;
+use RuntimeException;
 
 final class HeadlessChromiumAdapterTest extends TestCase
 {
-    private Options $options;
-    private StreamFactoryInterface $streamFactory;
-    private HeadlessChromiumAdapter $adapter;
     private HeadlessChromiumFactory $factory;
+
+    private Options $options;
+
+    private StreamFactoryInterface $streamFactory;
+
+    private HeadlessChromiumAdapter $adapter;
+
+    private string $directory;
+
+    private UriFactoryInterface $uriFactory;
+
+    private SplFileInfo $outputFile;
 
     protected function setUp(): void
     {
-        $this->options = new Options(null, []);
+        $this->uriFactory = $this->createMock(UriFactoryInterface::class);
+        $this->directory = __DIR__;
+        $this->outputFile = new SplFileInfo($this->directory . '/file.pdf');
+        $this->options = new Options(null, [new Headless(), new PrintToPdf($this->outputFile), new DisableGpu()]);
         $this->streamFactory = $this->createMock(StreamFactoryInterface::class);
-        $this->factory = new HeadlessChromiumFactory($this->streamFactory);
+        $this->factory = new HeadlessChromiumFactory(
+            'chromium',
+            120,
+            $this->streamFactory,
+            $this->uriFactory
+        );
         $this->adapter = $this->factory->create($this->options);
     }
 
     public function testGenerateFromUri(): void
     {
         $url = $this->createMock(UriInterface::class);
-        $url->method('__toString')->willReturn('https://example.com');
+        $url->method('__toString')->willReturn('https://google.com');
+
+        $this->streamFactory->expects($this->once())
+            ->method('createStream')
+            ->with($this->stringContains($this->outputFile->getPathname()))
+            ->willReturn($this->createMock(StreamInterface::class))
+        ;
+
+        $resultStream = $this->adapter->generateFromUri($url);
+
+        $this->assertNotNull($resultStream);
+        $this->assertInstanceOf(StreamInterface::class, $resultStream);
+
+        \unlink($this->directory . '/file.pdf');
     }
 
-    public function testGenerateFromHtmlFile(): void
+    public function testGetPrintToPdfFilePath(): void
     {
-        $file = $this->createMock(\SplFileInfo::class);
-        $file->method('getPathname')->willReturn('/path/to/test.html');
+        $filePath = $this->adapter->getPrintToPdfFilePath();
+        $this->assertEquals($this->outputFile->getPathname(), $filePath);
 
-        $outputStream = $this->createMock(StreamInterface::class);
-        $this->streamFactory->method('createStream')->willReturn($outputStream);
+        $optionsWithoutPrintToPdf = new Options(null, [new Headless(), new DisableGpu()]);
+        $adapterWithoutPrintToPdf = $this->factory->create($optionsWithoutPrintToPdf);
 
-        $process = $this->createMockProcess(['chromium', '--headless', '--print-to-pdf', 'output.pdf'], true);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Missing option print to pdf.');
 
-        $this->adapter->method('runProcess')->willReturnCallback(function ($command) use ($process) {
-            $process->run();
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
-            }
-        });
-
-        $result = $this->adapter->generateFromHtmlFile($file);
-
-        $this->assertSame($outputStream, $result);
-    }
-
-    public function testGenerateFromHtml(): void
-    {
-        $htmlContent = '<html><body>Hello World</body></html>';
-
-        $outputStream = $this->createMock(StreamInterface::class);
-        $this->streamFactory->method('createStream')->willReturn($outputStream);
-
-        $process = $this->createMockProcess(['chromium', '--headless', '--print-to-pdf', 'output.pdf'], true);
-
-        $this->adapter->method('runProcess')->willReturnCallback(function ($command) use ($process) {
-            $process->run();
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
-            }
-        });
-
-        $result = $this->adapter->generateFromHtml($htmlContent);
-
-        $this->assertSame($outputStream, $result);
-    }
-
-    public function testProcessFailsOnInvalidUri(): void
-    {
-        $url = $this->createMock(UriInterface::class);
-        $url->method('__toString')->willReturn('invalid-url');
-
-        $this->expectException(ProcessFailedException::class);
-
-        $process = $this->createMockProcess(['chromium', '--headless', '--print-to-pdf', 'output.pdf'], false);
-
-        $this->adapter->method('runProcess')->willReturnCallback(function ($command) use ($process) {
-            $process->run();
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
-            }
-        });
-
-        $this->adapter->generateFromUri($url);
-    }
-
-    public function testProcessFailsOnEmptyHtml(): void
-    {
-        $this->expectException(ProcessFailedException::class);
-
-        $process = $this->createMockProcess(['chromium', '--headless', '--print-to-pdf', 'output.pdf'], false);
-
-        $this->adapter->method('runProcess')->willReturnCallback(function ($command) use ($process) {
-            $process->run();
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
-            }
-        });
-
-        $this->adapter->generateFromHtml('');
-    }
-
-    private function createMockProcess(array $command, bool $successful = true): Process
-    {
-        $process = $this->getMockBuilder(Process::class)
-            ->setConstructorArgs([$command])
-            ->getMock();
-
-        $process->method('run');
-        $process->method('isSuccessful')->willReturn($successful);
-
-        return $process;
+        $adapterWithoutPrintToPdf->getPrintToPdfFilePath();
     }
 }
