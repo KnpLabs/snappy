@@ -13,7 +13,6 @@ use KNPLabs\Snappy\Core\Backend\Options;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use SplFileInfo;
 use RuntimeException;
@@ -30,22 +29,18 @@ final class HeadlessChromiumAdapterTest extends TestCase
 
     private string $directory;
 
-    private UriFactoryInterface $uriFactory;
-
     private SplFileInfo $outputFile;
 
     protected function setUp(): void
     {
-        $this->uriFactory = $this->createMock(UriFactoryInterface::class);
         $this->directory = __DIR__;
         $this->outputFile = new SplFileInfo($this->directory . '/file.pdf');
-        $this->options = new Options(null, [new Headless(), new PrintToPdf($this->outputFile), new DisableGpu()]);
+        $this->options = new Options(null, [new Headless(), new PrintToPdf($this->outputFile->getPathname()), new DisableGpu()]);
         $this->streamFactory = $this->createMock(StreamFactoryInterface::class);
         $this->factory = new HeadlessChromiumFactory(
             'chromium',
             120,
             $this->streamFactory,
-            $this->uriFactory
         );
         $this->adapter = $this->factory->create($this->options);
     }
@@ -54,12 +49,6 @@ final class HeadlessChromiumAdapterTest extends TestCase
     {
         $url = $this->createMock(UriInterface::class);
         $url->method('__toString')->willReturn('https://google.com');
-
-        $this->streamFactory->expects($this->once())
-            ->method('createStream')
-            ->with($this->stringContains($this->outputFile->getPathname()))
-            ->willReturn($this->createMock(StreamInterface::class))
-        ;
 
         $resultStream = $this->adapter->generateFromUri($url);
 

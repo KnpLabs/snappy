@@ -8,6 +8,9 @@ use KNPLabs\Snappy\Backend\HeadlessChromium\ExtraOption;
 
 class DisableFeatures implements ExtraOption
 {
+    /**
+     * @param array<string> $features
+     */
     public function __construct(private readonly array $features)
     {
     }

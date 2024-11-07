@@ -5,11 +5,10 @@ declare(strict_types = 1);
 namespace KNPLabs\Snappy\Backend\HeadlessChromium\ExtraOption;
 
 use KNPLabs\Snappy\Backend\HeadlessChromium\ExtraOption;
-use SplFileInfo;
 
 class PrintToPdf implements ExtraOption
 {
-    public function __construct(private readonly SplFileInfo $file)
+    public function __construct(private readonly string $filePath)
     {
     }
 
@@ -20,11 +19,11 @@ class PrintToPdf implements ExtraOption
 
     public function compile(): array
     {
-        return ['--print-to-pdf=' . $this->file];
+        return ['--print-to-pdf=' . $this->filePath];
     }
 
-    public function getFile(): SplFileInfo
+    public function getFilePath(): string
     {
-        return $this->file;
+        return $this->filePath;
     }
 }

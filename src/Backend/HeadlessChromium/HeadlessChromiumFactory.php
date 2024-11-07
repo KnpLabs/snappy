@@ -7,7 +7,6 @@ namespace KNPLabs\Snappy\Backend\HeadlessChromium;
 use KNPLabs\Snappy\Core\Backend\Factory;
 use KNPLabs\Snappy\Core\Backend\Options;
 use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\UriFactoryInterface;
 
 /**
  * @implements Factory<HeadlessChromiumAdapter>
@@ -18,7 +17,6 @@ final class HeadlessChromiumFactory implements Factory
         private readonly string $binary,
         private readonly int $timeout,
         private readonly StreamFactoryInterface $streamFactory,
-        private readonly UriFactoryInterface $uriFactory,
     ) {
     }
 
@@ -30,7 +28,6 @@ final class HeadlessChromiumFactory implements Factory
             $this,
             $options,
             $this->streamFactory,
-            $this->uriFactory,
         );
     }
 }

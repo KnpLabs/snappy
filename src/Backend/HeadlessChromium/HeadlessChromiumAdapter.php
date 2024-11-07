@@ -9,7 +9,6 @@ use KNPLabs\Snappy\Core\Backend\Adapter\Reconfigurable;
 use KNPLabs\Snappy\Core\Backend\Options;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use Symfony\Component\Process\Process;
 use InvalidArgumentException;
@@ -22,17 +21,13 @@ final class HeadlessChromiumAdapter implements UriToPdf
      */
     use Reconfigurable;
 
-    private string $tempDir;
-
     public function __construct(
         private string $binary,
         private int $timeout,
         HeadlessChromiumFactory $factory,
         Options $options,
         private readonly StreamFactoryInterface $streamFactory,
-        private readonly UriFactoryInterface $uriFactory,
     ) {
-        $this->tempDir = __DIR__;
         self::validateOptions($options);
 
         $this->factory = $factory;
@@ -65,7 +60,7 @@ final class HeadlessChromiumAdapter implements UriToPdf
         if (!empty($printToPdfOption)) {
             $printToPdfOption = \array_values($printToPdfOption)[0];
 
-            return $printToPdfOption->getFile()->getPathname();
+            return $printToPdfOption->getFilePath();
         }
 
         throw new RuntimeException('Missing option print to pdf.');
@@ -89,18 +84,29 @@ final class HeadlessChromiumAdapter implements UriToPdf
     }
 
     /**
-     * @return array<float|int|string>
+     * @return array<mixed>
      */
     private function compileOptions(): array
     {
         return \array_reduce(
             $this->options->extraOptions,
-            fn (array $carry, ExtraOption $extraOption) => $this->options->pageOrientation !== null
-                ?: [
-                    ...$carry,
-                    ...$extraOption->compile(),
-                ],
-            [],
+            /**
+             * @param array<mixed> $carry
+             * @param ExtraOption  $extraOption
+             *
+             * @return array<mixed>
+             */
+            function (array $carry, $extraOption) {
+                if ($extraOption instanceof ExtraOption) {
+                    return [
+                        ...$carry,
+                        ...$extraOption->compile(),
+                    ];
+                }
+
+                return $carry;
+            },
+            []
         );
     }
 }
