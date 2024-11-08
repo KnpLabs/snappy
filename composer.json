@@ -51,6 +51,7 @@
         "psr-4": {
             "KNPLabs\\Snappy\\Backend\\Dompdf\\": "src/Backend/Dompdf/",
             "KNPLabs\\Snappy\\Backend\\WkHtmlToPdf\\": "src/Backend/WkHtmlToPdf/",
+            "KNPLabs\\Snappy\\Backend\\HeadlessChromium\\": "src/Backend/HeadlessChromium/",
             "KNPLabs\\Snappy\\Core\\": "src/Core/",
             "KNPLabs\\Snappy\\Framework\\Symfony\\": "src/Framework/Symfony/"
         }

@@ -6,6 +6,9 @@ namespace KNPLabs\Snappy\Framework\Symfony\Tests\DependencyInjection;
 
 use KNPLabs\Snappy\Backend\Dompdf\DompdfAdapter;
 use KNPLabs\Snappy\Backend\Dompdf\DompdfFactory;
+use KNPLabs\Snappy\Backend\HeadlessChromium\ExtraOption;
+use KNPLabs\Snappy\Backend\HeadlessChromium\HeadlessChromiumAdapter;
+use KNPLabs\Snappy\Backend\HeadlessChromium\HeadlessChromiumFactory;
 use KNPLabs\Snappy\Core\Backend\Options;
 use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\SnappyExtension;
@@ -14,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use SplFileInfo;
 
 final class SnappyExtensionTest extends TestCase
 {
@@ -120,5 +124,69 @@ final class SnappyExtensionTest extends TestCase
                 $streamFactory,
             ),
         );
+    }
+
+    public function testHeadlessChromiumBackendConfiguration(): void
+    {
+        $directory = __DIR__;
+        $outputFile = new SplFileInfo($directory . '/file.pdf');
+
+        $configuration = [
+            'snappy' => [
+                'backends' => [
+                    'myBackend' => [
+                        'chromium' => [
+                            'binary' => 'chromium',
+                            'timeout' => 60,
+                            'options' => [
+                                'extraOptions' => [
+                                    'printToPdf' => $outputFile->getPathname(),
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->extension->load($configuration, $this->container);
+
+        $this->assertEquals(
+            \array_keys($this->container->getDefinitions()),
+            [
+                'service_container',
+                StreamFactoryInterface::class,
+                'snappy.backend.myBackend.factory',
+                'snappy.backend.myBackend',
+            ]
+        );
+
+        $streamFactory = $this->container->get(StreamFactoryInterface::class);
+
+        $this->assertInstanceOf(StreamFactoryInterface::class, $streamFactory);
+
+        $factory = $this->container->get('snappy.backend.myBackend.factory');
+        $this->assertInstanceOf(HeadlessChromiumFactory::class, $factory);
+
+        $backend = $this->container->get('snappy.backend.myBackend');
+
+        $this->assertInstanceOf(HeadlessChromiumAdapter::class, $backend);
+
+        $expectedOptions = new Options(
+            null,
+            [
+                new ExtraOption\PrintToPdf($outputFile->getPathname()),
+            ]
+        );
+
+        $expectedBackend = new HeadlessChromiumAdapter(
+            'chromium',
+            60,
+            $factory,
+            $expectedOptions,
+            $streamFactory
+        );
+
+        $this->assertEquals($backend, $expectedBackend);
     }
 }

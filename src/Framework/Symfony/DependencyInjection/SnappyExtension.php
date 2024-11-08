@@ -4,10 +4,12 @@ declare(strict_types = 1);
 
 namespace KNPLabs\Snappy\Framework\Symfony\DependencyInjection;
 
+use KNPLabs\Snappy\Backend\HeadlessChromium\ExtraOption\PrintToPdf;
 use KNPLabs\Snappy\Core\Backend\Options;
 use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\BackendConfigurationFactory;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\DompdfConfigurationFactory;
+use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\HeadlessChromiumConfigurationFactory;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\WkHtmlToPdfConfigurationFactory;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -67,6 +69,7 @@ final class SnappyExtension extends Extension
             [
                 new DompdfConfigurationFactory(),
                 new WkHtmlToPdfConfigurationFactory(),
+                new HeadlessChromiumConfigurationFactory(),
             ],
             static fn (BackendConfigurationFactory $factory): bool => $factory->isAvailable(),
         );
@@ -99,19 +102,34 @@ final class SnappyExtension extends Extension
         ];
 
         if (isset($configuration['pageOrientation'])) {
-            if (false === \is_string($configuration['pageOrientation'])) {
-                throw new InvalidConfigurationException(\sprintf('Invalid “%s” type for “snappy.backends.%s.%s.options.pageOrientation”. The expected type is “string”.', $backendName, $backendType, \gettype($configuration['pageOrientation'])), );
+            if (!\is_string($configuration['pageOrientation'])) {
+                throw new InvalidConfigurationException(\sprintf('Invalid type for “snappy.backends.%s.%s.options.pageOrientation”. Expected "string", got "%s".', $backendName, $backendType, \gettype($configuration['pageOrientation'])));
             }
-
             $arguments['$pageOrientation'] = PageOrientation::from($configuration['pageOrientation']);
         }
 
         if (isset($configuration['extraOptions'])) {
-            if (false === \is_array($configuration['extraOptions'])) {
-                throw new InvalidConfigurationException(\sprintf('Invalid “%s” type for “snappy.backends.%s.%s.options.extraOptions”. The expected type is “array”.', $backendName, $backendType, \gettype($configuration['extraOptions'])), );
+            if (!\is_array($configuration['extraOptions'])) {
+                throw new InvalidConfigurationException(\sprintf('Invalid type for “snappy.backends.%s.%s.options.extraOptions”. Expected "array", got "%s".', $backendName, $backendType, \gettype($configuration['extraOptions'])));
             }
 
-            $arguments['$extraOptions'] = $configuration['extraOptions'];
+            foreach ($configuration['extraOptions'] as $key => $value) {
+                switch ($key) {
+                    case 'printToPdf':
+                        if (\is_string($value)) {
+                            $arguments['$extraOptions'][] = new PrintToPdf($value);
+                        } else {
+                            throw new InvalidConfigurationException(\sprintf('Invalid type for “snappy.backends.%s.%s.options.extraOptions.printToPdf”. Expected "string", got "%s".', $backendName, $backendType, \gettype($value)));
+                        }
+
+                        break;
+
+                    default:
+                        $arguments['$extraOptions'][$key] = $value;
+
+                        break;
+                }
+            }
         }
 
         return new Definition(Options::class, $arguments);
