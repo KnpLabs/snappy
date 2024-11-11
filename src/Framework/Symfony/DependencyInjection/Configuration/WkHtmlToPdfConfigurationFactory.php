@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration;
 
@@ -20,7 +20,7 @@ final class WkHtmlToPdfConfigurationFactory implements BackendConfigurationFacto
 
     public function isAvailable(): bool
     {
-        return \class_exists(WkHtmlToPdfAdapter::class);
+        return class_exists(WkHtmlToPdfAdapter::class);
     }
 
     public function create(

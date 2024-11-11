@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Framework\Symfony\DependencyInjection;
 
@@ -23,8 +23,8 @@ final class SnappyExtension extends Extension
             $configuration
         );
 
-        $factories = \array_merge(
-            ...\array_map(
+        $factories = array_merge(
+            ...array_map(
                 static fn (BackendConfigurationFactory $factory): array => [$factory->getKey() => $factory],
                 $this->getFactories(),
             ),
@@ -63,7 +63,7 @@ final class SnappyExtension extends Extension
      */
     private function getFactories(): array
     {
-        return \array_filter(
+        return array_filter(
             [
                 new DompdfConfigurationFactory(),
                 new WkHtmlToPdfConfigurationFactory(),
@@ -100,7 +100,7 @@ final class SnappyExtension extends Extension
 
         if (isset($configuration['pageOrientation'])) {
             if (false === \is_string($configuration['pageOrientation'])) {
-                throw new InvalidConfigurationException(\sprintf('Invalid “%s” type for “snappy.backends.%s.%s.options.pageOrientation”. The expected type is “string”.', $backendName, $backendType, \gettype($configuration['pageOrientation'])), );
+                throw new InvalidConfigurationException(\sprintf('Invalid “%s” type for “snappy.backends.%s.%s.options.pageOrientation”. The expected type is “string”.', $backendName, $backendType, \gettype($configuration['pageOrientation'])));
             }
 
             $arguments['$pageOrientation'] = PageOrientation::from($configuration['pageOrientation']);
@@ -108,7 +108,7 @@ final class SnappyExtension extends Extension
 
         if (isset($configuration['extraOptions'])) {
             if (false === \is_array($configuration['extraOptions'])) {
-                throw new InvalidConfigurationException(\sprintf('Invalid “%s” type for “snappy.backends.%s.%s.options.extraOptions”. The expected type is “array”.', $backendName, $backendType, \gettype($configuration['extraOptions'])), );
+                throw new InvalidConfigurationException(\sprintf('Invalid “%s” type for “snappy.backends.%s.%s.options.extraOptions”. The expected type is “array”.', $backendName, $backendType, \gettype($configuration['extraOptions'])));
             }
 
             $arguments['$extraOptions'] = $configuration['extraOptions'];

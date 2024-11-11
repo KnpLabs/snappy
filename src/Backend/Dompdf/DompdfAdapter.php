@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Backend\Dompdf;
 
-use DOMDocument;
 use Dompdf;
 use KNPLabs\Snappy\Core\Backend\Adapter\DOMDocumentToPdf;
 use KNPLabs\Snappy\Core\Backend\Adapter\HtmlFileToPdf;
@@ -13,7 +12,6 @@ use KNPLabs\Snappy\Core\Backend\Adapter\Reconfigurable;
 use KNPLabs\Snappy\Core\Backend\Options;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
-use SplFileInfo;
 
 final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, HtmlToPdf
 {
@@ -28,7 +26,7 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
         $this->options = $options;
     }
 
-    public function generateFromDOMDocument(DOMDocument $DOMDocument): StreamInterface
+    public function generateFromDOMDocument(\DOMDocument $DOMDocument): StreamInterface
     {
         $dompdf = $this->buildDompdf();
         $dompdf->loadDOM($DOMDocument);
@@ -36,7 +34,7 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
         return $this->createStream($dompdf);
     }
 
-    public function generateFromHtmlFile(SplFileInfo $file): StreamInterface
+    public function generateFromHtmlFile(\SplFileInfo $file): StreamInterface
     {
         $dompdf = $this->buildDompdf();
         $dompdf->loadHtmlFile($file->getPath());

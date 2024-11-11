@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration;
 
@@ -21,7 +21,7 @@ final class DompdfConfigurationFactory implements BackendConfigurationFactory
 
     public function isAvailable(): bool
     {
-        return \class_exists(DompdfAdapter::class);
+        return class_exists(DompdfAdapter::class);
     }
 
     public function create(
