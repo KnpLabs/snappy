@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KNPLabs\Snappy\Core\Backend\Adapter;
 
 use KNPLabs\Snappy\Core\Backend\Adapter;
@@ -21,7 +23,7 @@ trait Reconfigurable
     /**
      * @return TAdapter
      */
-    public function withOptions(Options|callable $options): static
+    public function withOptions(callable|Options $options): static
     {
         if (\is_callable($options)) {
             $options = $options($this->options);

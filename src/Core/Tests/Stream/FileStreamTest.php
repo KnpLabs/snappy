@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Core\Tests\Stream;
 
@@ -8,11 +8,16 @@ use KNPLabs\Snappy\Core\Stream\FileStream;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 final class FileStreamTest extends TestCase
 {
-    private FileStream $stream;
+    private ?FileStream $stream = null;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->stream = FileStream::createTmpFile(
             new Psr17Factory(),
@@ -21,20 +26,24 @@ final class FileStreamTest extends TestCase
 
     public function testTmpFileStreamCreateTemporaryFile(): void
     {
+        self::assertNotNull($this->stream);
+
         $file = $this->stream->file;
 
-        $this->assertFileExists($file->getPathname());
-        $this->assertFileIsReadable($file->getPathname());
-        $this->assertFileIsWritable($file->getPathname());
+        self::assertFileExists($file->getPathname());
+        self::assertFileIsReadable($file->getPathname());
+        self::assertFileIsWritable($file->getPathname());
     }
 
     public function testTmpFileStreamReadTheFile(): void
     {
+        self::assertNotNull($this->stream);
+
         $file = $this->stream->file;
 
-        \file_put_contents($file->getPathname(), 'the content');
+        file_put_contents($file->getPathname(), 'the content');
 
-        $this->assertEquals(
+        self::assertSame(
             (string) $this->stream,
             'the content',
         );
@@ -42,12 +51,14 @@ final class FileStreamTest extends TestCase
 
     public function testTmpFileIsAutomaticalyRemoved(): void
     {
+        self::assertNotNull($this->stream);
+
         $file = $this->stream->file;
 
-        $this->assertFileExists($file->getPathname());
+        self::assertFileExists($file->getPathname());
 
-        unset($this->stream);
+        $this->stream = null;
 
-        $this->assertFileDoesNotExist($file->getPathname());
+        self::assertFileDoesNotExist($file->getPathname());
     }
 }

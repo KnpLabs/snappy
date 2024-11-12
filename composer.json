@@ -35,7 +35,9 @@
         "symfony/process": "^5.4|^6.4|^7.1"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.64",
         "nyholm/psr7": "^1.8",
+        "pedrotroller/php-cs-custom-fixer": "^2.33",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^1.12",
         "phpstan/phpstan-phpunit": "^1.4",

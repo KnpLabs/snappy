@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Backend\Dompdf;
 
@@ -13,9 +13,7 @@ use Psr\Http\Message\StreamFactoryInterface;
  */
 final readonly class DompdfFactory implements Factory
 {
-    public function __construct(private readonly StreamFactoryInterface $streamFactory)
-    {
-    }
+    public function __construct(private readonly StreamFactoryInterface $streamFactory) {}
 
     public function create(Options $options): DompdfAdapter
     {

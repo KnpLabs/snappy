@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Backend\WkHtmlToPdf;
 
@@ -8,8 +8,6 @@ use KNPLabs\Snappy\Core\Backend\Adapter\HtmlFileToPdf;
 use KNPLabs\Snappy\Core\Backend\Adapter\Reconfigurable;
 use KNPLabs\Snappy\Core\Backend\Options;
 use Psr\Http\Message\StreamInterface;
-use SplFileInfo;
-use Exception;
 
 final class WkHtmlToPdfAdapter implements HtmlFileToPdf
 {
@@ -32,8 +30,8 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf
         $this->options = $options;
     }
 
-    public function generateFromHtmlFile(SplFileInfo $file): StreamInterface
+    public function generateFromHtmlFile(\SplFileInfo $file): StreamInterface
     {
-        throw new Exception("Not implemented for {$this->binary} with timeout {$this->timeout}.");
+        throw new \Exception("Not implemented for {$this->binary} with timeout {$this->timeout}.");
     }
 }

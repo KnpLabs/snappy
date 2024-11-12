@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace KNPLabs\Core\Bridge;
 
@@ -16,19 +16,18 @@ final class FromHtmlToHtmlFileToPdf implements HtmlToPdf
     public function __construct(
         private readonly HtmlFileToPdf $adapter,
         private readonly StreamFactoryInterface $streamFactory
-    ) {
-    }
+    ) {}
 
     public function generateFromHtml(string $html): StreamInterface
     {
         $temporary = FileStream::createTmpFile($this->streamFactory);
 
-        \file_put_contents($temporary->file->getPathname(), $html);
+        file_put_contents($temporary->file->getPathname(), $html);
 
         return $this->adapter->generateFromHtmlFile($temporary->file);
     }
 
-    public function withOptions(Options|callable $options): self
+    public function withOptions(callable|Options $options): self
     {
         return new self(
             $this->adapter->withOptions($options),
