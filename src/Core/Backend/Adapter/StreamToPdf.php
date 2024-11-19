@@ -7,7 +7,7 @@ namespace KNPLabs\Snappy\Core\Backend\Adapter;
 use KNPLabs\Snappy\Core\Backend\Adapter;
 use Psr\Http\Message\StreamInterface;
 
-interface DOMDocumentToPdf extends Adapter
+interface StreamToPdf extends Adapter
 {
-    public function generateFromDOMDocument(\DOMDocument $document): StreamInterface;
+    public function generateFromStream(StreamInterface $stream): StreamInterface;
 }

@@ -13,9 +13,17 @@
   </php>
 
   <testsuites>
-    <testsuite name="KNPLabs Snappy Bundle Test Suite">
-      <directory>./Tests/</directory>
+    <testsuite name="knplabs/snappy-dompdf">
+      <directory>./src/Backend/Dompdf</directory>
     </testsuite>
+    <testsuite name="knplabs/snappy-wkhtmltopdf">
+      <directory>./src/Backend/WkHtmlToPdf</directory>
+    </testsuite>
+    <testsuite name="knplabs/snappy-core">
+      <directory>./src/Core/</directory>
+    </testsuite>
+    <testsuite name="knplabs/snappy-symfony">
+      <directory>./src/Framework/Symfony/</directory>
   </testsuites>
 
   <coverage>
