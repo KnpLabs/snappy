@@ -3,7 +3,6 @@
 namespace Tests\Knp\Snappy;
 
 use Knp\Snappy\Pdf;
-use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use FilesystemIterator;
@@ -82,7 +81,7 @@ class PdfTest extends TestCase
         $this->assertEquals(1, \count($pdf->temporaryFiles));
         $this->expectException(RuntimeException::class);
 
-        throw new RuntimeException('test error');
+        throw new RuntimeException('test error.');
         // @phpstan-ignore-next-line See https://github.com/phpstan/phpstan/issues/7799
         $this->assertFileNotExists(\reset($pdf->temporaryFiles));
     }
