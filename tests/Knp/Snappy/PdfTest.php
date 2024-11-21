@@ -10,6 +10,7 @@ use FilesystemIterator;
 use CallbackFilterIterator;
 use DirectoryIterator;
 use ReflectionMethod;
+use RuntimeException;
 
 class PdfTest extends TestCase
 {
@@ -79,8 +80,9 @@ class PdfTest extends TestCase
         $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
         $this->assertEquals(1, \count($pdf->temporaryFiles));
-        $this->expectException(\RuntimeException::class);
-        throw new \RuntimeException('test error');
+        $this->expectException(RuntimeException::class);
+
+        throw new RuntimeException('test error');
         // @phpstan-ignore-next-line See https://github.com/phpstan/phpstan/issues/7799
         $this->assertFileNotExists(\reset($pdf->temporaryFiles));
     }
