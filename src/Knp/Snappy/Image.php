@@ -13,7 +13,7 @@ class Image extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    public function __construct($binary = null, array $options = [], array $env = null)
+    public function __construct($binary = null, array $options = [], array|null $env = null)
     {
         $this->setDefaultExtension('jpg');
 
