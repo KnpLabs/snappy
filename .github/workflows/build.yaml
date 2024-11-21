@@ -32,9 +32,12 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - description: 'Symfony 7.1 DEV'
+                    - description: 'Symfony 7.2 DEV'
                       php: '8.2'
-                      symfony: '7.1.*@dev'
+                      symfony: '7.2.*@dev'
+                    - description: 'Symfony 7.0'
+                      php: '8.4'
+                      symfony: '7.0.*'
                     - description: 'Symfony 7.0'
                       php: '8.3'
                       symfony: '7.0.*'
@@ -74,7 +77,7 @@ jobs:
                   composer config prefer-stable true
               if: matrix.beta
             - name: remove cs-fixer for Symfony 7 (temporary as not-supported yet)
-              if: contains(matrix.symfony, '7.1.*@dev') || contains(matrix.symfony, '7.0.*')
+              if: contains(matrix.symfony, '7.2.*@dev') || contains(matrix.symfony, '7.1.*') || contains(matrix.symfony, '7.0.*')
               run: |
                   composer remove --dev friendsofphp/php-cs-fixer pedrotroller/php-cs-custom-fixer --no-update
             - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
@@ -86,9 +89,12 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - description: 'Symfony 7.1 DEV'
+                    - description: 'Symfony 7.2 DEV'
                       php: '8.2'
-                      symfony: '7.1.*@dev'
+                      symfony: '7.2.*@dev'
+                    - description: 'Symfony 7.0'
+                      php: '8.4'
+                      symfony: '7.0.*'
                     - description: 'Symfony 7.0'
                       php: '8.3'
                       symfony: '7.0.*'
@@ -119,7 +125,7 @@ jobs:
                   composer config prefer-stable true
               if: matrix.beta
             - name: remove cs-fixer for Symfony 7 (temporary as not-supported yet)
-              if: contains(matrix.symfony, '7.1.*@dev') || contains(matrix.symfony, '7.0.*')
+              if: contains(matrix.symfony, '7.2.*@dev') || contains(matrix.symfony, '7.1.*') || contains(matrix.symfony, '7.0.*')
               run: |
                   composer remove --dev friendsofphp/php-cs-fixer pedrotroller/php-cs-custom-fixer --no-update
             - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
