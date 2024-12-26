@@ -65,7 +65,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      * @param array       $options
      * @param null|array  $env
      */
-    public function __construct($binary, array $options = [], array $env = null)
+    public function __construct($binary, array $options = [], ?array $env = null)
     {
         $this->configure();
 
@@ -380,7 +380,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      *
      * @return $this
      */
-    protected function addOption($name, $default = null)
+    protected function addOption($name, ?$default = null)
     {
         if (\array_key_exists($name, $this->options)) {
             throw new InvalidArgumentException(\sprintf('The option \'%s\' already exists.', $name));
@@ -483,7 +483,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      *
      * @return string The filename
      */
-    protected function createTemporaryFile($content = null, $extension = null)
+    protected function createTemporaryFile(?$content = null, ?$extension = null)
     {
         $dir = \rtrim($this->getTemporaryFolder(), \DIRECTORY_SEPARATOR);
 
