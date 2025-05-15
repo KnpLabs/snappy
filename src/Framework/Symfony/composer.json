@@ -43,6 +43,6 @@
     },
     "require-dev": {
         "nyholm/psr7": "^1.8",
-        "phpunit/phpunit": "^11.4"
+        "phpunit/phpunit": "^11.5"
     }
 }

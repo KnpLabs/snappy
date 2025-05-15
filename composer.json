@@ -41,7 +41,7 @@
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^1.12",
         "phpstan/phpstan-phpunit": "^1.4",
-        "phpunit/phpunit": "^11.4"
+        "phpunit/phpunit": "^11.5"
     },
     "replace": {
         "knplabs/snappy-bundle": "self.version",

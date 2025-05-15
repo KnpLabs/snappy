@@ -8,6 +8,7 @@ use KNPLabs\Snappy\Core\Backend\Adapter;
 use KNPLabs\Snappy\Core\Filesystem\SplResourceInfo;
 use KNPLabs\Snappy\Core\Frontend\HtmlFileToPdf;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Constraint;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -15,9 +16,8 @@ use Psr\Http\Message\StreamInterface;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class HtmlFileToPdfTest extends TestCase
 {
     private StreamInterface $output;
@@ -28,7 +28,7 @@ final class HtmlFileToPdfTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->output = $this->createStub(StreamInterface::class);
+        $this->output = self::createStub(StreamInterface::class);
         $this->streamFactory = new Psr17Factory();
         $this->file = SplResourceInfo::fromTmpFile();
 

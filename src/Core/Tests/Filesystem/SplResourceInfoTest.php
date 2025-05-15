@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace KNPLabs\Snappy\Core\Tests\Filesystem;
 
 use KNPLabs\Snappy\Core\Filesystem\SplResourceInfo;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class SplResourceInfoTest extends TestCase
 {
     public function testCanBuildFromTmpFile(): void
