@@ -11,6 +11,8 @@ use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
 use KNPLabs\Snappy\Core\Frontend;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\SnappyExtension;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Constraint\IsEqual;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -18,9 +20,8 @@ use Symfony\Component\DependencyInjection\Definition;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class SnappyExtensionTest extends TestCase
 {
     private SnappyExtension $extension;
@@ -47,7 +48,7 @@ final class SnappyExtensionTest extends TestCase
             $this->container,
         );
 
-        self::assertEquals(
+        self::assertSame(
             array_keys($this->container->getDefinitions()),
             [
                 'service_container',
@@ -82,7 +83,7 @@ final class SnappyExtensionTest extends TestCase
 
         $this->extension->load($configuration, $this->container);
 
-        self::assertEquals(
+        self::assertSame(
             array_keys($this->container->getDefinitions()),
             [
                 'service_container',
@@ -103,63 +104,69 @@ final class SnappyExtensionTest extends TestCase
         $factory = $this->container->get('knplabs.snappy.core.backend.factory.myBackend');
 
         self::assertInstanceOf(DompdfFactory::class, $factory);
-        self::assertEquals(
+        self::assertThat(
             $factory,
-            new DompdfFactory($streamFactory)
+            new IsEqual(new DompdfFactory($streamFactory))
         );
 
         $backend = $this->container->get('knplabs.snappy.core.backend.adapter.myBackend');
 
         self::assertInstanceOf(DompdfAdapter::class, $backend);
-        self::assertEquals(
+        self::assertThat(
             $factory,
-            new DompdfFactory($streamFactory),
+            new IsEqual(new DompdfFactory($streamFactory))
         );
 
-        self::assertEquals(
+        self::assertThat(
             $backend,
-            new DompdfAdapter(
-                $factory,
-                new Options(
-                    PageOrientation::LANDSCAPE,
-                    [
-                        'construct' => ['tempDir' => '/tmp'],
-                        'output' => ['compress' => '1'],
-                    ],
+            new IsEqual(
+                new DompdfAdapter(
+                    $factory,
+                    new Options(
+                        PageOrientation::LANDSCAPE,
+                        [
+                            'construct' => ['tempDir' => '/tmp'],
+                            'output' => ['compress' => '1'],
+                        ],
+                    ),
+                    $streamFactory,
                 ),
-                $streamFactory,
             ),
         );
 
-        self::assertEquals(
+        self::assertThat(
             $this->container->get('knplabs.snappy.core.frontend.domdocumenttopdf.myBackend'),
-            new Frontend\DOMDocumentToPdf(
-                $backend,
-                $streamFactory,
-            ),
+            new IsEqual(
+                new Frontend\DOMDocumentToPdf(
+                    $backend,
+                    $streamFactory,
+                ),
+            )
         );
 
-        self::assertEquals(
+        self::assertThat(
             $this->container->get('knplabs.snappy.core.frontend.htmlfiletopdf.myBackend'),
-            new Frontend\HtmlFileToPdf(
+            new IsEqual(new Frontend\HtmlFileToPdf(
                 $backend,
                 $streamFactory,
-            ),
+            )),
         );
 
-        self::assertEquals(
+        self::assertThat(
             $this->container->get('knplabs.snappy.core.frontend.htmltopdf.myBackend'),
-            new Frontend\HtmlToPdf(
+            new IsEqual(new Frontend\HtmlToPdf(
                 $backend,
                 $streamFactory,
-            ),
+            )),
         );
 
-        self::assertEquals(
+        self::assertThat(
             $this->container->get('knplabs.snappy.core.frontend.streamtopdf.myBackend'),
-            new Frontend\StreamToPdf(
-                $backend,
-                $streamFactory,
+            new IsEqual(
+                new Frontend\StreamToPdf(
+                    $backend,
+                    $streamFactory,
+                )
             ),
         );
     }

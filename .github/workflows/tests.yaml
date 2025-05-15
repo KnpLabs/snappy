@@ -5,15 +5,18 @@ on:
 
 jobs:
   php-cs-fixer:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
+    env:
+      PHP_CS_FIXER_IGNORE_ENV: 1
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
       - run: composer install
       - name: php-cs-fixer
         run: vendor/bin/php-cs-fixer fix --dry-run --diff --show-progress=dots
+
   packages:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: php-cs-fixer
     outputs:
       packages: ${{ steps.script.outputs.result }}
@@ -46,7 +49,7 @@ jobs:
             return packages;
 
   package:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: packages
     strategy:
       matrix:
@@ -63,6 +66,8 @@ jobs:
         # with:
         #   sparse-checkout: |
         #     ${{ matrix.path }}
+      - run: sudo apt-get update
+      - run: sudo apt-get install ghostscript --yes
       - uses: shivammathur/setup-php@v2
       - run: composer install
       - run: vendor/bin/phpunit

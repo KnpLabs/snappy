@@ -6,13 +6,13 @@ namespace KNPLabs\Snappy\Core\Tests\Stream;
 
 use KNPLabs\Snappy\Core\Stream\FileStream;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class FileStreamTest extends TestCase
 {
     private ?FileStream $stream = null;

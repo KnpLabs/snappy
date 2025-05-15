@@ -37,7 +37,7 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
     public function generateFromHtmlFile(\SplFileInfo $file): StreamInterface
     {
         $dompdf = $this->buildDompdf();
-        $dompdf->loadHtmlFile($file->getPath());
+        $dompdf->loadHtmlFile($file->getPathname());
 
         return $this->createStream($dompdf);
     }
@@ -58,7 +58,7 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
     private function compileConstructOptions(): Dompdf\Options
     {
         $options = new Dompdf\Options(
-            \is_array($this->options->extraOptions['construct'])
+            \is_array($this->options->extraOptions['construct'] ?? null)
                 ? $this->options->extraOptions['construct']
                 : null
         );
@@ -77,7 +77,7 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
      */
     private function compileOutputOptions(): array
     {
-        $options = $this->options->extraOptions['output'];
+        $options = $this->options->extraOptions['output'] ?? null;
 
         if (false === \is_array($options)) {
             $options = [];
@@ -88,6 +88,7 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
 
     private function createStream(Dompdf\Dompdf $dompdf): StreamInterface
     {
+        $dompdf->render();
         $output = $dompdf->output($this->compileOutputOptions());
 
         return $this
