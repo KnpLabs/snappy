@@ -65,7 +65,7 @@ final class SnappyExtensionTest extends TestCase
                     'myBackend' => [
                         'dompdf' => [
                             'options' => [
-                                'pageOrientation' => PageOrientation::LANDSCAPE->value,
+                                'pageOrientation' => 'landscape',
                                 'extraOptions' => [
                                     'construct' => [
                                         'tempDir' => '/tmp',
@@ -123,7 +123,7 @@ final class SnappyExtensionTest extends TestCase
                 new DompdfAdapter(
                     $factory,
                     new Options(
-                        PageOrientation::LANDSCAPE,
+                        PageOrientation::Landscape,
                         [
                             'construct' => ['tempDir' => '/tmp'],
                             'output' => ['compress' => '1'],

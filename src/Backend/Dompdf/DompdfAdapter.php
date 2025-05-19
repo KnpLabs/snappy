@@ -65,7 +65,9 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
 
         if (null !== $this->options->pageOrientation) {
             $options->setDefaultPaperOrientation(
-                $this->options->pageOrientation->value
+                strtolower(
+                    $this->options->pageOrientation->name
+                )
             );
         }
 
