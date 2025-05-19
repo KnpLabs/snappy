@@ -6,17 +6,21 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class MarginRight implements ExtraOption
+/**
+ * Set the page right margin.
+ *
+ * Default: 10mm
+ */
+final class MarginRight extends ExtraOption
 {
-    public function __construct(public readonly string $margin) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $margin
+     */
+    public function __construct(string $margin)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--margin-right', $this->margin];
+        parent::__construct(
+            repeatable: false,
+            command: ['--margin-right', $margin],
+        );
     }
 }

@@ -7,20 +7,18 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 /**
- *  Set paper size to: A4, Letter, etc.
- *
- *  Default: A4
+ * Use this SVG file when rendering checked radiobuttons.
  */
-final class PageSize extends ExtraOption
+final class RadioButtonCheckedSvg extends ExtraOption
 {
     /**
-     * @param non-empty-string $size
+     * @param non-empty-string $path
      */
-    public function __construct(string $size)
+    public function __construct(string $path)
     {
         parent::__construct(
             repeatable: false,
-            command: ['--page-size', $size]
+            command: ['--radiobutton-checked-svg', $path],
         );
     }
 }

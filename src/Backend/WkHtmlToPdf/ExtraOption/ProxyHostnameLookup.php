@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class ProxyHostnameLookup implements ExtraOption
+/**
+ * Use the proxy for resolving hostnames.
+ */
+final class ProxyHostnameLookup extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--proxy-hostname-lookup'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--proxy-hostname-lookup']
+        );
     }
 }

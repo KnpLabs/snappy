@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class Password implements ExtraOption
+/**
+ * HTTP Authentication password.
+ */
+final class Password extends ExtraOption
 {
-    public function __construct(private readonly string $password) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $password
+     */
+    public function __construct(string $password)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--password', $this->password];
+        parent::__construct(
+            repeatable: false,
+            command: ['--password', $password]
+        );
     }
 }

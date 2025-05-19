@@ -6,17 +6,18 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class HeaderSpacing implements ExtraOption
+/**
+ * Spacing between header and content in mm.
+ *
+ * Default: 0
+ */
+final class HeaderSpacing extends ExtraOption
 {
-    public function __construct(public readonly int $spacing) {}
-
-    public function isRepeatable(): bool
+    public function __construct(public readonly int $millimeters)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--header-spacing', $this->spacing];
+        parent::__construct(
+            repeatable: false,
+            command: ['--header-spacing', (string) $millimeters]
+        );
     }
 }

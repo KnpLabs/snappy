@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class NoBackground implements ExtraOption
+/**
+ * Do not print background.
+ */
+final class NoBackground extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--no-background'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--no-background']
+        );
     }
 }

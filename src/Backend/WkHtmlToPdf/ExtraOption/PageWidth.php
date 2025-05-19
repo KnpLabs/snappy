@@ -6,17 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class PageWidth implements ExtraOption
+final class PageWidth extends ExtraOption
 {
-    public function __construct(public readonly string $width) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $width
+     */
+    public function __construct(public readonly string $width)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--page-width', $this->width];
+        parent::__construct(
+            repeatable: false,
+            command: ['--page-width', $width]
+        );
     }
 }

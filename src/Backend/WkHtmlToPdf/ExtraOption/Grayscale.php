@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class Grayscale implements ExtraOption
+/**
+ * PDF will be generated in grayscale.
+ */
+final class Grayscale extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--grayscale'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--grayscale']
+        );
     }
 }

@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class CustomHeaderPropagation implements ExtraOption
+/**
+ * Add HTTP headers specified by CustomHeader for each resource request.
+ */
+final class CustomHeaderPropagation extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--custom-header-propagation'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--custom-header-propagation'],
+        );
     }
 }

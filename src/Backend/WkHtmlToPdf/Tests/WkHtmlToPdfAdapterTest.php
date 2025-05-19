@@ -9,6 +9,7 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfAdapter;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfFactory;
 use KNPLabs\Snappy\Core\Backend\Options;
 use Nyholm\Psr7\Uri;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -17,9 +18,8 @@ use Psr\Http\Message\UriFactoryInterface;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 final class WkHtmlToPdfAdapterTest extends TestCase
 {
     private WkHtmlToPdfFactory $factory;
@@ -96,9 +96,12 @@ final class WkHtmlToPdfAdapterTest extends TestCase
         $testFilePath = $this->tempDir.'/test_with_options.html';
         file_put_contents($testFilePath, $htmlContent);
 
-        $options = new Options(null, [
-            new Title('Test PDF Title'),
-        ]);
+        $options = new Options(
+            null,
+            [
+                new Title('Test PDF Title'),
+            ]
+        );
 
         $this->factory = new WkHtmlToPdfFactory(
             'wkhtmltopdf',

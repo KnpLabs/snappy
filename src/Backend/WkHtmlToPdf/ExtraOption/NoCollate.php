@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class NoCollate implements ExtraOption
+/**
+ * Do not collate when printing multiple copie.
+ */
+final class NoCollate extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--no-collate'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--no-collate']
+        );
     }
 }

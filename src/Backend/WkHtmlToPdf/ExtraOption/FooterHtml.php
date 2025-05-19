@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class FooterHtml implements ExtraOption
+/**
+ *  Adds a html footer.
+ */
+final class FooterHtml extends ExtraOption
 {
-    public function __construct(public readonly string $uri) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $url
+     */
+    public function __construct(string $url)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--footer-html', $this->uri];
+        parent::__construct(
+            repeatable: false,
+            command: ['--footer-html', $url]
+        );
     }
 }

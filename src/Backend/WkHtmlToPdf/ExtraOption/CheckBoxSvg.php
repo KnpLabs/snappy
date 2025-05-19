@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class CheckBoxSvg implements ExtraOption
+/**
+ * Use this SVG file when rendering unchecked checkboxes.
+ */
+final class CheckBoxSvg extends ExtraOption
 {
-    public function __construct(private readonly string $path) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $path
+     */
+    public function __construct(string $path)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--checkbox-svg', $this->path];
+        parent::__construct(
+            repeatable: false,
+            command: ['--checkbox-svg', $path],
+        );
     }
 }

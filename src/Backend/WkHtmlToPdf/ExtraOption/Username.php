@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class Username implements ExtraOption
+/**
+ *  HTTP Authentication username.
+ */
+final class Username extends ExtraOption
 {
-    public function __construct(private readonly string $username) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $username
+     */
+    public function __construct(string $username)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--username', $this->username];
+        parent::__construct(
+            repeatable: false,
+            command: ['--username', $username]
+        );
     }
 }

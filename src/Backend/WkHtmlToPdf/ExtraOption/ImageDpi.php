@@ -6,20 +6,20 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class ImageDpi implements ExtraOption
+/**
+ * When embedding images scale them down to this dpi
+ * Default: 600.
+ */
+final class ImageDpi extends ExtraOption
 {
     /**
-     * @param positive-int $dpi
+     * @param int<0, max> $dpi
      */
-    public function __construct(public readonly int $dpi) {}
-
-    public function isRepeatable(): bool
+    public function __construct(int $dpi)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--image-dpi', $this->dpi];
+        parent::__construct(
+            repeatable: false,
+            command: ['--image-dpi', (string) $dpi]
+        );
     }
 }

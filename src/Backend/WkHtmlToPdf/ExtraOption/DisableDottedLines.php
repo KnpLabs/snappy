@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class DisableDottedLines implements ExtraOption
+/**
+ * Do not use dotted lines in the toc.
+ */
+final class DisableDottedLines extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--disable-dotted-lines'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--disable-dotted-lines'],
+        );
     }
 }

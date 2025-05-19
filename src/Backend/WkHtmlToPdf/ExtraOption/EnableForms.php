@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class EnableForms implements ExtraOption
+/**
+ * Turn HTML form fields into pdf form fields.
+ */
+final class EnableForms extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--enable-forms'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--enable-forms']
+        );
     }
 }

@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class DefaultHeader implements ExtraOption
+/**
+ * Add a default header, with the name of the page to the left, and the page number to the right.
+ */
+final class DefaultHeader extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--default-header'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--default-header'],
+        );
     }
 }

@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class Encoding implements ExtraOption
+/**
+ * Set the default text encoding, for input.
+ */
+final class Encoding extends ExtraOption
 {
-    public function __construct(private readonly string $encoding) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $encoding
+     */
+    public function __construct(string $encoding)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--encoding', $this->encoding];
+        parent::__construct(
+            repeatable: false,
+            command: ['--encoding', $encoding]
+        );
     }
 }

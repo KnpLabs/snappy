@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class FooterRight implements ExtraOption
+/**
+ * Right aligned header text.
+ */
+final class FooterRight extends ExtraOption
 {
-    public function __construct(public readonly string $text) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $text
+     */
+    public function __construct(string $text)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--footer-right', $this->text];
+        parent::__construct(
+            repeatable: false,
+            command: ['--footer-right', $text]
+        );
     }
 }

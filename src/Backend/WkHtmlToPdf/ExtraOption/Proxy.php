@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class Proxy implements ExtraOption
+/**
+ * Use a proxy.
+ */
+final class Proxy extends ExtraOption
 {
-    public function __construct(private readonly string $proxy) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $proxy
+     */
+    public function __construct(string $proxy)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--proxy', $this->proxy];
+        parent::__construct(
+            repeatable: false,
+            command: ['--proxy', $proxy]
+        );
     }
 }

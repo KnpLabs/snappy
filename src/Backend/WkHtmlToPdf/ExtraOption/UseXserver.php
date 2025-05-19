@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class UseXserver implements ExtraOption
+/**
+ * Use the X server (some plugins and other stuff might not work without X11).
+ */
+final class UseXserver extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--use-xserver'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--use-xserver'],
+        );
     }
 }

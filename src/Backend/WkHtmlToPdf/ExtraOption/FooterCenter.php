@@ -6,17 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class FooterCenter implements ExtraOption
+/**
+ * Centered footer text.
+ */
+final class FooterCenter extends ExtraOption
 {
-    public function __construct(public readonly string $text) {}
-
-    public function isRepeatable(): bool
+    public function __construct(string $text)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--footer-center', $this->text];
+        parent::__construct(
+            repeatable: false,
+            command: ['--footer-center', $text],
+        );
     }
 }

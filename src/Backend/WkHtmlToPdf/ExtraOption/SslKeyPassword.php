@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class SslKeyPassword implements ExtraOption
+/**
+ * Password to ssl client cert private key.
+ */
+final class SslKeyPassword extends ExtraOption
 {
-    public function __construct(private readonly string $password) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $password
+     */
+    public function __construct(string $password)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--ssl-key-password', $this->password];
+        parent::__construct(
+            repeatable: false,
+            command: ['--ssl-key-password', $password]
+        );
     }
 }

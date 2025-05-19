@@ -6,17 +6,18 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class OutlineDepth implements ExtraOption
+/**
+ * Set the depth of the outline.
+ *
+ * Default: 4
+ */
+final class OutlineDepth extends ExtraOption
 {
-    public function __construct(private readonly int $depth) {}
-
-    public function isRepeatable(): bool
+    public function __construct(int $depth)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--outline-depth', $this->depth];
+        parent::__construct(
+            repeatable: false,
+            command: ['--outline-depth', (string) $depth]
+        );
     }
 }

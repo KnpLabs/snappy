@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class Post implements ExtraOption
+/**
+ * Add an additional post field.
+ */
+final class Post extends ExtraOption
 {
-    public function __construct(private readonly string $name, private readonly string $value) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $name
+     */
+    public function __construct(string $name, string $value)
     {
-        return true;
-    }
-
-    public function compile(): array
-    {
-        return ['--post', $this->name, $this->value];
+        parent::__construct(
+            repeatable: true,
+            command: ['--post', $name, $value]
+        );
     }
 }

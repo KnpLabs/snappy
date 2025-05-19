@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class FooterLeft implements ExtraOption
+/**
+ * Left aligned footer text.
+ */
+final class FooterLeft extends ExtraOption
 {
-    public function __construct(public readonly string $text) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $text
+     */
+    public function __construct(string $text)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--footer-left', $this->text];
+        parent::__construct(
+            repeatable: false,
+            command: ['--footer-left', $text]
+        );
     }
 }

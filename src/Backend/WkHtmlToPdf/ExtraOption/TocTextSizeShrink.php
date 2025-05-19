@@ -6,17 +6,18 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class TocTextSizeShrink implements ExtraOption
+/**
+ * For each level of headings in the toc the font is scaled by this factor.
+ *
+ * Default: 0.8
+ */
+final class TocTextSizeShrink extends ExtraOption
 {
-    public function __construct(private readonly float $scale) {}
-
-    public function isRepeatable(): bool
+    public function __construct(float $scale)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--toc-text-size-shrink', $this->scale];
+        parent::__construct(
+            repeatable: false,
+            command: ['--toc-text-size-shrink', (string) $scale]
+        );
     }
 }

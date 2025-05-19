@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class Allow implements ExtraOption
+/**
+ *  Allow the file or files from the specified folder to be loaded.
+ */
+final class Allow extends ExtraOption
 {
-    public function __construct(private readonly string $path) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $path
+     */
+    public function __construct(string $path)
     {
-        return true;
-    }
-
-    public function compile(): array
-    {
-        return ['--allow', $this->path];
+        parent::__construct(
+            repeatable: true,
+            command: ['--allow', $path]
+        );
     }
 }

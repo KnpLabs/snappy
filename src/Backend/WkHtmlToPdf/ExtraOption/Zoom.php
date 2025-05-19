@@ -6,17 +6,18 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class Zoom implements ExtraOption
+/**
+ * Use this zoom factor.
+ *
+ * Default: 1
+ */
+final class Zoom extends ExtraOption
 {
-    public function __construct(private readonly float $float) {}
-
-    public function isRepeatable(): bool
+    public function __construct(float $float)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--zoom', $this->float];
+        parent::__construct(
+            repeatable: false,
+            command: ['--zoom', (string) $float]
+        );
     }
 }

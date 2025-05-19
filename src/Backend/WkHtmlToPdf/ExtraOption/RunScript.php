@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class RunScript implements ExtraOption
+/**
+ * Run this additional javascript after the page is done loading.
+ */
+final class RunScript extends ExtraOption
 {
-    public function __construct(private readonly string $js) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $javascript
+     */
+    public function __construct(string $javascript)
     {
-        return true;
-    }
-
-    public function compile(): array
-    {
-        return ['--run-script', $this->js];
+        parent::__construct(
+            repeatable: true,
+            command: ['--run-script', $javascript]
+        );
     }
 }

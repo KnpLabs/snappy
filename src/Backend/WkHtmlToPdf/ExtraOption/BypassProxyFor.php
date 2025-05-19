@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class BypassProxyFor implements ExtraOption
+/**
+ * Bypass proxy for host.
+ */
+final class BypassProxyFor extends ExtraOption
 {
-    public function __construct(private readonly string $value) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $value
+     */
+    public function __construct(string $value)
     {
-        return true;
-    }
-
-    public function compile(): array
-    {
-        return ['--bypass-proxy-for', $this->value];
+        parent::__construct(
+            repeatable: true,
+            command: ['--bypass-proxy-for', $value],
+        );
     }
 }

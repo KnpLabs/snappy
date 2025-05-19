@@ -87,18 +87,22 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
 
         foreach ($options->extraOptions as $option) {
             if (!$option instanceof ExtraOption) {
-                throw new \InvalidArgumentException(\sprintf(
-                    'Invalid option type provided. Expected "%s", received "%s".',
-                    ExtraOption::class,
-                    'object' === \gettype($option) ? $option::class : \gettype($option),
-                ));
+                throw new \InvalidArgumentException(
+                    \sprintf(
+                        'Invalid option type provided. Expected "%s", received "%s".',
+                        ExtraOption::class,
+                        get_debug_type($option),
+                    )
+                );
             }
 
             if (\in_array($option::class, $optionTypes, true) && !$option->isRepeatable()) {
-                throw new \InvalidArgumentException(\sprintf(
-                    'Duplicate option type provided: "%s".',
-                    $option::class,
-                ));
+                throw new \InvalidArgumentException(
+                    \sprintf(
+                        'Duplicate option type provided: "%s".',
+                        $option::class,
+                    )
+                );
             }
 
             $optionTypes[] = $option::class;
@@ -115,11 +119,11 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
             fn (array $carry, ExtraOption $extraOption): array => $extraOption instanceof ExtraOption\Orientation && $this->options->pageOrientation instanceof PageOrientation
                 ? [
                     ...$carry,
-                    ...ExtraOption\Orientation::fromPageOrientation($this->options->pageOrientation)->compile(),
+                    ...(new ExtraOption\Orientation($this->options->pageOrientation))->getCommand(),
                 ]
                 : [
                     ...$carry,
-                    ...$extraOption->compile(),
+                    ...$extraOption->getCommand(),
                 ],
             [],
         );

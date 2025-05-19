@@ -6,17 +6,21 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class FooterFontName implements ExtraOption
+/**
+ * Set footer font name.
+ *
+ * Default: Arial
+ */
+final class FooterFontName extends ExtraOption
 {
-    public function __construct(public readonly string $fontName) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $fontName
+     */
+    public function __construct(string $fontName)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--footer-font-name', $this->fontName];
+        parent::__construct(
+            repeatable: false,
+            command: ['--footer-font-name', $fontName],
+        );
     }
 }

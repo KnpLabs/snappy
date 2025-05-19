@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class EnablePlugins implements ExtraOption
+/**
+ * Enable installed plugins (plugins will likely not work).
+ */
+final class EnablePlugins extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--enable-plugins'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--enable-plugins']
+        );
     }
 }

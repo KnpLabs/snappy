@@ -6,20 +6,21 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class PageOffset implements ExtraOption
+/**
+ * Set the starting page number.
+ *
+ * Default: 0
+ */
+final class PageOffset extends ExtraOption
 {
     /**
-     * @param non-negative-int $offset
+     * @param int<0, max> $offset
      */
-    public function __construct(private readonly int $offset) {}
-
-    public function isRepeatable(): bool
+    public function __construct(int $offset)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--page-offset', $this->offset];
+        parent::__construct(
+            repeatable: false,
+            command: ['--page-offset', (string) $offset]
+        );
     }
 }
