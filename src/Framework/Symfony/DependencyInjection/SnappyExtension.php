@@ -161,7 +161,11 @@ final class SnappyExtension extends Extension
                 );
             }
 
-            $arguments['$pageOrientation'] = PageOrientation::from($configuration['pageOrientation']);
+            $arguments['$pageOrientation'] = match ($configuration['pageOrientation']) {
+                strtolower(PageOrientation::Landscape->name) => PageOrientation::Landscape,
+                strtolower(PageOrientation::Portrait->name) => PageOrientation::Portrait,
+                default => PageOrientation::Portrait,
+            };
         }
 
         if (isset($configuration['extraOptions'])) {

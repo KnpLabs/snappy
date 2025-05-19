@@ -36,7 +36,7 @@ final class Configuration implements ConfigurationInterface
                     ...array_map(
                         static fn (BackendConfigurationFactory $factory): array => [
                             $factory->getKey() => [
-                                'pageOrientation' => PageOrientation::PORTRAIT->value,
+                                'pageOrientation' => strtolower(PageOrientation::Portrait->name),
                                 'options' => [],
                                 ...$factory->getExample(),
                             ],
@@ -77,7 +77,9 @@ final class Configuration implements ConfigurationInterface
             ->enumNode('pageOrientation')
             ->values(
                 array_map(
-                    static fn (PageOrientation $pageOrientation): string => $pageOrientation->value,
+                    static fn (PageOrientation $pageOrientation): string => strtolower(
+                        $pageOrientation->name
+                    ),
                     PageOrientation::cases(),
                 )
             )
