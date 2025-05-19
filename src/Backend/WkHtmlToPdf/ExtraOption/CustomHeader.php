@@ -6,19 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class CustomHeader implements ExtraOption
+/**
+ * Set an additional HTTP header.
+ */
+final class CustomHeader extends ExtraOption
 {
-    public function __construct(private readonly string $name, private readonly string $value)
+    /**
+     * @param non-empty-string $name
+     */
+    public function __construct(string $name, string $value)
     {
-    }
-
-    public function isRepeatable(): bool
-    {
-        return true;
-    }
-
-    public function compile(): array
-    {
-        return ['--custom-header', $this->name, $this->value];
+        parent::__construct(
+            repeatable: true,
+            command: ['--custom-header', $name, $value],
+        );
     }
 }

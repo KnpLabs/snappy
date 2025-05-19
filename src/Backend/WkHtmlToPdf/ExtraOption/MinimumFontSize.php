@@ -6,22 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class MinimumFontSize implements ExtraOption
+final class MinimumFontSize extends ExtraOption
 {
     /**
-     * @param non-negative-int $size
+     * @param int<1, max> $size
      */
-    public function __construct(private readonly int $size)
+    public function __construct(int $size)
     {
-    }
-
-    public function isRepeatable(): bool
-    {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--minimum-font-size', $this->size];
+        parent::__construct(
+            repeatable: false,
+            command: ['--minimum-font-size', (string) $size],
+        );
     }
 }

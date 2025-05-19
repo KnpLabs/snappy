@@ -1,0 +1,8 @@
+---
+runs:
+  using: 'composite'
+  steps:
+    - run: sudo apt-get update
+      shell: bash
+    - run: sudo apt-get install xvfb libfontconfig wkhtmltopdf --yes
+      shell: bash

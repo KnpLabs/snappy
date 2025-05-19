@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class KeepRelativeLinks implements ExtraOption
+/**
+ * Keep relative external links as relative external links.
+ */
+final class KeepRelativeLinks extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--keep-relative-links'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--keep-relative-links']
+        );
     }
 }

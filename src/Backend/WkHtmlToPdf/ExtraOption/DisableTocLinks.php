@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class DisableTocLinks implements ExtraOption
+/**
+ * Do not link from toc to sections.
+ */
+final class DisableTocLinks extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--disable-toc-links'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--disable-toc-links']
+        );
     }
 }

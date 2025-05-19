@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class EnableTocBackLinks implements ExtraOption
+/**
+ * Link from section header to toc.
+ */
+final class EnableTocBackLinks extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--enable-toc-back-links'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--enable-toc-back-links']
+        );
     }
 }

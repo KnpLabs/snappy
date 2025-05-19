@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class DisableInternalLinks implements ExtraOption
+/**
+ * Do not make local links.
+ */
+final class DisableInternalLinks extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--disable-internal-links'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--disable-internal-links'],
+        );
     }
 }

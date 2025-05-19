@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class DisableExternalLinks implements ExtraOption
+/**
+ * Do not make links to remote web pages.
+ */
+final class DisableExternalLinks extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--disable-external-links'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--disable-external-links']
+        );
     }
 }

@@ -9,13 +9,16 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfAdapter;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfFactory;
 use KNPLabs\Snappy\Core\Backend\Options;
 use Nyholm\Psr7\Uri;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriFactoryInterface;
-use SplFileInfo;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 
+/**
+ * @internal
+ */
+#[CoversNothing]
 final class WkHtmlToPdfAdapterTest extends TestCase
 {
     private WkHtmlToPdfFactory $factory;
@@ -43,32 +46,33 @@ final class WkHtmlToPdfAdapterTest extends TestCase
     public function testGenerateFromHtmlFile(): void
     {
         $htmlContent = '<html><body><h1>Test PDF</h1></body></html>';
-        $testFilePath = $this->tempDir . '/test.html';
+        $testFilePath = $this->tempDir.'/test.html';
         file_put_contents($testFilePath, $htmlContent);
 
         $this->uriFactory
             ->method('createUri')
             ->with($testFilePath)
-            ->willReturn(new Uri($testFilePath));
+            ->willReturn(new Uri($testFilePath))
+        ;
 
         $stream = $this->createMock(StreamInterface::class);
         $stream->method('getContents')->willReturn('%PDF-1.4 content');
 
         $this->streamFactory
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('createStreamFromResource')
-            ->willReturn($stream);
-
+            ->willReturn($stream)
+        ;
 
         try {
             $resultStream = $this->wkHtmlToPdfAdapter->generateFromHtmlFile(new \SplFileInfo($testFilePath));
         } catch (\Exception $e) {
-            $this->fail("Erreur lors de la génération du PDF : " . $e->getMessage());
+            self::fail('Erreur lors de la génération du PDF : '.$e->getMessage());
         }
 
-        $this->assertNotNull($resultStream);
-        $this->assertInstanceOf(StreamInterface::class, $resultStream);
-        $this->assertNotEmpty($resultStream->getContents());
+        self::assertNotNull($resultStream);
+        self::assertInstanceOf(StreamInterface::class, $resultStream);
+        self::assertNotEmpty($resultStream->getContents());
 
         unlink($testFilePath);
     }
@@ -78,17 +82,17 @@ final class WkHtmlToPdfAdapterTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('File not found:');
 
-        $this->wkHtmlToPdfAdapter->generateFromHtmlFile(new SplFileInfo($this->tempDir . '/nonexistent.html'));
+        $this->wkHtmlToPdfAdapter->generateFromHtmlFile(new \SplFileInfo($this->tempDir.'/nonexistent.html'));
     }
 
     public function testGenerateWithAdditionalOptions(): void
     {
         $htmlContent = '<html><head><title>Test PDF</title></head><body><h1>Test PDF</h1></body></html>';
-        $testFilePath = $this->tempDir . '/test_with_options.html';
+        $testFilePath = $this->tempDir.'/test_with_options.html';
         file_put_contents($testFilePath, $htmlContent);
 
         $options = new Options(null, [
-            new Title('Test PDF Title')
+            new Title('Test PDF Title'),
         ]);
 
         $this->factory = new WkHtmlToPdfFactory(
@@ -103,21 +107,22 @@ final class WkHtmlToPdfAdapterTest extends TestCase
         $this->uriFactory
             ->method('createUri')
             ->with($testFilePath)
-            ->willReturn(new Uri(realpath($testFilePath)));
+            ->willReturn(new Uri(realpath($testFilePath)))
+        ;
 
         $stream = $this->createMock(StreamInterface::class);
         $stream->method('getContents')->willReturn('%PDF-1.4 content');
 
         $this->streamFactory
             ->method('createStreamFromResource')
-            ->willReturn($stream);
+            ->willReturn($stream)
+        ;
 
+        $resultStream = $this->wkHtmlToPdfAdapter->generateFromHtmlFile(new \SplFileInfo($testFilePath));
 
-        $resultStream = $this->wkHtmlToPdfAdapter->generateFromHtmlFile(new SplFileInfo($testFilePath));
-
-        $this->assertNotNull($resultStream);
-        $this->assertInstanceOf(StreamInterface::class, $resultStream);
-        $this->assertNotEmpty($resultStream->getContents());
+        self::assertNotNull($resultStream);
+        self::assertInstanceOf(StreamInterface::class, $resultStream);
+        self::assertNotEmpty($resultStream->getContents());
 
         unlink($testFilePath);
     }

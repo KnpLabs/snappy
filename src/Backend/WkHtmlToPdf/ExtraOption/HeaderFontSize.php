@@ -6,20 +6,21 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class HeaderFontSize implements ExtraOption
+/**
+ *  Set header font size.
+ *
+ *  Default 12
+ */
+final class HeaderFontSize extends ExtraOption
 {
     /**
      * @param positive-int $size
      */
-    public function __construct(public readonly int $size) {}
-
-    public function isRepeatable(): bool
+    public function __construct(int $size)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--header-font-size', $this->size];
+        parent::__construct(
+            repeatable: false,
+            command: ['--header-font-size', (string) $size]
+        );
     }
 }

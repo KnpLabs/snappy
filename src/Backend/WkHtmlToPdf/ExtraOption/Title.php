@@ -6,17 +6,20 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class Title implements ExtraOption
+/**
+ * The title of the generated pdf file
+ * Default: the title of the first document is used if not specified.
+ */
+final class Title extends ExtraOption
 {
-    public function __construct(public readonly string $title) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $title
+     */
+    public function __construct(string $title)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--title', $this->title];
+        parent::__construct(
+            repeatable: false,
+            command: ['--title', $title]
+        );
     }
 }

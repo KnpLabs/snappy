@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class DisableJavascript implements ExtraOption
+/**
+ * Do not allow web pages to run javascript.
+ */
+final class DisableJavascript extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--disable-javascript'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--disable-javascript'],
+        );
     }
 }

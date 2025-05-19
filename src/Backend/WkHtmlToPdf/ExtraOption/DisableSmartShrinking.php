@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class DisableSmartShrinking implements ExtraOption
+/**
+ *  Disable the intelligent shrinking strategy used by WebKit that makes the pixel/dpi ratio non-constant.
+ */
+final class DisableSmartShrinking extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--disable-smart-shrinking'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--disable-smart-shrinking']
+        );
     }
 }

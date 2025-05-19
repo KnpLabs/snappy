@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class NoStopSlowScripts implements ExtraOption
+/**
+ * Do not Stop slow running javascripts.
+ */
+final class NoStopSlowScripts extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--no-stop-slow-scripts'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--no-stop-slow-scripts']
+        );
     }
 }

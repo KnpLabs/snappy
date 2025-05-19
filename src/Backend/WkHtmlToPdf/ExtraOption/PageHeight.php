@@ -6,17 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class PageHeight implements ExtraOption
+final class PageHeight extends ExtraOption
 {
-    public function __construct(public readonly string $height) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $height
+     */
+    public function __construct(string $height)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--page-height', $this->height];
+        parent::__construct(
+            repeatable: false,
+            command: ['--page-height', $height],
+        );
     }
 }

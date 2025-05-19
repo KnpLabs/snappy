@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class HeaderLeft implements ExtraOption
+/**
+ * Left aligned header text.
+ */
+final class HeaderLeft extends ExtraOption
 {
-    public function __construct(public readonly string $text) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $text
+     */
+    public function __construct(string $text)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--header-left', $this->text];
+        parent::__construct(
+            repeatable: false,
+            command: ['--header-left', $text]
+        );
     }
 }

@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class LowQuality implements ExtraOption
+/**
+ * Generates lower quality pdf/ps. Useful to shrink the result document space.
+ */
+final class LowQuality extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--lowquality'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--lowquality']
+        );
     }
 }

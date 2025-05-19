@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class NoPdfCompression implements ExtraOption
+/**
+ * Do not use lossless compression on pdf objects.
+ */
+final class NoPdfCompression extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--no-pdf-compression'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--no-pdf-compression']
+        );
     }
 }

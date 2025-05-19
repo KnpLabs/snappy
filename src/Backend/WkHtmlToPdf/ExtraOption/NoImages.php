@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class NoImages implements ExtraOption
+/**
+ * Do not load or print images.
+ */
+final class NoImages extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--no-images'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--no-images']
+        );
     }
 }

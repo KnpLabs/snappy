@@ -6,15 +6,13 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class Toc implements ExtraOption
+final class Toc extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['toc'];
+        parent::__construct(
+            repeatable: false,
+            command: ['toc'],
+        );
     }
 }

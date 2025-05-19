@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class Replace implements ExtraOption
+/**
+ * Replace $name with $value in header and footer.
+ */
+final class Replace extends ExtraOption
 {
-    public function __construct(public readonly string $name, private readonly string $value) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $name
+     */
+    public function __construct(string $name, string $value)
     {
-        return true;
-    }
-
-    public function compile(): array
-    {
-        return ['--replace', $this->name, $this->value];
+        parent::__construct(
+            repeatable: true,
+            command: ['--replace', $name, $value]
+        );
     }
 }

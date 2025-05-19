@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class MarginTop implements ExtraOption
+/**
+ * Set the page top margin.
+ */
+final class MarginTop extends ExtraOption
 {
-    public function __construct(public readonly string $margin) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $margin
+     */
+    public function __construct(string $margin)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--margin-top', $this->margin];
+        parent::__construct(
+            repeatable: false,
+            command: ['--margin-top', $margin],
+        );
     }
 }

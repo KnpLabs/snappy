@@ -6,19 +6,20 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class PostFile implements ExtraOption
+/**
+ *  Post an additional file.
+ */
+final class PostFile extends ExtraOption
 {
-    public function __construct(private readonly string $name, private readonly string $value)
+    /**
+     * @param non-empty-string $name
+     * @param non-empty-string $path
+     */
+    public function __construct(string $name, string $path)
     {
-    }
-
-    public function isRepeatable(): bool
-    {
-        return true;
-    }
-
-    public function compile(): array
-    {
-        return ['--post-file', $this->name, $this->value];
+        parent::__construct(
+            repeatable: true,
+            command: ['--post-file', $name, $path]
+        );
     }
 }

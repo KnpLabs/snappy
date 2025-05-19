@@ -6,17 +6,21 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class MarginLeft implements ExtraOption
+/**
+ * Set the page left margin.
+ *
+ * Default: 10mm
+ */
+final class MarginLeft extends ExtraOption
 {
-    public function __construct(public readonly string $margin) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $margin
+     */
+    public function __construct(string $margin)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--margin-left', $this->margin];
+        parent::__construct(
+            repeatable: false,
+            command: ['--margin-left', $margin],
+        );
     }
 }

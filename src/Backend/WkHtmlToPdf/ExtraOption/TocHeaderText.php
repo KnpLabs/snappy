@@ -6,17 +6,21 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class TocHeaderText implements ExtraOption
+/**
+ * The header text of the toc.
+ *
+ * Default: Table of Contents
+ */
+final class TocHeaderText extends ExtraOption
 {
-    public function __construct(private readonly string $text) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $text
+     */
+    public function __construct(string $text)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--toc-header-text', $this->text];
+        parent::__construct(
+            repeatable: false,
+            command: ['--toc-header-text', $text]
+        );
     }
 }

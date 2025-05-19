@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class HeaderLine implements ExtraOption
+/**
+ * Display line below the header.
+ */
+final class HeaderLine extends ExtraOption
 {
-    public function isRepeatable(): bool
-    {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--header-line'];
+    public function __construct(
+    ) {
+        parent::__construct(
+            repeatable: false,
+            command: ['--header-line']
+        );
     }
 }

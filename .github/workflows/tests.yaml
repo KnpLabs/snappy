@@ -66,8 +66,8 @@ jobs:
         # with:
         #   sparse-checkout: |
         #     ${{ matrix.path }}
-      - run: sudo apt-get update
-      - run: sudo apt-get install ghostscript --yes
+      - uses: ./.github/actions/install-ghostscript
+      - uses: ./.github/actions/install-wkhtmltopdf
       - uses: shivammathur/setup-php@v2
       - run: composer install
       - run: vendor/bin/phpunit

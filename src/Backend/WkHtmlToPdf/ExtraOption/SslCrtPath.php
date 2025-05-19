@@ -6,19 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class SslCrtPath implements ExtraOption
+/**
+ * Path to the ssl client cert public key in OpenSSL PEM format, optionally followed by intermediate ca and trusted certs.
+ */
+final class SslCrtPath extends ExtraOption
 {
-    public function __construct(private readonly string $path)
+    /**
+     * @param non-empty-string $path
+     */
+    public function __construct(string $path)
     {
-    }
-
-    public function isRepeatable(): bool
-    {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--ssl-crt-path', $this->path];
+        parent::__construct(
+            repeatable: false,
+            command: ['--ssl-crt-path', $path]
+        );
     }
 }

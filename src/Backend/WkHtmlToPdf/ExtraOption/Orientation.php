@@ -7,27 +7,25 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
 
-final class Orientation implements ExtraOption
+/**
+ * Set orientation to Landscape or Portrait.
+ *
+ * Default: Portrait
+ */
+final class Orientation extends ExtraOption
 {
-    public function __construct(private readonly ExtraOption\Orientation\Value $orientation) {}
-
-    public function isRepeatable(): bool
+    public function __construct(PageOrientation $pageOrientation)
     {
-        return false;
-    }
+        parent::__construct(
+            repeatable: false,
+            command: [
+                '--orientation',
 
-    public static function fromPageOrientation(PageOrientation $pageOrientation): self
-    {
-        return new self(
-            match ($pageOrientation) {
-                PageOrientation::PORTRAIT => ExtraOption\Orientation\Value::PORTRAIT,
-                PageOrientation::LANDSCAPE => ExtraOption\Orientation\Value::LANDSCAPE,
-            }
+                match ($pageOrientation) {
+                    PageOrientation::PORTRAIT => 'Portrait',
+                    PageOrientation::LANDSCAPE => 'Landscape',
+                },
+            ],
         );
-    }
-
-    public function compile(): array
-    {
-        return ['--orientation', $this->orientation->value];
     }
 }

@@ -6,20 +6,21 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class FooterFontSize implements ExtraOption
+/**
+ * Set footer font size.
+ *
+ * Default: 12
+ */
+final class FooterFontSize extends ExtraOption
 {
     /**
      * @param positive-int $size
      */
-    public function __construct(public readonly int $size) {}
-
-    public function isRepeatable(): bool
+    public function __construct(int $size)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--footer-font-size', $this->size];
+        parent::__construct(
+            repeatable: false,
+            command: ['--footer-font-size', (string) $size],
+        );
     }
 }

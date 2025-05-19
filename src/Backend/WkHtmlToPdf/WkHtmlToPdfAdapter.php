@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Backend\WkHtmlToPdf;
 
-use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 use KNPLabs\Snappy\Core\Backend\Adapter\HtmlFileToPdf;
 use KNPLabs\Snappy\Core\Backend\Adapter\Reconfigurable;
 use KNPLabs\Snappy\Core\Backend\Adapter\UriToPdf;
@@ -14,10 +13,8 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
-use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use SplFileInfo;
-use Exception;
+use Symfony\Component\Process\Process;
 
 final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
 {
@@ -44,11 +41,11 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
         $this->options = $options;
     }
 
-    public function generateFromHtmlFile(SplFileInfo $file): StreamInterface
+    public function generateFromHtmlFile(\SplFileInfo $file): StreamInterface
     {
         $filepath = $file->getRealPath();
 
-        if ($filepath === false) {
+        if (false === $filepath) {
             throw new \RuntimeException("File not found: {$file->getPathname()}.");
         }
 
@@ -89,16 +86,16 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
 
         foreach ($options->extraOptions as $option) {
             if (!$option instanceof ExtraOption) {
-                throw new \InvalidArgumentException(sprintf(
-                    "Invalid option type provided. Expected \"%s\", received \"%s\".",
+                throw new \InvalidArgumentException(\sprintf(
+                    'Invalid option type provided. Expected "%s", received "%s".',
                     ExtraOption::class,
-                    gettype($option) === 'object' ? get_class($option) : gettype($option),
+                    \is_object($option) ? $option::class : \gettype($option),
                 ));
             }
 
             if (\in_array($option::class, $optionTypes, true) && !$option->isRepeatable()) {
-                throw new \InvalidArgumentException(sprintf(
-                    "Duplicate option type provided: \"%s\".",
+                throw new \InvalidArgumentException(\sprintf(
+                    'Duplicate option type provided: "%s".',
                     $option::class,
                 ));
             }
@@ -108,21 +105,20 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
     }
 
     /**
-     * @return array<string|int|float>
+     * @return array<float|int|string>
      */
     private function compileOptions(): array
     {
         return array_reduce(
             $this->options->extraOptions,
-            fn(array $carry, ExtraOption $extraOption) =>
-            $extraOption instanceof ExtraOption\Orientation && $this->options->pageOrientation !== null
+            fn (array $carry, ExtraOption $extraOption) => $extraOption instanceof ExtraOption\Orientation && null !== $this->options->pageOrientation
                 ? [
                     ...$carry,
-                    ...ExtraOption\Orientation::fromPageOrientation($this->options->pageOrientation)->compile(),
+                    ...(new ExtraOption\Orientation($this->options->pageOrientation))->getCommand(),
                 ]
                 : [
                     ...$carry,
-                    ...$extraOption->compile(),
+                    ...$extraOption->getCommand(),
                 ],
             [],
         );

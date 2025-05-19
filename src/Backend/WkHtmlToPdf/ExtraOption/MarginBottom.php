@@ -6,17 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class MarginBottom implements ExtraOption
+/**
+ *  Set the page bottom margin.
+ */
+final class MarginBottom extends ExtraOption
 {
-    public function __construct(public readonly string $margin) {}
-
-    public function isRepeatable(): bool
+    public function __construct(string $margin)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--margin-bottom', $this->margin];
+        parent::__construct(
+            repeatable: false,
+            command: ['--margin-bottom', $margin]
+        );
     }
 }

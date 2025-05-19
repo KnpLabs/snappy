@@ -6,21 +6,21 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class JavascriptDelay implements ExtraOption
+/**
+ * Wait some milliseconds for javascript finish.
+ *
+ * Default: 200
+ */
+final class JavascriptDelay extends ExtraOption
 {
     /**
-     * @param non-negative-int $msec
+     * @param int<0, max> $milliseconds
      */
-    public function __construct(private readonly int $msec)
+    public function __construct(int $milliseconds)
     {
-    }
-
-    public function isRepeatable(): bool
-    {
-        return false;
-    }
-    public function compile(): array
-    {
-        return ['--javascript-delay', $this->msec];
+        parent::__construct(
+            repeatable: false,
+            command: ['--javascript-delay', (string) $milliseconds]
+        );
     }
 }

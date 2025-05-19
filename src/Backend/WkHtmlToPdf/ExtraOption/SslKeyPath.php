@@ -6,19 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class SslKeyPath implements ExtraOption
+/**
+ * Path to ssl client cert private key in OpenSSL PEM format.
+ */
+final class SslKeyPath extends ExtraOption
 {
-    public function __construct(private readonly string $path)
+    /**
+     * @param non-empty-string $path
+     */
+    public function __construct(string $path)
     {
-    }
-
-    public function isRepeatable(): bool
-    {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--ssl-key-path', $this->path];
+        parent::__construct(
+            repeatable: false,
+            command: ['--ssl-key-path', $path]
+        );
     }
 }

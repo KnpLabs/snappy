@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class CookieJar implements ExtraOption
+/**
+ * Read and write cookies from and to the supplied cookie jar file.
+ */
+final class CookieJar extends ExtraOption
 {
-    public function __construct(public readonly string $path) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $path
+     */
+    public function __construct(string $path)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--no-collate'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--cookie-jar', $path],
+        );
     }
 }

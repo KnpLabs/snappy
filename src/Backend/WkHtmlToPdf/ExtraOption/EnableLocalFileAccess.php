@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class EnableLocalFileAccess implements ExtraOption
+/**
+ * Allowed conversion of a local file to read in other local files.
+ */
+final class EnableLocalFileAccess extends ExtraOption
 {
-    public function isRepeatable(): bool
-    {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--enable-local-file-access'];
+    public function __construct(
+    ) {
+        parent::__construct(
+            repeatable: false,
+            command: ['--enable-local-file-access']
+        );
     }
 }

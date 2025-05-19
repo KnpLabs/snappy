@@ -6,20 +6,21 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class ImageQuality implements ExtraOption
+/**
+ *  When jpeg compressing images use this quality.
+ *
+ *  Default: 94
+ */
+final class ImageQuality extends ExtraOption
 {
     /**
-     * @param positive-int $quality
+     * @param int<0, max> $quality
      */
-    public function __construct(public readonly int $quality) {}
-
-    public function isRepeatable(): bool
+    public function __construct(int $quality)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--image-quality', $this->quality];
+        parent::__construct(
+            repeatable: false,
+            command: ['--image-quality', (string) $quality]
+        );
     }
 }

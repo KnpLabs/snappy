@@ -6,19 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class UserStyleSheets implements ExtraOption
+/**
+ * Specify a user style sheet, to load with every page.
+ */
+final class UserStyleSheets extends ExtraOption
 {
-    public function __construct(private readonly string $path)
+    /**
+     * @param non-empty-string $path
+     */
+    public function __construct(string $path)
     {
-    }
-
-    public function isRepeatable(): bool
-    {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--user-style-sheet', $this->path];
+        parent::__construct(
+            repeatable: false,
+            command: ['--user-style-sheet', $path],
+        );
     }
 }

@@ -6,17 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class FooterSpacing implements ExtraOption
+/**
+ * Spacing between footer and content in mm.
+ */
+final class FooterSpacing extends ExtraOption
 {
-    public function __construct(public readonly int $spacing) {}
-
-    public function isRepeatable(): bool
+    public function __construct(int $millimeters)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--footer-spacing', $this->spacing];
+        parent::__construct(
+            repeatable: false,
+            command: ['--footer-spacing', (string) $millimeters]
+        );
     }
 }

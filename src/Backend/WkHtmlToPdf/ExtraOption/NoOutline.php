@@ -6,15 +6,16 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-class NoOutline implements ExtraOption
+/**
+ * Do not put an outline into the pdf.
+ */
+final class NoOutline extends ExtraOption
 {
-    public function isRepeatable(): bool
+    public function __construct()
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--no-outline'];
+        parent::__construct(
+            repeatable: false,
+            command: ['--no-outline']
+        );
     }
 }

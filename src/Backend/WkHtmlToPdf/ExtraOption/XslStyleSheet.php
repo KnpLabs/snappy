@@ -6,17 +6,19 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 
-final class XslStyleSheet implements ExtraOption
+/**
+ *  Use the supplied xsl style sheet for printing the table of contents.
+ */
+final class XslStyleSheet extends ExtraOption
 {
-    public function __construct(private readonly string $file) {}
-
-    public function isRepeatable(): bool
+    /**
+     * @param non-empty-string $file
+     */
+    public function __construct(string $file)
     {
-        return false;
-    }
-
-    public function compile(): array
-    {
-        return ['--xsl-style-sheet', $this->file];
+        parent::__construct(
+            repeatable: false,
+            command: ['--xsl-style-sheet', $file]
+        );
     }
 }
