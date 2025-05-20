@@ -15,7 +15,7 @@ $dependencies = [
 
 $replace = $global['replace'];
 
-foreach ($global['autoload']['psr-4'] as $path) {
+foreach ($global['autoload']['psr-4'] as $namespace => $path) {
     $content = file_get_contents($path.'/composer.json');
 
     if (false === $content) {
@@ -41,6 +41,8 @@ foreach ($global['autoload']['psr-4'] as $path) {
             $json[$part][$name] = $dependencies[$name];
         }
     }
+
+    $json['autoload']['psr-4'][$namespace] = './';
 
     $content = file_put_contents(
         $path.'/composer.json',

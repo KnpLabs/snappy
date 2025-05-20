@@ -53,6 +53,10 @@ jobs:
     needs: packages
     strategy:
       matrix:
+        php:
+          - 8.2
+          - 8.3
+          - 8.4
         name:
           - knplabs/snappy
         path:
@@ -61,13 +65,16 @@ jobs:
     defaults:
       run:
         working-directory: ${{ matrix.path }}
+    env:
+      PHP_VERSION: ${{ matrix.php }}
     steps:
       - uses: actions/checkout@v4
-        # with:
-        #   sparse-checkout: |
-        #     ${{ matrix.path }}
-      - run: sudo apt-get update
-      - run: sudo apt-get install ghostscript --yes
-      - uses: shivammathur/setup-php@v2
-      - run: composer install
-      - run: vendor/bin/phpunit
+      - name: Docker build
+        run: docker compose build php
+      - name: Composer
+        run: docker compose run --rm --workdir=/app/${{ matrix.path }} php composer update
+      - name: PHPStan
+        if: matrix.php != '8.2' # PHP 8.2 contains errors specific to this version, which no longer appear in later versions.
+        run: docker compose run --rm --workdir=/app/${{ matrix.path }} php vendor/bin/phpstan analyse
+      - name: PHPUnit
+        run: docker compose run --rm --workdir=/app/${{ matrix.path }} php vendor/bin/phpunit

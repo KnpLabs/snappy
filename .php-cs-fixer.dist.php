@@ -14,7 +14,7 @@ $finder = (new Finder())
 
 $rules = RuleSetFactory::create()
     ->phpCsFixer(true)
-    ->php(8.1, true)
+    ->php(8.2, true)
     ->phpunit(11.0, true)
     ->pedrotroller(true)
     ->disable('PedroTroller/line_break_between_method_arguments')

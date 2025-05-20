@@ -1,4 +1,12 @@
-/.github/         export-ignore
-/spec/            export-ignore
-/.gitattributes   export-ignore
-/.gitignore       export-ignore
+/.editorconfig export-ignore
+/.gitattributes export-ignore
+/.github/ export-ignore
+/.gitignore export-ignore
+/.php-cs-fixer.dist.php export-ignore
+/Dockerfile export-ignore
+/Makefile export-ignore
+/bin/ export-ignore
+/compose.yaml export-ignore
+/phpstan.neon.dist export-ignore
+/phpunit.xml export-ignore
+/src/**/Tests/ export-ignore

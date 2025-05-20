@@ -22,23 +22,15 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "knplabs/snappy-core": "^2.0",
-        "symfony/config": "^5.4|^6.4|^7.1",
-        "symfony/dependency-injection": "^5.4|^6.4|^7.1",
-        "symfony/http-kernel": "^5.4|^6.4|^7.1"
+        "symfony/config": "^5.4 || ^6.4 || ^7.1",
+        "symfony/dependency-injection": "^5.4 || ^6.4 || ^7.1",
+        "symfony/http-kernel": "^5.4 || ^6.4 || ^7.1"
     },
     "autoload": {
         "psr-4": {
-            "KNPLabs\\Snappy\\Bundle\\": ""
-        },
-        "exclude-from-classmap": [
-            "/Tests/"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\KNPLabs\\Snappy\\Bundle\\": "Tests/"
+            "KNPLabs\\Snappy\\Framework\\Symfony\\": "./"
         }
     },
     "require-dev": {

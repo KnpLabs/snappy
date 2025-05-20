@@ -72,9 +72,13 @@ final class DompdfConfigurationFactory implements BackendConfigurationFactory
             ->getChildNodeDefinitions()['options']
         ;
 
+        \assert($optionsNode instanceof ArrayNodeDefinition);
+
         $extraOptionsNode = $optionsNode
             ->getChildNodeDefinitions()['extraOptions']
         ;
+
+        \assert($extraOptionsNode instanceof ArrayNodeDefinition);
 
         $extraOptionsNode
             ->children()
