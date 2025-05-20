@@ -1,9 +1,19 @@
-IMAGE_TAG:=knplabs/snappy:test
-
 .PHONY: build
 build:
-	docker build ./ -t "${IMAGE_TAG}"
+	docker compose build php
 
-.PHONY: test
-test: build
-	$(MAKE) -C src/Bundle test IMAGE_TAG="${IMAGE_TAG}" ARGS="${ARGS}"
+.PHONY: composer
+composer: build
+	docker compose run --rm php composer update
+
+.PHONY: php-cs-fixer
+php-cs-fixer: composer
+	docker compose run --rm -e PHP_CS_FIXER_IGNORE_ENV=1 php vendor/bin/php-cs-fixer fix --diff -vvv
+
+.PHONY: phpunit
+phpunit: composer
+	docker compose run --rm php vendor/bin/phpunit
+
+.PHONY: phpstan
+phpstan: composer
+	docker compose run --rm php vendor/bin/phpstan

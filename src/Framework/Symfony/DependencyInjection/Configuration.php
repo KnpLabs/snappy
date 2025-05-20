@@ -27,6 +27,8 @@ final class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('snappy');
         $rootNode = $treeBuilder->getRootNode();
 
+        \assert($rootNode instanceof ArrayNodeDefinition);
+
         $backendNodeBuilder = $rootNode
             ->children()
             ->arrayNode('backends')
