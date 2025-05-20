@@ -146,18 +146,22 @@ final class SnappyExtensionTest extends TestCase
 
         self::assertThat(
             $this->container->get('knplabs.snappy.core.frontend.htmlfiletopdf.myBackend'),
-            new IsEqual(new Frontend\HtmlFileToPdf(
-                $backend,
-                $streamFactory,
-            )),
+            new IsEqual(
+                new Frontend\HtmlFileToPdf(
+                    $backend,
+                    $streamFactory,
+                )
+            ),
         );
 
         self::assertThat(
             $this->container->get('knplabs.snappy.core.frontend.htmltopdf.myBackend'),
-            new IsEqual(new Frontend\HtmlToPdf(
-                $backend,
-                $streamFactory,
-            )),
+            new IsEqual(
+                new Frontend\HtmlToPdf(
+                    $backend,
+                    $streamFactory,
+                )
+            ),
         );
 
         self::assertThat(

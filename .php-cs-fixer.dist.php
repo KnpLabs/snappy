@@ -9,7 +9,7 @@ use PhpCsFixer\Finder;
 $finder = (new Finder())
     ->in(__DIR__.'/src')
     ->in(__DIR__.'/bin')
-    ->append([__FILE__])
+    ->append([__FILE__, __DIR__.'/rector.php'])
 ;
 
 $rules = RuleSetFactory::create()

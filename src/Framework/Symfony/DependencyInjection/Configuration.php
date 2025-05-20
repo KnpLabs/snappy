@@ -15,7 +15,7 @@ final class Configuration implements ConfigurationInterface
     /**
      * @var array<BackendConfigurationFactory>
      */
-    private array $factories;
+    private readonly array $factories;
 
     public function __construct(BackendConfigurationFactory ...$factories)
     {
@@ -26,8 +26,6 @@ final class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('snappy');
         $rootNode = $treeBuilder->getRootNode();
-
-        \assert($rootNode instanceof ArrayNodeDefinition);
 
         $backendNodeBuilder = $rootNode
             ->children()

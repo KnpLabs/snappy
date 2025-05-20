@@ -18,17 +18,20 @@ use Psr\Http\Message\StreamInterface;
 final class DomAdapterTest extends TestCase
 {
     private DompdfFactory $factory;
+
     private Options $options;
 
     protected function setUp(): void
     {
         $this->factory = new DompdfFactory(new Psr17Factory());
         $this->options = Options::create()
-            ->withExtraOptions([
-                'construct' => [
-                    'chroot' => __DIR__,
-                ],
-            ])
+            ->withExtraOptions(
+                [
+                    'construct' => [
+                        'chroot' => __DIR__,
+                    ],
+                ]
+            )
         ;
     }
 
@@ -40,10 +43,7 @@ final class DomAdapterTest extends TestCase
         $domPdfAdapter = $this->factory->create($this->options);
         $stream = $domPdfAdapter->generateFromDOMDocument($document);
 
-        self::assertPdfStreamEqualsFile(
-            $stream,
-            __DIR__.'/files/order.pdf',
-        );
+        $this->assertPdfStreamEqualsFile($stream, __DIR__.'/files/order.pdf');
     }
 
     public function testGenerateFromHtmlFile(): void
@@ -53,10 +53,7 @@ final class DomAdapterTest extends TestCase
         $domPdfAdapter = $this->factory->create($this->options);
         $stream = $domPdfAdapter->generateFromHtmlFile($file);
 
-        self::assertPdfStreamEqualsFile(
-            $stream,
-            __DIR__.'/files/order.pdf',
-        );
+        $this->assertPdfStreamEqualsFile($stream, __DIR__.'/files/order.pdf');
     }
 
     public function testGenerateFromHtml(): void
@@ -68,13 +65,10 @@ final class DomAdapterTest extends TestCase
         $domPdfAdapter = $this->factory->create($this->options);
         $stream = $domPdfAdapter->generateFromHtml($html);
 
-        self::assertPdfStreamEqualsFile(
-            $stream,
-            __DIR__.'/files/order.pdf',
-        );
+        $this->assertPdfStreamEqualsFile($stream, __DIR__.'/files/order.pdf');
     }
 
-    private static function assertPdfStreamEqualsFile(StreamInterface $stream, string $file): void
+    private function assertPdfStreamEqualsFile(StreamInterface $stream, string $file): void
     {
         $to = tmpfile();
         $from = $stream->detach();
@@ -96,9 +90,9 @@ final class DomAdapterTest extends TestCase
         ;
 
         if (0.0 !== $diffPixels) {
-            file_put_contents("{$file}.diff.pdf", $diffDocument);
+            file_put_contents($file.'.diff.pdf', $diffDocument);
         }
 
-        self::assertSame($diffPixels, 0.0);
+        self::assertSame(0.0, $diffPixels);
     }
 }

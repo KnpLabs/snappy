@@ -41,7 +41,7 @@ final class StreamToPdfTest extends TestCase
             ->method('generateFromDOMDocument')
             ->with(
                 new Constraint\Callback(
-                    static function (\DOMDocument $document) {
+                    static function (\DOMDocument $document): bool {
                         $expected = new \DOMDocument();
                         $expected->loadHTML('<html />');
 
@@ -84,7 +84,7 @@ final class StreamToPdfTest extends TestCase
             ->method('generateFromHtmlFile')
             ->with(
                 new Constraint\Callback(
-                    static fn (\SplFileInfo $file) => '<html />' === file_get_contents($file->getPathname())
+                    static fn (\SplFileInfo $file): bool => '<html />' === file_get_contents($file->getPathname())
                 )
             )
             ->willReturn($this->output)

@@ -42,8 +42,70 @@ final class SnappyExtension extends Extension
             ),
         );
 
+        if (!\is_array($configuration['backends'])) {
+            throw new \RuntimeException(
+                \sprintf(
+                    'Configuration entry "snappy.backends" must be an array, %s given.',
+                    \gettype($configuration['backends']),
+                ),
+            );
+        }
+
         foreach ($configuration['backends'] as $backendName => $subConfiguration) {
+            if (!\is_string($backendName) || '' === $backendName) {
+                throw new \RuntimeException(
+                    \sprintf(
+                        'Configuration entry "snappy.backends.%s" is invalid because the name of a backend must be a string, "%0$s" was given.',
+                        $backendName
+                    ),
+                );
+            }
+
+            if (!\is_array($subConfiguration)) {
+                throw new \RuntimeException(
+                    \sprintf(
+                        'Configuration entry "snappy.backends.%s" is invalid because no backend type is configured.',
+                        $backendName
+                    ),
+                );
+            }
+
+            match (\count($subConfiguration)) {
+                1 => null,
+                0 => throw new \RuntimeException(
+                    \sprintf(
+                        'Configuration entry "snappy.backends.%s" is invalid because no backend type is configured.',
+                        $backendName,
+                    ),
+                ),
+                default => throw new \RuntimeException(
+                    \sprintf(
+                        'Configuration entry "snappy.backends.%s" is invalid because only one backend type needs to be configured, the following types were found: %s.',
+                        $backendName,
+                        implode(', ', array_map(static fn (int|string $key): string => \sprintf('"%s"', $key), array_keys($subConfiguration))),
+                    ),
+                ),
+            };
+
             foreach ($subConfiguration as $backendType => $backendConfiguration) {
+                if (!\is_array($backendConfiguration)) {
+                    throw new \RuntimeException(
+                        \sprintf(
+                            'Configuration entry "snappy.backends.%s" is invalid, an array is expected.',
+                            $backendName
+                        ),
+                    );
+                }
+
+                if (!\is_array($backendConfiguration['options'])) {
+                    throw new \RuntimeException(
+                        \sprintf(
+                            'Configuration entry "snappy.backends.%s.options" is invalid, an array is expected.',
+                            $backendName
+                        ),
+                    );
+                }
+
                 $backendId = $this->buildBackendServiceId($backendName);
                 $factoryId = $this->buildFactoryServiceId($backendName);
                 $options = $this->buildOptions($backendName, $backendType, $backendConfiguration['options']);

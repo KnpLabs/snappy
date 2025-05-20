@@ -76,7 +76,7 @@ final class DOMDocumentToPdfTest extends TestCase
             ->method('generateFromHtmlFile')
             ->with(
                 new Constraint\Callback(
-                    fn (\SplFileInfo $file) => $this->document->saveHTML() === file_get_contents($file->getPathname())
+                    fn (\SplFileInfo $file): bool => $this->document->saveHTML() === file_get_contents($file->getPathname())
                 )
             )
             ->willReturn($this->output)
@@ -97,7 +97,7 @@ final class DOMDocumentToPdfTest extends TestCase
             ->method('generateFromStream')
             ->with(
                 new Constraint\Callback(
-                    fn (StreamInterface $stream) => $this->document->saveHTML() === (string) $stream
+                    fn (StreamInterface $stream): bool => $this->document->saveHTML() === (string) $stream
                 )
             )
             ->willReturn($this->output)
