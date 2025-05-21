@@ -32,6 +32,6 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf
 
     public function generateFromHtmlFile(\SplFileInfo $file): StreamInterface
     {
-        throw new \Exception("Not implemented for {$this->binary} with timeout {$this->timeout}.");
+        throw new \Exception(\sprintf('Not implemented for %s with timeout %d.', $this->binary, $this->timeout));
     }
 }

@@ -44,8 +44,8 @@ final class FileStreamTest extends TestCase
         file_put_contents($file->getPathname(), 'the content');
 
         self::assertSame(
-            (string) $this->stream,
             'the content',
+            (string) $this->stream,
         );
     }
 

@@ -10,6 +10,7 @@ use KNPLabs\Snappy\Core\Backend\Adapter\HtmlFileToPdf;
 use KNPLabs\Snappy\Core\Backend\Adapter\HtmlToPdf;
 use KNPLabs\Snappy\Core\Backend\Adapter\Reconfigurable;
 use KNPLabs\Snappy\Core\Backend\Options;
+use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -63,7 +64,7 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
                 : null
         );
 
-        if (null !== $this->options->pageOrientation) {
+        if ($this->options->pageOrientation instanceof PageOrientation) {
             $options->setDefaultPaperOrientation(
                 strtolower(
                     $this->options->pageOrientation->name
@@ -82,7 +83,7 @@ final readonly class DompdfAdapter implements DOMDocumentToPdf, HtmlFileToPdf, H
         $options = $this->options->extraOptions['output'] ?? null;
 
         if (false === \is_array($options)) {
-            $options = [];
+            return [];
         }
 
         return $options;

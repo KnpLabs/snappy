@@ -11,7 +11,7 @@ final class FileReadException extends Exception
     public function __construct(\SplFileInfo $file)
     {
         file_exists($file->getPathname())
-            ? parent::__construct("File {$file->getPathname()} can't be read.")
-            : parent::__construct("File {$file->getPathname()} not found.");
+            ? parent::__construct(\sprintf("File %s can't be read.", $file->getPathname()))
+            : parent::__construct(\sprintf('File %s not found.', $file->getPathname()));
     }
 }
