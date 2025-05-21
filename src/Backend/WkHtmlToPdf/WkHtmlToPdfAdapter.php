@@ -6,10 +6,18 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf;
 
 use KNPLabs\Snappy\Core\Backend\Adapter\HtmlFileToPdf;
 use KNPLabs\Snappy\Core\Backend\Adapter\Reconfigurable;
+use KNPLabs\Snappy\Core\Backend\Adapter\UriToPdf;
 use KNPLabs\Snappy\Core\Backend\Options;
+use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
+use KNPLabs\Snappy\Core\Filesystem\SplResourceInfo;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriFactoryInterface;
+use Psr\Http\Message\UriInterface;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
-final class WkHtmlToPdfAdapter implements HtmlFileToPdf
+final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
 {
     /**
      * @use Reconfigurable<self>
@@ -24,14 +32,103 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf
         private string $binary,
         private int $timeout,
         WkHtmlToPdfFactory $factory,
-        Options $options
+        Options $options,
+        private readonly StreamFactoryInterface $streamFactory,
+        private readonly UriFactoryInterface $uriFactory,
     ) {
         $this->factory = $factory;
         $this->options = $options;
+
+        $this->compileOptions();
     }
 
     public function generateFromHtmlFile(\SplFileInfo $file): StreamInterface
     {
-        throw new \Exception(\sprintf('Not implemented for %s with timeout %d.', $this->binary, $this->timeout));
+        $filepath = $file->getRealPath();
+
+        if (false === $filepath) {
+            throw new \RuntimeException(\sprintf('File not found: %s.', $file->getPathname()));
+        }
+
+        return $this->generateFromUri(
+            $this->uriFactory->createUri($filepath)
+        );
+    }
+
+    public function generateFromUri(UriInterface $uri): StreamInterface
+    {
+        $outputFile = SplResourceInfo::fromTmpFile();
+
+        $process = new Process(
+            command: [
+                $this->binary,
+                '--log-level',
+                'none',
+                '--quiet',
+                ...$this->compileOptions(),
+                (string) $uri,
+                $outputFile->getPathname(),
+            ],
+            timeout: $this->timeout,
+        );
+
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        return $this->streamFactory->createStreamFromResource($outputFile->resource);
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function compileOptions(): array
+    {
+        $options = [];
+
+        if ($this->options->pageOrientation instanceof PageOrientation) {
+            $options = [
+                ...$options,
+                '--orientation',
+                match ($this->options->pageOrientation) {
+                    PageOrientation::Portrait => 'Portrait',
+                    PageOrientation::Landscape => 'Landscape',
+                },
+            ];
+        }
+
+        $optionTypes = [];
+
+        foreach ($this->options->extraOptions as $extraOption) {
+            if (!$extraOption instanceof ExtraOption) {
+                throw new \InvalidArgumentException(
+                    \sprintf(
+                        'Invalid option type provided. Expected "%s", received "%s".',
+                        ExtraOption::class,
+                        get_debug_type($extraOption),
+                    )
+                );
+            }
+
+            if ($extraOption->repeatable && \in_array($extraOption::class, $optionTypes, true)) {
+                throw new \InvalidArgumentException(
+                    \sprintf(
+                        'Duplicate option type provided: "%s".',
+                        $extraOption::class,
+                    )
+                );
+            }
+
+            $options = [
+                ...$options,
+                ...$extraOption->command,
+            ];
+
+            $optionTypes[] = $extraOption::class;
+        }
+
+        return $options;
     }
 }
