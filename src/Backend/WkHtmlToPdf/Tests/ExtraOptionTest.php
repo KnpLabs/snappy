@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\Tests;
 
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
-use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -143,16 +142,6 @@ final class ExtraOptionTest extends TestCase
         ];
 
         yield [
-            new ExtraOption\Orientation(PageOrientation::LANDSCAPE),
-            ['--orientation', 'Landscape'],
-        ];
-
-        yield [
-            new ExtraOption\Orientation(PageOrientation::PORTRAIT),
-            ['--orientation', 'Portrait'],
-        ];
-
-        yield [
             new ExtraOption\PageHeight('297mm'),
             ['--page-height', '297mm'],
         ];
@@ -213,7 +202,7 @@ final class ExtraOptionTest extends TestCase
         ];
 
         yield [
-            new ExtraOption\CheckBoxSvg('/the/path'),
+            new ExtraOption\CheckboxSvg('/the/path'),
             ['--checkbox-svg', '/the/path'],
         ];
 
@@ -494,8 +483,8 @@ final class ExtraOptionTest extends TestCase
     #[DataProvider('repeatableProvider')]
     public function testRepeatableOption(ExtraOption $option, array $command): void
     {
-        self::assertTrue($option->isRepeatable());
-        self::assertSame($option->getCommand(), $command);
+        self::assertTrue($option->repeatable);
+        self::assertSame($option->command, $command);
     }
 
     /**
@@ -504,7 +493,7 @@ final class ExtraOptionTest extends TestCase
     #[DataProvider('nonRepeatableProvider')]
     public function testNonRepeatableOption(ExtraOption $option, array $command): void
     {
-        self::assertFalse($option->isRepeatable());
-        self::assertSame($option->getCommand(), $command);
+        self::assertFalse($option->repeatable);
+        self::assertSame($option->command, $command);
     }
 }

@@ -36,10 +36,10 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
         private readonly StreamFactoryInterface $streamFactory,
         private readonly UriFactoryInterface $uriFactory,
     ) {
-        $this->validateOptions($options);
-
         $this->factory = $factory;
         $this->options = $options;
+
+        $this->compileOptions();
     }
 
     public function generateFromHtmlFile(\SplFileInfo $file): StreamInterface
@@ -81,51 +81,54 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
         return $this->streamFactory->createStreamFromResource($outputFile->resource);
     }
 
-    private function validateOptions(Options $options): void
+    /**
+     * @return array<string>
+     */
+    private function compileOptions(): array
     {
+        $options = [];
+
+        if ($this->options->pageOrientation instanceof PageOrientation) {
+            $options = [
+                ...$options,
+                '--orientation',
+                match ($this->options->pageOrientation) {
+                    PageOrientation::Portrait => 'Portrait',
+                    PageOrientation::Landscape => 'Landscape',
+                },
+            ];
+        }
+
         $optionTypes = [];
 
-        foreach ($options->extraOptions as $option) {
-            if (!$option instanceof ExtraOption) {
+        foreach ($this->options->extraOptions as $extraOption) {
+            if (!$extraOption instanceof ExtraOption) {
                 throw new \InvalidArgumentException(
                     \sprintf(
                         'Invalid option type provided. Expected "%s", received "%s".',
                         ExtraOption::class,
-                        get_debug_type($option),
+                        get_debug_type($extraOption),
                     )
                 );
             }
 
-            if (\in_array($option::class, $optionTypes, true) && !$option->isRepeatable()) {
+            if ($extraOption->repeatable && \in_array($extraOption::class, $optionTypes, true)) {
                 throw new \InvalidArgumentException(
                     \sprintf(
                         'Duplicate option type provided: "%s".',
-                        $option::class,
+                        $extraOption::class,
                     )
                 );
             }
 
-            $optionTypes[] = $option::class;
-        }
-    }
+            $options = [
+                ...$options,
+                ...$extraOption->command,
+            ];
 
-    /**
-     * @return array<float|int|string>
-     */
-    private function compileOptions(): array
-    {
-        return array_reduce(
-            $this->options->extraOptions,
-            fn (array $carry, ExtraOption $extraOption): array => $extraOption instanceof ExtraOption\Orientation && $this->options->pageOrientation instanceof PageOrientation
-                ? [
-                    ...$carry,
-                    ...(new ExtraOption\Orientation($this->options->pageOrientation))->getCommand(),
-                ]
-                : [
-                    ...$carry,
-                    ...$extraOption->getCommand(),
-                ],
-            [],
-        );
+            $optionTypes[] = $extraOption::class;
+        }
+
+        return $options;
     }
 }

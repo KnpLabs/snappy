@@ -12,18 +12,5 @@ abstract class ExtraOption
     /**
      * @param non-empty-array<string> $command
      */
-    public function __construct(private readonly bool $repeatable, private readonly array $command) {}
-
-    final public function isRepeatable(): bool
-    {
-        return $this->repeatable;
-    }
-
-    /**
-     * @return non-empty-array<string>
-     */
-    final public function getCommand(): array
-    {
-        return $this->command;
-    }
+    public function __construct(public readonly bool $repeatable, public readonly array $command) {}
 }

@@ -9,7 +9,7 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption;
 /**
  * Use this SVG file when rendering unchecked checkboxes.
  */
-final class CheckBoxSvg extends ExtraOption
+final class CheckboxSvg extends ExtraOption
 {
     /**
      * @param non-empty-string $path

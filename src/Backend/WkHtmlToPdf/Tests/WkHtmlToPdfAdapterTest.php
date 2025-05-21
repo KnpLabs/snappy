@@ -26,8 +26,14 @@ final class WkHtmlToPdfAdapterTest extends TestCase
 
     private WkHtmlToPdfAdapter $wkHtmlToPdfAdapter;
 
+    /**
+     * @var MockObject&StreamFactoryInterface
+     */
     private MockObject $streamFactory;
 
+    /**
+     * @var MockObject&UriFactoryInterface
+     */
     private MockObject $uriFactory;
 
     private string $tempDir;
@@ -75,8 +81,6 @@ final class WkHtmlToPdfAdapterTest extends TestCase
             self::fail('Erreur lors de la génération du PDF : '.$exception->getMessage());
         }
 
-        self::assertNotNull($resultStream);
-        self::assertInstanceOf(StreamInterface::class, $resultStream);
         self::assertNotEmpty($resultStream->getContents());
 
         unlink($testFilePath);
@@ -112,10 +116,14 @@ final class WkHtmlToPdfAdapterTest extends TestCase
 
         $this->wkHtmlToPdfAdapter = $this->factory->create($options);
 
+        $realpath = realpath($testFilePath);
+
+        self::assertIsString($realpath);
+
         $this->uriFactory
             ->method('createUri')
             ->with($testFilePath)
-            ->willReturn(new Uri(realpath($testFilePath)))
+            ->willReturn(new Uri($realpath))
         ;
 
         $stream = $this->createMock(StreamInterface::class);
@@ -128,8 +136,6 @@ final class WkHtmlToPdfAdapterTest extends TestCase
 
         $resultStream = $this->wkHtmlToPdfAdapter->generateFromHtmlFile(new \SplFileInfo($testFilePath));
 
-        self::assertNotNull($resultStream);
-        self::assertInstanceOf(StreamInterface::class, $resultStream);
         self::assertNotEmpty($resultStream->getContents());
 
         unlink($testFilePath);
