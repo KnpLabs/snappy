@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-20.04
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@5
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
             - name: Validate composer.json
@@ -19,7 +19,7 @@ jobs:
         name: PHP-CS-Fixer
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
@@ -35,6 +35,9 @@ jobs:
                     - description: 'Symfony 7.2 DEV'
                       php: '8.2'
                       symfony: '7.2.*@dev'
+                    - description: 'Symfony 7.0'
+                      php: '8.5'
+                      symfony: '7.0.*'
                     - description: 'Symfony 7.0'
                       php: '8.4'
                       symfony: '7.0.*'
@@ -59,7 +62,7 @@ jobs:
         name: PHP ${{ matrix.php }} tests (${{ matrix.description }})
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
             - name: Cache
               uses: actions/cache@v4
               with:
@@ -96,6 +99,9 @@ jobs:
                       php: '8.4'
                       symfony: '7.0.*'
                     - description: 'Symfony 7.0'
+                      php: '8.5'
+                      symfony: '7.0.*'
+                    - description: 'Symfony 7.0'
                       php: '8.3'
                       symfony: '7.0.*'
                     - description: 'Symfony 6.4'
@@ -107,7 +113,7 @@ jobs:
         name: "[WINDOWS] PHP ${{ matrix.php }} tests (${{ matrix.description }})"
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
             - name: Cache
               uses: actions/cache@v4
               with:
