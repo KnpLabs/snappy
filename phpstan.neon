@@ -8,7 +8,7 @@ parameters:
         - tests/
     inferPrivatePropertyTypeFromConstructor: true
     reportUnmatchedIgnoredErrors: false
-    checkMissingIterableValueType: false
     ignoreErrors:
         - "#^Call to an undefined static method #"
         - "#^Parameter \\#1 \\$command of class Symfony\\\\Component\\\\Process\\\\Process constructor expects array, string given\\.$#"
+        - "#[a-zA-Z0-9\\_]* no value type specified in iterable type array#"
