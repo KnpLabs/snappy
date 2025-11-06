@@ -6,7 +6,7 @@ on:
 
 jobs:
     check:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
         steps:
             - name: Checkout
               uses: actions/checkout@5
@@ -15,7 +15,7 @@ jobs:
             - name: Validate composer.json
               run: composer validate --strict --no-check-lock
     cs-fixer:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
         name: PHP-CS-Fixer
         steps:
             - name: Checkout
@@ -27,7 +27,7 @@ jobs:
             - run: composer install --prefer-dist --no-interaction --no-progress --ansi
             - run: vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
     tests:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
         strategy:
             fail-fast: false
             matrix:
