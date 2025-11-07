@@ -57,7 +57,7 @@ class PdfTest extends TestCase
         $testObject->setTemporaryFolder(__DIR__);
 
         $testObject->getOutputFromHtml('<html></html>', ['footer-html' => 'footer']);
-        $this->assertRegExp('/emptyBinary --lowquality --footer-html ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . '/', $testObject->getLastCommand());
+        $this->assertMatchesRegularExpression('/emptyBinary --lowquality --footer-html ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . ' ' . $q . '.*' . $q . '/', $testObject->getLastCommand());
     }
 
     public function testThatSomethingUsingNonexistentTmpFolder(): void
@@ -76,14 +76,13 @@ class PdfTest extends TestCase
     {
         $pdf = new PdfSpy();
         $method = new ReflectionMethod($pdf, 'createTemporaryFile');
-        $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
         $this->assertEquals(1, \count($pdf->temporaryFiles));
         $this->expectException(RuntimeException::class);
 
         throw new RuntimeException('test error.');
         // @phpstan-ignore-next-line See https://github.com/phpstan/phpstan/issues/7799
-        $this->assertFileNotExists(\reset($pdf->temporaryFiles));
+        $this->assertFileDoesNotExist(\reset($pdf->temporaryFiles));
     }
 
     /**
@@ -93,7 +92,7 @@ class PdfTest extends TestCase
     {
         $testObject = new PdfSpy();
         $testObject->getOutputFromHtml('<html></html>', $options);
-        $this->assertRegExp($expectedRegex, $testObject->getLastCommand());
+        $this->assertMatchesRegularExpression($expectedRegex, $testObject->getLastCommand());
     }
 
     public function dataOptions(): array
@@ -142,12 +141,11 @@ class PdfTest extends TestCase
     {
         $pdf = new PdfSpy();
         $method = new ReflectionMethod($pdf, 'createTemporaryFile');
-        $method->setAccessible(true);
         $method->invoke($pdf, 'test', $pdf->getDefaultExtension());
-        $this->assertEquals(1, \count($pdf->temporaryFiles));
+        $this->assertCount(1, $pdf->temporaryFiles);
         $this->assertFileExists(\reset($pdf->temporaryFiles));
         $pdf->__destruct();
-        $this->assertFileNotExists(\reset($pdf->temporaryFiles));
+        $this->assertFileDoesNotExist(\reset($pdf->temporaryFiles));
     }
 }
 
