@@ -25,6 +25,23 @@ composer require knplabs/knp-snappy
 
 ## Usage
 
+> ⚠️ **Security Warning**
+>
+> The `--enable-local-file-access` option in `wkhtmltopdf` can be risky if used with untrusted HTML or JavaScript.
+> This may expose local files or lead to remote code execution.
+>
+> To stay safe:
+> - Avoid enabling `--enable-local-file-access` unless necessary.
+> - Always sanitize user input before processing.
+> - Run `wkhtmltopdf` in a sandbox like **AppArmor** or **SELinux**.
+> - For untrusted content, consider alternatives like **WeasyPrint**, **Prince**, or **Puppeteer**.
+>
+> This risk was responsibly reported by  
+> **Nikita Sveshnikov (Positive Technologies)**.
+>
+> 🔗 [Official recommendations](https://wkhtmltopdf.org/status.html#recommendations)
+
+
 ### Initialization
 ```php
 <?php
