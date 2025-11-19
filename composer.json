@@ -21,7 +21,7 @@
         "psr/log": "^2.0||^3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^9.6.29",
         "phpstan/phpstan": "^1.0.0",
         "phpstan/phpstan-phpunit": "^1.0.0",
         "friendsofphp/php-cs-fixer": "^3.0",
