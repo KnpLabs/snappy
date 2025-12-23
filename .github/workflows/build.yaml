@@ -86,7 +86,7 @@ jobs:
               if: contains(matrix.symfony, '7.2.*@dev') || contains(matrix.symfony, '7.0.*')
               run: |
                   composer remove --dev friendsofphp/php-cs-fixer pedrotroller/php-cs-custom-fixer --no-update
-            - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
+            - run: composer update --prefer-dist --no-interaction --no-progress --no-security-blocking --ansi ${{ matrix.composer_option }}
             - run: vendor/bin/phpunit
             - run: vendor/bin/phpstan analyse --ansi --no-progress
     tests-windows:
@@ -140,6 +140,6 @@ jobs:
               if: contains(matrix.symfony, '7.2.*@dev') || contains(matrix.symfony, '7.0.*')
               run: |
                   composer remove --dev friendsofphp/php-cs-fixer pedrotroller/php-cs-custom-fixer --no-update
-            - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
+            - run: composer update --prefer-dist --no-interaction --no-progress --no-security-blocking --ansi ${{ matrix.composer_option }}
             - run: vendor/bin/phpunit
             - run: vendor/bin/phpstan analyse --ansi --no-progress
