@@ -7,9 +7,10 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Process\Process;
 use Exception;
+use InvalidArgumentException;
 use LogicException;
 use RuntimeException;
-use InvalidArgumentException;
+use WeakReference;
 
 /**
  * Base generator class for medias.
@@ -74,7 +75,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         $this->env = empty($env) ? null : $env;
 
         if (\is_callable([$this, 'removeTemporaryFiles'])) {
-            $ref = \WeakReference::create($this);
+            $ref = WeakReference::create($this);
             \register_shutdown_function(static function () use ($ref): void {
                 $ref->get()?->removeTemporaryFiles();
             });
