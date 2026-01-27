@@ -74,7 +74,10 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         $this->env = empty($env) ? null : $env;
 
         if (\is_callable([$this, 'removeTemporaryFiles'])) {
-            \register_shutdown_function([$this, 'removeTemporaryFiles']);
+            $ref = \WeakReference::create($this);
+            \register_shutdown_function(static function () use ($ref): void {
+                $ref->get()?->removeTemporaryFiles();
+            });
         }
     }
 
