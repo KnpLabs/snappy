@@ -317,8 +317,12 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      */
     public function removeTemporaryFiles()
     {
-        foreach ($this->temporaryFiles as $file) {
-            $this->unlink($file);
+        try {
+            foreach ($this->temporaryFiles as $file) {
+                $this->unlink($file);
+            }
+        } finally {
+            $this->temporaryFiles = [];
         }
     }
 
