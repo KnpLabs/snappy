@@ -13,6 +13,6 @@ class ImageTest extends TestCase
     public function testCreateInstance()
     {
         $testObject = new Image();
-        $this->assertInstanceOf(Image::class, $testObject);
+        $this->assertEquals('jpg', $testObject->getDefaultExtension());
     }
 }

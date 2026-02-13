@@ -73,9 +73,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         $this->setOptions($options);
         $this->env = empty($env) ? null : $env;
 
-        if (\is_callable([$this, 'removeTemporaryFiles'])) {
-            \register_shutdown_function([$this, 'removeTemporaryFiles']);
-        }
+        \register_shutdown_function($this->removeTemporaryFiles(...));
     }
 
     public function __destruct()
@@ -595,11 +593,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      */
     protected function executeCommand($command)
     {
-        if (\method_exists(Process::class, 'fromShellCommandline')) {
-            $process = Process::fromShellCommandline($command, null, $this->env);
-        } else {
-            $process = new Process($command, null, $this->env);
-        }
+        $process = Process::fromShellCommandline($command, null, $this->env);
 
         if (null !== $this->timeout) {
             $process->setTimeout($this->timeout);
