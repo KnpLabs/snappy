@@ -35,6 +35,9 @@ jobs:
                     - description: 'Symfony 7.2 DEV'
                       php: '8.2'
                       symfony: '7.2.*@dev'
+                    - description: 'Symfony 8.0'
+                      php: '8.5'
+                      symfony: '8.0.*'
                     - description: 'Symfony 7.0'
                       php: '8.5'
                       symfony: '7.0.*'
@@ -83,7 +86,7 @@ jobs:
               if: contains(matrix.symfony, '7.2.*@dev') || contains(matrix.symfony, '7.0.*')
               run: |
                   composer remove --dev friendsofphp/php-cs-fixer pedrotroller/php-cs-custom-fixer --no-update
-            - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
+            - run: composer update --prefer-dist --no-interaction --no-progress --no-security-blocking --ansi ${{ matrix.composer_option }}
             - run: vendor/bin/phpunit
             - run: vendor/bin/phpstan analyse --ansi --no-progress
     tests-windows:
@@ -95,6 +98,9 @@ jobs:
                     - description: 'Symfony 7.2 DEV'
                       php: '8.2'
                       symfony: '7.2.*@dev'
+                    - description: 'Symfony 8.0'
+                      php: '8.4'
+                      symfony: '8.0.*'
                     - description: 'Symfony 7.0'
                       php: '8.4'
                       symfony: '7.0.*'
@@ -134,6 +140,6 @@ jobs:
               if: contains(matrix.symfony, '7.2.*@dev') || contains(matrix.symfony, '7.0.*')
               run: |
                   composer remove --dev friendsofphp/php-cs-fixer pedrotroller/php-cs-custom-fixer --no-update
-            - run: composer update --prefer-dist --no-interaction --no-progress --ansi ${{ matrix.composer_option }}
+            - run: composer update --prefer-dist --no-interaction --no-progress --no-security-blocking --ansi ${{ matrix.composer_option }}
             - run: vendor/bin/phpunit
             - run: vendor/bin/phpstan analyse --ansi --no-progress
