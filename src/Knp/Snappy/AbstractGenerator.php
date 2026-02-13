@@ -601,9 +601,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
             $process = new Process($command, null, $this->env);
         }
 
-        if (null !== $this->timeout) {
-            $process->setTimeout($this->timeout);
-        }
+        $process->setTimeout($this->timeout);
 
         $process->run();
 
