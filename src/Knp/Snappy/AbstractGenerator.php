@@ -540,21 +540,21 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
                 } elseif (\is_array($option)) {
                     if ($this->isAssociativeArray($option)) {
                         foreach ($option as $k => $v) {
-                            $command .= ' --' . $key . ' ' . \escapeshellarg($k) . ' ' . \escapeshellarg($v);
+                            $command .= ' --' . $key . ' ' . \escapeshellarg($k) . ' ' . \escapeshellarg($v ?? '');
                         }
                     } else {
                         foreach ($option as $v) {
-                            $command .= ' --' . $key . ' ' . \escapeshellarg($v);
+                            $command .= ' --' . $key . ' ' . \escapeshellarg($v ?? '');
                         }
                     }
                 } else {
                     // Dont't add '--' if option is "cover"  or "toc".
                     if (\in_array($key, ['toc', 'cover'])) {
-                        $command .= ' ' . $key . ' ' . \escapeshellarg($option);
+                        $command .= ' ' . $key . ' ' . \escapeshellarg($option ?? '');
                     } elseif (\in_array($key, ['image-dpi', 'image-quality'])) {
                         $command .= ' --' . $key . ' ' . (int) $option;
                     } else {
-                        $command .= ' --' . $key . ' ' . \escapeshellarg($option);
+                        $command .= ' --' . $key . ' ' . \escapeshellarg($option ?? '');
                     }
                 }
             }
