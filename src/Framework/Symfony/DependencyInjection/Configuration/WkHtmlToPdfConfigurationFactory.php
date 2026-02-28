@@ -10,6 +10,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 final class WkHtmlToPdfConfigurationFactory implements BackendConfigurationFactory
 {
@@ -37,7 +38,7 @@ final class WkHtmlToPdfConfigurationFactory implements BackendConfigurationFacto
                 new Definition(
                     WkHtmlToPdfFactory::class,
                     [
-                        '$streamFactory' => $container->getDefinition(StreamFactoryInterface::class),
+                        '$streamFactory' => new Reference(StreamFactoryInterface::class),
                         '$binary' => $configuration['binary'],
                         '$timeout' => $configuration['timeout'],
                     ]

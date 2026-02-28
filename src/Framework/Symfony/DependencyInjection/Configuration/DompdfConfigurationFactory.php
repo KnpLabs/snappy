@@ -11,6 +11,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 final class DompdfConfigurationFactory implements BackendConfigurationFactory
 {
@@ -38,7 +39,7 @@ final class DompdfConfigurationFactory implements BackendConfigurationFactory
                 new Definition(
                     DompdfFactory::class,
                     [
-                        '$streamFactory' => $container->getDefinition(StreamFactoryInterface::class),
+                        '$streamFactory' => new Reference(StreamFactoryInterface::class),
                     ]
                 ),
             )
