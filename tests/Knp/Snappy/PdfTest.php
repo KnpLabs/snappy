@@ -47,7 +47,7 @@ class PdfTest extends TestCase
     public function testCreateInstance(): void
     {
         $testObject = new Pdf();
-        $this->assertInstanceOf(Pdf::class, $testObject);
+        $this->assertEquals('pdf', $testObject->getDefaultExtension());
     }
 
     public function testThatSomethingUsingTmpFolder(): void
