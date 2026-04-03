@@ -26,6 +26,7 @@ final class SnappyExtension extends Extension
         Adapter\HtmlFileToPdf::class => Frontend\HtmlFileToPdf::class,
         Adapter\HtmlToPdf::class => Frontend\HtmlToPdf::class,
         Adapter\StreamToPdf::class => Frontend\StreamToPdf::class,
+        Adapter\UriToPdf::class => Frontend\UriToPdf::class,
     ];
 
     public function load(array $configuration, ContainerBuilder $container): void
@@ -136,9 +137,9 @@ final class SnappyExtension extends Extension
                             ),
                         )
                     ;
-                }
 
-                $container->registerAliasForArgument($frontendId, $adapterClass, $backendName);
+                    $container->registerAliasForArgument($frontendId, $frontendClass, $backendName);
+                }
             }
         }
     }

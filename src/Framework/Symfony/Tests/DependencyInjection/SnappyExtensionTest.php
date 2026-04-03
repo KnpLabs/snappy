@@ -15,6 +15,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Constraint\IsEqual;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
@@ -37,6 +38,11 @@ final class SnappyExtensionTest extends TestCase
             StreamFactoryInterface::class,
             new Definition(Psr17Factory::class),
         );
+
+        $this->container->setDefinition(
+            UriFactoryInterface::class,
+            new Definition(Psr17Factory::class),
+        );
     }
 
     public function testLoadEmptyConfiguration(): void
@@ -53,6 +59,7 @@ final class SnappyExtensionTest extends TestCase
             [
                 'service_container',
                 StreamFactoryInterface::class,
+                UriFactoryInterface::class,
             ],
         );
     }
@@ -88,12 +95,14 @@ final class SnappyExtensionTest extends TestCase
             [
                 'service_container',
                 StreamFactoryInterface::class,
+                UriFactoryInterface::class,
                 'knplabs.snappy.core.backend.factory.myBackend',
                 'knplabs.snappy.core.backend.adapter.myBackend',
                 'knplabs.snappy.core.frontend.domdocumenttopdf.myBackend',
                 'knplabs.snappy.core.frontend.htmlfiletopdf.myBackend',
                 'knplabs.snappy.core.frontend.htmltopdf.myBackend',
                 'knplabs.snappy.core.frontend.streamtopdf.myBackend',
+                'knplabs.snappy.core.frontend.uritopdf.myBackend',
             ]
         );
 
