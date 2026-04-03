@@ -10,6 +10,7 @@ use KNPLabs\Snappy\Core\Backend\Options;
 use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
 use KNPLabs\Snappy\Core\Frontend;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\BackendConfigurationFactory;
+use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\ChromeHeadlessConfigurationFactory;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\DompdfConfigurationFactory;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\WkHtmlToPdfConfigurationFactory;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -159,6 +160,7 @@ final class SnappyExtension extends Extension
     {
         return array_filter(
             [
+                new ChromeHeadlessConfigurationFactory(),
                 new DompdfConfigurationFactory(),
                 new WkHtmlToPdfConfigurationFactory(),
             ],

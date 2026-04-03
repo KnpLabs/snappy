@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Framework\Symfony\Tests\DependencyInjection;
 
+use KNPLabs\Snappy\Backend\ChromeHeadless\ChromeHeadlessAdapter;
+use KNPLabs\Snappy\Backend\ChromeHeadless\ChromeHeadlessFactory;
 use KNPLabs\Snappy\Backend\Dompdf\DompdfAdapter;
 use KNPLabs\Snappy\Backend\Dompdf\DompdfFactory;
 use KNPLabs\Snappy\Core\Backend\Options;
@@ -177,6 +179,94 @@ final class SnappyExtensionTest extends TestCase
             $this->container->get('knplabs.snappy.core.frontend.streamtopdf.myBackend'),
             new IsEqual(
                 new Frontend\StreamToPdf(
+                    $backend,
+                    $streamFactory,
+                )
+            ),
+        );
+    }
+
+    public function testChromeHeadlessBackendConfiguration(): void
+    {
+        $configuration = [
+            'snappy' => [
+                'backends' => [
+                    'chromeBackend' => [
+                        'chrome_headless' => [
+                            'binary' => 'google-chrome',
+                            'timeout' => 60,
+                            'options' => [
+                                'pageOrientation' => 'portrait',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->extension->load($configuration, $this->container);
+
+        self::assertSame(
+            array_keys($this->container->getDefinitions()),
+            [
+                'service_container',
+                StreamFactoryInterface::class,
+                UriFactoryInterface::class,
+                'knplabs.snappy.core.backend.factory.chromeBackend',
+                'knplabs.snappy.core.backend.adapter.chromeBackend',
+                'knplabs.snappy.core.frontend.domdocumenttopdf.chromeBackend',
+                'knplabs.snappy.core.frontend.htmlfiletopdf.chromeBackend',
+                'knplabs.snappy.core.frontend.htmltopdf.chromeBackend',
+                'knplabs.snappy.core.frontend.streamtopdf.chromeBackend',
+                'knplabs.snappy.core.frontend.uritopdf.chromeBackend',
+            ]
+        );
+
+        $streamFactory = $this->container->get(StreamFactoryInterface::class);
+        $uriFactory = $this->container->get(UriFactoryInterface::class);
+
+        self::assertInstanceOf(StreamFactoryInterface::class, $streamFactory);
+        self::assertInstanceOf(UriFactoryInterface::class, $uriFactory);
+
+        $factory = $this->container->get('knplabs.snappy.core.backend.factory.chromeBackend');
+
+        self::assertInstanceOf(ChromeHeadlessFactory::class, $factory);
+        self::assertThat(
+            $factory,
+            new IsEqual(new ChromeHeadlessFactory('google-chrome', 60, $streamFactory, $uriFactory))
+        );
+
+        $backend = $this->container->get('knplabs.snappy.core.backend.adapter.chromeBackend');
+
+        self::assertInstanceOf(ChromeHeadlessAdapter::class, $backend);
+        self::assertThat(
+            $backend,
+            new IsEqual(
+                new ChromeHeadlessAdapter(
+                    'google-chrome',
+                    60,
+                    $factory,
+                    new Options(PageOrientation::Portrait, []),
+                    $streamFactory,
+                    $uriFactory,
+                ),
+            ),
+        );
+
+        self::assertThat(
+            $this->container->get('knplabs.snappy.core.frontend.uritopdf.chromeBackend'),
+            new IsEqual(
+                new Frontend\UriToPdf(
+                    $backend,
+                    $streamFactory,
+                )
+            ),
+        );
+
+        self::assertThat(
+            $this->container->get('knplabs.snappy.core.frontend.htmlfiletopdf.chromeBackend'),
+            new IsEqual(
+                new Frontend\HtmlFileToPdf(
                     $backend,
                     $streamFactory,
                 )

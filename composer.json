@@ -48,12 +48,14 @@
     },
     "replace": {
         "knplabs/snappy-bundle": "self.version",
+        "knplabs/snappy-chrome-headless": "self.version",
         "knplabs/snappy-core": "self.version",
         "knplabs/snappy-dompdf": "self.version",
         "knplabs/snappy-wkhtmltopdf": "self.version"
     },
     "autoload": {
         "psr-4": {
+            "KNPLabs\\Snappy\\Backend\\ChromeHeadless\\": "src/Backend/ChromeHeadless/",
             "KNPLabs\\Snappy\\Backend\\Dompdf\\": "src/Backend/Dompdf/",
             "KNPLabs\\Snappy\\Backend\\WkHtmlToPdf\\": "src/Backend/WkHtmlToPdf/",
             "KNPLabs\\Snappy\\Core\\": "src/Core/",
