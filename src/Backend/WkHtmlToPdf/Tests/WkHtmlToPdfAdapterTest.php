@@ -10,6 +10,7 @@ use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfFactory;
 use KNPLabs\Snappy\Core\Backend\Options;
 use Nyholm\Psr7\Uri;
 use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -54,8 +55,13 @@ final class WkHtmlToPdfAdapterTest extends TestCase
         $this->wkHtmlToPdfAdapter = $this->factory->create(new Options(null, []));
     }
 
+    #[Group('integration')]
     public function testGenerateFromHtmlFile(): void
     {
+        if (!$this->isWkhtmltopdfAvailable()) {
+            self::markTestSkipped('wkhtmltopdf binary is not available');
+        }
+
         $htmlContent = '<html><body><h1>Test PDF</h1></body></html>';
         $testFilePath = $this->tempDir.'/test.html';
         file_put_contents($testFilePath, $htmlContent);
@@ -94,8 +100,13 @@ final class WkHtmlToPdfAdapterTest extends TestCase
         $this->wkHtmlToPdfAdapter->generateFromHtmlFile(new \SplFileInfo($this->tempDir.'/nonexistent.html'));
     }
 
+    #[Group('integration')]
     public function testGenerateWithAdditionalOptions(): void
     {
+        if (!$this->isWkhtmltopdfAvailable()) {
+            self::markTestSkipped('wkhtmltopdf binary is not available');
+        }
+
         $htmlContent = '<html><head><title>Test PDF</title></head><body><h1>Test PDF</h1></body></html>';
         $testFilePath = $this->tempDir.'/test_with_options.html';
         file_put_contents($testFilePath, $htmlContent);
@@ -139,5 +150,14 @@ final class WkHtmlToPdfAdapterTest extends TestCase
         self::assertNotEmpty($resultStream->getContents());
 
         unlink($testFilePath);
+    }
+
+    private function isWkhtmltopdfAvailable(): bool
+    {
+        $output = null;
+        $returnCode = null;
+        exec('which wkhtmltopdf 2>/dev/null', $output, $returnCode);
+
+        return 0 === $returnCode;
     }
 }

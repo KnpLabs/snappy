@@ -16,9 +16,19 @@ use PHPUnit\Framework\TestCase;
 final class ExtraOptionTest extends TestCase
 {
     /**
+     * @param non-empty-array<string> $command
+     */
+    #[DataProvider('provideRepeatableOptionCases')]
+    public function testRepeatableOption(ExtraOption $option, array $command): void
+    {
+        self::assertTrue($option->repeatable);
+        self::assertSame($option->command, $command);
+    }
+
+    /**
      * @return iterable<array{ExtraOption, non-empty-array<string>}>
      */
-    public static function repeatableProvider(): iterable
+    public static function provideRepeatableOptionCases(): iterable
     {
         yield [
             new ExtraOption\Allow('/the/path'),
@@ -77,9 +87,19 @@ final class ExtraOptionTest extends TestCase
     }
 
     /**
+     * @param non-empty-array<string> $command
+     */
+    #[DataProvider('provideNonRepeatableOptionCases')]
+    public function testNonRepeatableOption(ExtraOption $option, array $command): void
+    {
+        self::assertFalse($option->repeatable);
+        self::assertSame($option->command, $command);
+    }
+
+    /**
      * @return iterable<array{ExtraOption, non-empty-array<string>}>
      */
-    public static function nonRepeatableProvider(): iterable
+    public static function provideNonRepeatableOptionCases(): iterable
     {
         yield [
             new ExtraOption\NoCollate(),
@@ -475,25 +495,5 @@ final class ExtraOptionTest extends TestCase
             new ExtraOption\XslStyleSheet('/the/path'),
             ['--xsl-style-sheet', '/the/path'],
         ];
-    }
-
-    /**
-     * @param non-empty-array<string> $command
-     */
-    #[DataProvider('repeatableProvider')]
-    public function testRepeatableOption(ExtraOption $option, array $command): void
-    {
-        self::assertTrue($option->repeatable);
-        self::assertSame($option->command, $command);
-    }
-
-    /**
-     * @param non-empty-array<string> $command
-     */
-    #[DataProvider('nonRepeatableProvider')]
-    public function testNonRepeatableOption(ExtraOption $option, array $command): void
-    {
-        self::assertFalse($option->repeatable);
-        self::assertSame($option->command, $command);
     }
 }

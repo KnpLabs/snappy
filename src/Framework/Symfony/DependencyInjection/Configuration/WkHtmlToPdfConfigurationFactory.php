@@ -7,6 +7,7 @@ namespace KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfAdapter;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfFactory;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -37,9 +38,10 @@ final class WkHtmlToPdfConfigurationFactory implements BackendConfigurationFacto
                 new Definition(
                     WkHtmlToPdfFactory::class,
                     [
-                        '$streamFactory' => $container->getDefinition(StreamFactoryInterface::class),
                         '$binary' => $configuration['binary'],
                         '$timeout' => $configuration['timeout'],
+                        '$streamFactory' => $container->getDefinition(StreamFactoryInterface::class),
+                        '$uriFactory' => $container->getDefinition(UriFactoryInterface::class),
                     ]
                 ),
             )
