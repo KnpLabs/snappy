@@ -18,7 +18,7 @@ final class VirtualTimeBudget extends ExtraOption
     {
         parent::__construct(
             repeatable: false,
-            command: ['--virtual-time-budget', (string) $milliseconds]
+            command: ['--virtual-time-budget=' . $milliseconds]
         );
     }
 }

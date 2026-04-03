@@ -18,7 +18,7 @@ final class Timeout extends ExtraOption
     {
         parent::__construct(
             repeatable: false,
-            command: ['--timeout', (string) $milliseconds]
+            command: ['--timeout=' . $milliseconds]
         );
     }
 }

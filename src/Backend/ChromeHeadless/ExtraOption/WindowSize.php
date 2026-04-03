@@ -18,7 +18,7 @@ final class WindowSize extends ExtraOption
     {
         parent::__construct(
             repeatable: false,
-            command: ['--window-size', $size]
+            command: ['--window-size=' . $size]
         );
     }
 }
