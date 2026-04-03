@@ -8,6 +8,7 @@ use KNPLabs\Snappy\Backend\Dompdf\DompdfFactory;
 use KNPLabs\Snappy\Core\Backend\Options;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 
@@ -15,6 +16,7 @@ use Psr\Http\Message\StreamInterface;
  * @internal
  */
 #[CoversNothing]
+#[Group('integration')]
 final class DomAdapterTest extends TestCase
 {
     private DompdfFactory $factory;
@@ -23,6 +25,10 @@ final class DomAdapterTest extends TestCase
 
     protected function setUp(): void
     {
+        if (!extension_loaded('imagick')) {
+            self::markTestSkipped('Imagick extension is required for PDF comparison tests');
+        }
+
         $this->factory = new DompdfFactory(new Psr17Factory());
         $this->options = Options::create()
             ->withExtraOptions(
@@ -77,7 +83,8 @@ final class DomAdapterTest extends TestCase
 
         stream_copy_to_stream($from, $to);
 
-        $path = stream_get_meta_data($to)['uri'];
+        $metadata = stream_get_meta_data($to);
+        $path = $metadata['uri'] ?? throw new \RuntimeException('Stream metadata does not contain uri');
 
         $controlDocument = new \Imagick();
         $compareDocument = new \Imagick();

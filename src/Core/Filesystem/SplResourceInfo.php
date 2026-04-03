@@ -11,7 +11,9 @@ final class SplResourceInfo extends \SplFileInfo
      */
     public function __construct(public readonly mixed $resource)
     {
-        parent::__construct(stream_get_meta_data($this->resource)['uri']);
+        $metadata = stream_get_meta_data($this->resource);
+        $uri = $metadata['uri'] ?? throw new \RuntimeException('Stream metadata does not contain uri');
+        parent::__construct($uri);
     }
 
     public static function fromTmpFile(): self
