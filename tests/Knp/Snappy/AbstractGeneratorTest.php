@@ -861,6 +861,8 @@ class AbstractGeneratorTest extends TestCase
 
         $remove = new ReflectionMethod($generator, 'removeTemporaryFiles');
         $remove->invoke($generator);
+
+        $this->assertCount(0, $files->getValue($generator));
     }
 
     public function testleanupTemporaryFiles(): void
@@ -887,6 +889,8 @@ class AbstractGeneratorTest extends TestCase
 
         $remove = new ReflectionMethod($generator, 'removeTemporaryFiles');
         $remove->invoke($generator);
+
+        $this->assertCount(0, $files->getValue($generator));
     }
 
     public function testResetOptions(): void
