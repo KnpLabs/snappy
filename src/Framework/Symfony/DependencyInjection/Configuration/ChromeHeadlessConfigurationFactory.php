@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration;
 
-use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfAdapter;
-use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfFactory;
+use KNPLabs\Snappy\Backend\ChromeHeadless\ChromeHeadlessAdapter;
+use KNPLabs\Snappy\Backend\ChromeHeadless\ChromeHeadlessFactory;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
-final class WkHtmlToPdfConfigurationFactory implements BackendConfigurationFactory
+final class ChromeHeadlessConfigurationFactory implements BackendConfigurationFactory
 {
     public function getKey(): string
     {
-        return 'wkhtmltopdf';
+        return 'chrome_headless';
     }
 
     public function isAvailable(): bool
     {
-        return class_exists(WkHtmlToPdfAdapter::class);
+        return class_exists(ChromeHeadlessAdapter::class);
     }
 
     public function create(
@@ -36,7 +36,7 @@ final class WkHtmlToPdfConfigurationFactory implements BackendConfigurationFacto
             ->setDefinition(
                 $factoryId,
                 new Definition(
-                    WkHtmlToPdfFactory::class,
+                    ChromeHeadlessFactory::class,
                     [
                         '$binary' => $configuration['binary'],
                         '$timeout' => $configuration['timeout'],
@@ -50,19 +50,19 @@ final class WkHtmlToPdfConfigurationFactory implements BackendConfigurationFacto
         $container
             ->setDefinition(
                 $backendId,
-                (new Definition(WkHtmlToPdfAdapter::class))
+                (new Definition(ChromeHeadlessAdapter::class))
                     ->setFactory([$container->getDefinition($factoryId), 'create'])
                     ->setArgument('$options', $options)
             )
         ;
 
-        $container->registerAliasForArgument($backendId, WkHtmlToPdfAdapter::class, $backendName);
+        $container->registerAliasForArgument($backendId, ChromeHeadlessAdapter::class, $backendName);
     }
 
     public function getExample(): array
     {
         return [
-            'binary' => '/usr/local/bin/wkhtmltopdf',
+            'binary' => '/usr/bin/google-chrome',
         ];
     }
 
@@ -71,8 +71,8 @@ final class WkHtmlToPdfConfigurationFactory implements BackendConfigurationFacto
         $node
             ->children()
             ->scalarNode('binary')
-            ->defaultValue('wkhtmltopdf')
-            ->info('Path or command to run wkdtmltopdf')
+            ->defaultValue('google-chrome')
+            ->info('Path or command to run Google Chrome')
         ;
 
         $node
@@ -80,7 +80,7 @@ final class WkHtmlToPdfConfigurationFactory implements BackendConfigurationFacto
             ->integerNode('timeout')
             ->defaultValue(60)
             ->min(1)
-            ->info('Timeout (seconds) for wkhtmltopdf command')
+            ->info('Timeout (seconds) for Chrome command')
         ;
     }
 }

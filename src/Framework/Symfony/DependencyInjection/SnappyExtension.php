@@ -10,6 +10,7 @@ use KNPLabs\Snappy\Core\Backend\Options;
 use KNPLabs\Snappy\Core\Backend\Options\PageOrientation;
 use KNPLabs\Snappy\Core\Frontend;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\BackendConfigurationFactory;
+use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\ChromeHeadlessConfigurationFactory;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\DompdfConfigurationFactory;
 use KNPLabs\Snappy\Framework\Symfony\DependencyInjection\Configuration\WkHtmlToPdfConfigurationFactory;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -26,6 +27,7 @@ final class SnappyExtension extends Extension
         Adapter\HtmlFileToPdf::class => Frontend\HtmlFileToPdf::class,
         Adapter\HtmlToPdf::class => Frontend\HtmlToPdf::class,
         Adapter\StreamToPdf::class => Frontend\StreamToPdf::class,
+        Adapter\UriToPdf::class => Frontend\UriToPdf::class,
     ];
 
     public function load(array $configuration, ContainerBuilder $container): void
@@ -136,9 +138,9 @@ final class SnappyExtension extends Extension
                             ),
                         )
                     ;
-                }
 
-                $container->registerAliasForArgument($frontendId, $adapterClass, $backendName);
+                    $container->registerAliasForArgument($frontendId, $frontendClass, $backendName);
+                }
             }
         }
     }
@@ -158,6 +160,7 @@ final class SnappyExtension extends Extension
     {
         return array_filter(
             [
+                new ChromeHeadlessConfigurationFactory(),
                 new DompdfConfigurationFactory(),
                 new WkHtmlToPdfConfigurationFactory(),
             ],

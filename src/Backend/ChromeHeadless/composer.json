@@ -1,0 +1,36 @@
+{
+    "name": "knplabs/snappy-chrome-headless",
+    "description": "Chrome Headless backend for Snappy v2 PDF generation.",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "KNP Labs Team",
+            "homepage": "http://knplabs.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "http://github.com/KnpLabs/snappy/contributors"
+        }
+    ],
+    "homepage": "http://github.com/KnpLabs/snappy",
+    "require": {
+        "php": ">=8.2",
+        "knplabs/snappy-core": "^2.0",
+        "psr/http-factory": "^1.1",
+        "psr/http-message": "^2.0",
+        "symfony/process": "^5.4 || ^6.4 || ^7.1"
+    },
+    "require-dev": {
+        "nyholm/psr7": "^1.8",
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "KNPLabs\\Snappy\\Backend\\ChromeHeadless\\": "./"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
