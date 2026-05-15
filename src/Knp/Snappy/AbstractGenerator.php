@@ -316,6 +316,15 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     public function removeTemporaryFiles()
     {
         foreach ($this->temporaryFiles as $file) {
+            $filePath = \realpath($file);
+            $temporaryFolderPath = \realpath($this->getTemporaryFolder());
+            if (
+                !$filePath
+                || !$temporaryFolderPath
+                || !\str_starts_with($filePath, $temporaryFolderPath)
+            ) {
+                continue;
+            }
             $this->unlink($file);
         }
     }
@@ -328,7 +337,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     public function getTemporaryFolder()
     {
         if ($this->temporaryFolder === null) {
-            return \sys_get_temp_dir();
+            $this->temporaryFolder = \sys_get_temp_dir();
         }
 
         return $this->temporaryFolder;
@@ -501,9 +510,8 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
 
         if (null !== $content) {
             \file_put_contents($filename, $content);
+            $this->temporaryFiles[] = $filename;
         }
-
-        $this->temporaryFiles[] = $filename;
 
         return $filename;
     }
