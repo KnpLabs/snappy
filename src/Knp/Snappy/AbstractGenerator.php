@@ -520,11 +520,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
      */
     protected function buildCommand($binary, $input, $output, array $options = [])
     {
-        $command = $binary;
-        $escapedBinary = \escapeshellarg($binary);
-        if (\is_executable($escapedBinary)) {
-            $command = $escapedBinary;
-        }
+        $command = $this->getEscapedBinary($binary);
 
         foreach ($options as $key => $option) {
             if (null !== $option && false !== $option) {
@@ -766,5 +762,14 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
     protected function mkdir($pathname)
     {
         return \mkdir($pathname, 0777, true);
+    }
+
+    protected function getEscapedBinary(string $binary): string
+    {
+        if (!\is_executable($binary)) {
+            throw new RuntimeException("The binary '{$binary}' is not executable.");
+        }
+
+        return \escapeshellarg($binary);
     }
 }
