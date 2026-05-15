@@ -15,13 +15,25 @@ class Pdf extends AbstractGenerator
      */
     protected $optionsWithContentCheck = [];
 
+    private array $allowedSchemes = ['http', 'https'];
+
     /**
      * {@inheritdoc}
+     *
+     * @param null|array $allowedSchemes An array of allowed URL schemes for options that can accept URLs (e.g. 'http', 'https', 'ftp', 'file'). If null, defaults to ['http', 'https'].
      */
-    public function __construct($binary = null, array $options = [], array|null $env = null)
-    {
+    public function __construct(
+        $binary = null,
+        array $options = [],
+        array|null $env = null,
+        ?array $allowedSchemes = null
+    ) {
         $this->setDefaultExtension('pdf');
         $this->setOptionsWithContentCheck();
+
+        if (null !== $allowedSchemes) {
+            $this->allowedSchemes = $allowedSchemes;
+        }
 
         parent::__construct($binary, $options, $env);
     }
@@ -75,7 +87,11 @@ class Pdf extends AbstractGenerator
      */
     protected function isOptionUrl($option)
     {
-        return (bool) \filter_var($option, \FILTER_VALIDATE_URL);
+        $url = \parse_url($option);
+
+        return $url !== false
+            && isset($url['scheme'])
+            && \in_array(\strtolower($url['scheme']), $this->allowedSchemes, true);
     }
 
     /**
