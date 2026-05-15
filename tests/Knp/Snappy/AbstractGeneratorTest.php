@@ -550,7 +550,18 @@ class AbstractGeneratorTest extends TestCase
      */
     public function testBuildCommand(string $binary, string $url, string $path, array $options, string $expected): void
     {
-        $media = $this->getMockForAbstractClass(AbstractGenerator::class, [], '', false);
+        $media = $this->getMockBuilder(AbstractGenerator::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getEscapedBinary'])
+            ->getMockForAbstractClass()
+        ;
+
+        $media->expects($this->any())
+            ->method('getEscapedBinary')
+            ->willReturnCallback(static function (string $binary): string {
+                return $binary;
+            })
+        ;
 
         $r = new ReflectionMethod($media, 'buildCommand');
 

@@ -197,4 +197,9 @@ class PdfSpy extends Pdf
     {
         //let's say everything went right
     }
+
+    protected function getEscapedBinary(string $binary): string
+    {
+        return $binary;
+    }
 }
