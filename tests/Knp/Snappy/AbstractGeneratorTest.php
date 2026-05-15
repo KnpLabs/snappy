@@ -848,6 +848,26 @@ class AbstractGeneratorTest extends TestCase
         ];
     }
 
+    public function testAvoidingDeletingFileOutsideTemporaryDirectory(): void
+    {
+        $generator = $this->getMockBuilder(AbstractGenerator::class)
+            ->setMethods([
+                'configure',
+                'unlink',
+            ])
+            ->setConstructorArgs(['the_binary'])
+            ->getMock()
+        ;
+
+        $generator
+            ->expects($this->never())
+            ->method('unlink')
+        ;
+
+        $remove = new ReflectionMethod($generator, 'removeTemporaryFiles');
+        $remove->invoke($generator);
+    }
+
     public function testCleanupEmptyTemporaryFiles(): void
     {
         $generator = $this->getMockBuilder(AbstractGenerator::class)
@@ -860,7 +880,7 @@ class AbstractGeneratorTest extends TestCase
         ;
 
         $generator
-            ->expects($this->once())
+            ->expects($this->never())
             ->method('unlink')
         ;
 
@@ -868,13 +888,13 @@ class AbstractGeneratorTest extends TestCase
         $create->invoke($generator, null, null);
 
         $files = new ReflectionProperty($generator, 'temporaryFiles');
-        $this->assertCount(1, $files->getValue($generator));
+        $this->assertCount(0, $files->getValue($generator));
 
         $remove = new ReflectionMethod($generator, 'removeTemporaryFiles');
         $remove->invoke($generator);
     }
 
-    public function testleanupTemporaryFiles(): void
+    public function testCleanupTemporaryFiles(): void
     {
         $generator = $this->getMockBuilder(AbstractGenerator::class)
             ->setMethods([
