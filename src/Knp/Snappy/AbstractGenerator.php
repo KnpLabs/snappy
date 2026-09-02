@@ -126,7 +126,7 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         $this->options[$name] = $value;
 
         if (null !== $this->logger) {
-            $this->logger->debug(\sprintf('Set option "%s".', $name), ['value' => $value]);
+            $this->logger->debug('Set option.', ['option' => $name, 'value' => $value]);
         }
 
         return $this;
@@ -184,7 +184,9 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         $inputFiles = \is_array($input) ? \implode('", "', $input) : $input;
 
         if (null !== $this->logger) {
-            $this->logger->info(\sprintf('Generate from file(s) "%s" to file "%s".', $inputFiles, $output), [
+            $this->logger->info('Generate from file(s) to file.', [
+                'input' => $inputFiles,
+                'output' => $output,
                 'command' => $command,
                 'env' => $this->env,
                 'timeout' => $this->timeout,
@@ -197,11 +199,13 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
             $this->checkOutput($output, $command);
         } catch (Exception $e) {
             if (null !== $this->logger) {
-                $this->logger->error(\sprintf('An error happened while generating "%s".', $output), [
+                $this->logger->error('An error happened while generating the output file.', [
+                    'output' => $output,
                     'command' => $command,
                     'status' => $status ?? null,
                     'stdout' => $stdout ?? null,
                     'stderr' => $stderr ?? null,
+                    'exception' => $e,
                 ]);
             }
 
@@ -209,7 +213,8 @@ abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInter
         }
 
         if (null !== $this->logger) {
-            $this->logger->info(\sprintf('File "%s" has been successfully generated.', $output), [
+            $this->logger->info('File has been successfully generated.', [
+                'output' => $output,
                 'command' => $command,
                 'stdout' => $stdout,
                 'stderr' => $stderr,

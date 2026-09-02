@@ -190,12 +190,12 @@ class AbstractGeneratorTest extends TestCase
             ->method('info')
             ->with(
                 $this->logicalOr(
-                    'Generate from file(s) "the_input_file" to file "the_output_file".',
-                    'File "the_output_file" has been successfully generated.'
+                    'Generate from file(s) to file.',
+                    'File has been successfully generated.'
                 ),
                 $this->logicalOr(
-                    ['command' => 'the command', 'env' => null, 'timeout' => false],
-                    ['command' => 'the command', 'stdout' => 'stdout', 'stderr' => 'stderr']
+                    ['input' => 'the_input_file', 'output' => 'the_output_file', 'command' => 'the command', 'env' => null, 'timeout' => false],
+                    ['output' => 'the_output_file', 'command' => 'the command', 'stdout' => 'stdout', 'stderr' => 'stderr']
                 )
             )
         ;
@@ -257,12 +257,14 @@ class AbstractGeneratorTest extends TestCase
         $media->setLogger($logger);
         $media->setTimeout(2000);
 
+        $exception = new RuntimeException();
+
         $logger
             ->expects($this->once())
             ->method('info')
             ->with(
-                $this->equalTo('Generate from file(s) "the_input_file" to file "the_output_file".'),
-                $this->equalTo(['command' => 'the command', 'env' => ['PATH' => '/usr/bin'], 'timeout' => 2000])
+                $this->equalTo('Generate from file(s) to file.'),
+                $this->equalTo(['input' => 'the_input_file', 'output' => 'the_output_file', 'command' => 'the command', 'env' => ['PATH' => '/usr/bin'], 'timeout' => 2000])
             )
         ;
 
@@ -270,8 +272,8 @@ class AbstractGeneratorTest extends TestCase
             ->expects($this->once())
             ->method('error')
             ->with(
-                $this->equalTo('An error happened while generating "the_output_file".'),
-                $this->equalTo(['command' => 'the command', 'status' => 1, 'stdout' => 'stdout', 'stderr' => 'stderr'])
+                $this->equalTo('An error happened while generating the output file.'),
+                $this->equalTo(['output' => 'the_output_file', 'command' => 'the command', 'status' => 1, 'stdout' => 'stdout', 'stderr' => 'stderr', 'exception' => $exception])
             )
         ;
 
@@ -299,7 +301,7 @@ class AbstractGeneratorTest extends TestCase
             ->expects($this->once())
             ->method('checkProcessStatus')
             ->with(1, 'stdout', 'stderr', 'the command')
-            ->willThrowException(new RuntimeException())
+            ->willThrowException($exception)
         ;
 
         $this->expectException(RuntimeException::class);
