@@ -148,6 +148,13 @@ $snappy = new Pdf($myProjectDirectory . '/vendor/h4cc/wkhtmltopdf-amd64/bin/wkht
 ```
 
 *N.B.* These static binaries are extracted from  [Debian7 packages](https://github.com/h4cc/wkhtmltopdf-amd64/issues/13#issuecomment-150948179), so it might not be compatible with non-debian based linux distros
+
+These packages were last updated in January 2018, with wkhtmltopdf 0.12.4. For a maintained binary, `composer require pdfkiln/pdfkiln` installs [PDFKiln](https://github.com/pdfkiln/pdfkiln), a `wkhtmltopdf` command that renders with a current Chromium, on Linux, Windows and Apple silicon Macs ([Linux requirements](https://github.com/pdfkiln/php#readme)):
+
+```php
+$snappy = new Pdf(\Pdfkiln\binary());
+```
+
 ## Some use cases
 
 If you want to generate table of contents and you want to use custom XSL stylesheet, do the following:
