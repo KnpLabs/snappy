@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\Tests;
 
+use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption\Cookie;
+use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption\Copies;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption\Title;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfAdapter;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfFactory;
-use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption\Cookie;
-use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption\Copies;
 use KNPLabs\Snappy\Core\Backend\Options;
 use Nyholm\Psr7\Uri;
 use PHPUnit\Framework\Attributes\CoversNothing;
@@ -142,7 +142,6 @@ final class WkHtmlToPdfAdapterTest extends TestCase
 
         unlink($testFilePath);
     }
-
     
     public function testAllowsRepeatedCookies(): void
     {
@@ -172,7 +171,7 @@ final class WkHtmlToPdfAdapterTest extends TestCase
         $this->factory->create(
             new Options(null, [
                 new Copies(1),
-            new Copies(2),
+                new Copies(2),
             ])
         );
     }
