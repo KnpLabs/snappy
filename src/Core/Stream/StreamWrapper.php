@@ -67,7 +67,7 @@ trait StreamWrapper
 
     public function isReadable(): bool
     {
-        return $this->stream->isWritable();
+        return $this->stream->isReadable();
     }
 
     public function read(int $length): string
