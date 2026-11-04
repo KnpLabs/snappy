@@ -7,6 +7,8 @@ namespace KNPLabs\Snappy\Backend\WkHtmlToPdf\Tests;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption\Title;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfAdapter;
 use KNPLabs\Snappy\Backend\WkHtmlToPdf\WkHtmlToPdfFactory;
+use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption\Cookie;
+use KNPLabs\Snappy\Backend\WkHtmlToPdf\ExtraOption\Copies;
 use KNPLabs\Snappy\Core\Backend\Options;
 use Nyholm\Psr7\Uri;
 use PHPUnit\Framework\Attributes\CoversNothing;
@@ -139,5 +141,39 @@ final class WkHtmlToPdfAdapterTest extends TestCase
         self::assertNotEmpty($resultStream->getContents());
 
         unlink($testFilePath);
+    }
+
+    
+    public function testAllowsRepeatedCookies(): void
+    {
+        $adapter = $this->factory->create(
+            new Options(null, [
+                new Cookie('session', 'abc'),
+                new Cookie('language', 'cs'),
+            ])
+        );
+
+        self::assertInstanceOf(
+            WkHtmlToPdfAdapter::class,
+            $adapter
+        );
+    }
+
+    public function testRejectsDuplicateNonRepeatableOptions(): void
+    {
+        $this->expectException(
+            \InvalidArgumentException::class
+        );
+
+        $this->expectExceptionMessage(
+            'Duplicate option type provided'
+        );
+
+        $this->factory->create(
+            new Options(null, [
+                new Copies(1),
+            new Copies(2),
+            ])
+        );
     }
 }
