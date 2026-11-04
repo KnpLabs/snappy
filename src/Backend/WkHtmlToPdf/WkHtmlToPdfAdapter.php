@@ -112,7 +112,7 @@ final class WkHtmlToPdfAdapter implements HtmlFileToPdf, UriToPdf
                 );
             }
 
-            if ($extraOption->repeatable && \in_array($extraOption::class, $optionTypes, true)) {
+            if (!$extraOption->repeatable && \in_array($extraOption::class, $optionTypes, true)) {
                 throw new \InvalidArgumentException(
                     \sprintf(
                         'Duplicate option type provided: "%s".',
