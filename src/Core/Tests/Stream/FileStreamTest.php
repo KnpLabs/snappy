@@ -61,4 +61,22 @@ final class FileStreamTest extends TestCase
 
         self::assertFileDoesNotExist($file->getPathname());
     }
+
+    public function testReadabilityDelegatesToWrappedStream(): void
+    {
+        $inner = $this->createMock(
+            \Psr\Http\Message\StreamInterface::class
+        );
+
+        $inner->method('isReadable')->willReturn(true);
+        $inner->method('isWritable')->willReturn(false);
+
+        $stream = new FileStream(
+            new \SplFileInfo(__FILE__),
+            $inner
+        );
+
+        self::assertTrue($stream->isReadable());
+        self::assertFalse($stream->isWritable());
+    }
 }
